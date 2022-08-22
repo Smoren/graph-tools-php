@@ -6,7 +6,7 @@ use Smoren\GraphTools\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Interfaces\ConnectionInterface;
 use Smoren\GraphTools\Interfaces\GraphRepositoryInterface;
 use Smoren\GraphTools\Interfaces\VertexInterface;
-use Smoren\Schemator\Components\NestedStorage;
+use Smoren\Schemator\Components\NestedAccessor;
 
 class SimpleGraphRepository implements GraphRepositoryInterface
 {
@@ -14,8 +14,14 @@ class SimpleGraphRepository implements GraphRepositoryInterface
      * @var array<string, VertexInterface>
      */
     protected array $vertexMap = [];
-    protected NestedStorage $connectionsDirectMap;
-    protected NestedStorage $connectionsReverseMap;
+    /**
+     * @var array<string, array<string, string[]>>
+     */
+    protected array $connectionsDirectMap = [];
+    /**
+     * @var array<string, array<string, string[]>>
+     */
+    protected array $connectionsReverseMap = [];
 
     /**
      * @param array<VertexInterface> $vertexes
@@ -25,20 +31,20 @@ class SimpleGraphRepository implements GraphRepositoryInterface
         array $vertexes,
         array $connections
     ) {
-        $this->connectionsDirectMap = new NestedStorage();
-        $this->connectionsReverseMap = new NestedStorage();
-
         foreach($vertexes as $vertex) {
             $this->vertexMap[$vertex->getId()] = $vertex;
         }
 
+        $directMapAccessor = new NestedAccessor($this->connectionsDirectMap);
+        $reverseMapAccessor = new NestedAccessor($this->connectionsReverseMap);
+
         foreach($connections as $connection) {
-            $this->connectionsDirectMap->set(
+            $directMapAccessor->set(
                 [$connection->getFrom(), $connection->getId()],
                 [$connection->getType(), $connection->getTo()]
             );
 
-            $this->connectionsDirectMap->set(
+            $reverseMapAccessor->set(
                 [$connection->getTo(), $connection->getId()],
                 [$connection->getType(), $connection->getFrom()]
             );
@@ -89,21 +95,19 @@ class SimpleGraphRepository implements GraphRepositoryInterface
     }
 
     /**
-     * @param NestedStorage $source
+     * @param array<string, array<string, string[]>> $source
      * @param VertexInterface $vertex
      * @param FilterConditionInterface $condition
      * @return array<VertexInterface>
      * @throws \Exception
      */
     protected function getLinkedVertexesFromMap(
-        NestedStorage $source,
+        array $source,
         VertexInterface $vertex,
         FilterConditionInterface $condition
     ): array {
         $result = [];
-        /** @var array<array<string>> $vertexConnectionsMap */
-        $vertexConnectionsMap = $source->get($vertex->getId(), false) ?? [];
-        foreach($vertexConnectionsMap as [$connType, $targetId]) {
+        foreach($source[$vertex->getId()] ?? [] as [$connType, $targetId]) {
             if($condition->hasConnectionType($connType)) {
                 $target = $this->getVertexById($targetId);
                 if($condition->hasVertexType($target->getType())) {
