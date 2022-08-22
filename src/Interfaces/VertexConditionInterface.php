@@ -5,8 +5,8 @@ namespace Smoren\GraphTools\Interfaces;
 interface VertexConditionInterface
 {
     /**
-     * @param int|string $type
+     * @param string $type
      * @return bool
      */
-    public function hasVertexType($type): bool;
+    public function hasVertexType(string $type): bool;
 }

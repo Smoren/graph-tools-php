@@ -5,12 +5,12 @@ namespace Smoren\GraphTools\Interfaces;
 interface VertexInterface
 {
     /**
-     * @return int|string
+     * @return string
      */
-    public function getId();
+    public function getId(): string;
 
     /**
-     * @return int|string
+     * @return string
      */
-    public function getType();
+    public function getType(): string;
 }

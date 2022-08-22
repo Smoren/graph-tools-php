@@ -5,22 +5,22 @@ namespace Smoren\GraphTools\Interfaces;
 interface ConnectionInterface
 {
     /**
-     * @return int|string
+     * @return string
      */
-    public function getId();
+    public function getId(): string;
 
     /**
-     * @return int|string
+     * @return string
      */
-    public function getType();
+    public function getType(): string;
 
     /**
-     * @return int|string
+     * @return string
      */
-    public function getFrom();
+    public function getFrom(): string;
 
     /**
-     * @return int|string
+     * @return string
      */
-    public function getTo();
+    public function getTo(): string;
 }
