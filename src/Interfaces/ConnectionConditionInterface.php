@@ -5,8 +5,12 @@ namespace Smoren\GraphTools\Interfaces;
 interface ConnectionConditionInterface
 {
     /**
-     * @param string $type
-     * @return bool
+     * @return array<string>|null
      */
-    public function hasConnectionType(string $type): bool;
+    public function getConnectionTypesOnly(): ?array;
+
+    /**
+     * @return array<string>
+     */
+    public function getConnectionTypesExclude(): array;
 }

@@ -5,8 +5,12 @@ namespace Smoren\GraphTools\Interfaces;
 interface VertexConditionInterface
 {
     /**
-     * @param string $type
-     * @return bool
+     * @return array<string>|null
      */
-    public function hasVertexType(string $type): bool;
+    public function getVertexTypesOnly(): ?array;
+
+    /**
+     * @return array<string>
+     */
+    public function getVertexTypesExclude(): array;
 }

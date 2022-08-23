@@ -108,13 +108,31 @@ class SimpleGraphRepository implements GraphRepositoryInterface
     ): array {
         $result = [];
         foreach($source[$vertex->getId()] ?? [] as [$connType, $targetId]) {
-            if($condition->hasConnectionType($connType)) {
+            if($this->hasConnectionType($connType, $condition)) {
                 $target = $this->getVertexById($targetId);
-                if($condition->hasVertexType($target->getType())) {
+                if($this->hasVertexType($target->getType(), $condition)) {
                     $result[] = $target;
                 }
             }
         }
         return $result;
+    }
+
+    protected function hasVertexType(string $type, FilterConditionInterface $condition): bool
+    {
+        if(($only = $condition->getVertexTypesOnly()) !== null && !in_array($type, $only)) {
+            return false;
+        }
+
+        return !in_array($type, $condition->getVertexTypesExclude());
+    }
+
+    protected function hasConnectionType(string $type, FilterConditionInterface $condition): bool
+    {
+        if(($only = $condition->getConnectionTypesOnly()) !== null && !in_array($type, $only)) {
+            return false;
+        }
+
+        return !in_array($type, $condition->getConnectionTypesExclude());
     }
 }
