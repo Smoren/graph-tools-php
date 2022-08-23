@@ -99,6 +99,41 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
 
+        $this->assertVertexIds(
+            [2, 5],
+            $repo->getNextVertexes(1, new FilterCondition())
+        );
+        $this->assertVertexIds(
+            [5],
+            $repo->getNextVertexes(1, (new FilterCondition())->setVertexTypesOnly([2]))
+        );
+        $this->assertVertexIds(
+            [2],
+            $repo->getNextVertexes(1, (new FilterCondition())->setVertexTypesOnly([1]))
+        );
+        $this->assertVertexIds(
+            [5],
+            $repo->getNextVertexes(1, (new FilterCondition())->setConnectionTypesOnly([2]))
+        );
+        $this->assertVertexIds(
+            [2],
+            $repo->getNextVertexes(1, (new FilterCondition())->setConnectionTypesOnly([1]))
+        );
+
+        $this->assertVertexIds(
+            [6, 3],
+            $repo->getNextVertexes(5, new FilterCondition())
+        );
+        $this->assertVertexIds(
+            [6],
+            $repo->getNextVertexes(5, (new FilterCondition())->setConnectionTypesExclude([2]))
+        );
+        $this->assertVertexIds(
+            [],
+            $repo->getNextVertexes(5, (new FilterCondition())
+                ->setConnectionTypesExclude([2])
+                ->setVertexTypesOnly([1]))
+        );
     }
 
     /**
@@ -112,6 +147,9 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
         foreach($vertexes as $vertex) {
             $actualVertexIds[] = $vertex->getId();
         }
+
+        sort($expectedVertexIds);
+        sort($actualVertexIds);
 
         $this->assertEquals($expectedVertexIds, $actualVertexIds);
     }
