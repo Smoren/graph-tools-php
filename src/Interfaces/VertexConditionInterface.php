@@ -13,4 +13,16 @@ interface VertexConditionInterface
      * @return array<string>
      */
     public function getVertexTypesExclude(): array;
+
+    /**
+     * @param array<string>|null $types
+     * @return VertexConditionInterface
+     */
+    public function setVertexTypesOnly(?array $types): VertexConditionInterface;
+
+    /**
+     * @param array<string> $types
+     * @return VertexConditionInterface
+     */
+    public function setVertexTypesExclude(array $types): VertexConditionInterface;
 }
