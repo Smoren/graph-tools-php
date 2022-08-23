@@ -17,10 +17,10 @@ interface ConnectionInterface
     /**
      * @return non-empty-string
      */
-    public function getFrom(): string;
+    public function getFromId(): string;
 
     /**
      * @return non-empty-string
      */
-    public function getTo(): string;
+    public function getToId(): string;
 }

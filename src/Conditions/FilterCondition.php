@@ -2,7 +2,6 @@
 
 namespace Smoren\GraphTools\Conditions;
 
-use Smoren\GraphTools\Interfaces\ConnectionConditionInterface;
 use Smoren\GraphTools\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Interfaces\VertexConditionInterface;
 

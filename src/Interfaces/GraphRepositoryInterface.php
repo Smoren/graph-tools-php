@@ -11,16 +11,16 @@ interface GraphRepositoryInterface
     public function getVertexById(string $id): VertexInterface;
 
     /**
-     * @param VertexInterface $vertex
+     * @param non-empty-string $vertexId
      * @param FilterConditionInterface $condition
      * @return array<VertexInterface>
      */
-    public function getNextVertexes(VertexInterface $vertex, FilterConditionInterface $condition): array;
+    public function getNextVertexes(string $vertexId, FilterConditionInterface $condition): array;
 
     /**
-     * @param VertexInterface $vertex
+     * @param non-empty-string $vertexId
      * @param FilterConditionInterface $condition
      * @return array<VertexInterface>
      */
-    public function getPrevVertexes(VertexInterface $vertex, FilterConditionInterface $condition): array;
+    public function getPrevVertexes(string $vertexId, FilterConditionInterface $condition): array;
 }

@@ -1,0 +1,118 @@
+<?php
+
+namespace Smoren\GraphTools\Tests\Unit;
+
+use Smoren\GraphTools\Conditions\FilterCondition;
+use Smoren\GraphTools\Models\Connection;
+use Smoren\GraphTools\Models\Vertex;
+use Smoren\GraphTools\Store\SimpleGraphRepository;
+
+class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
+{
+    public function testSimpleChain()
+    {
+        $vertexes = [
+            new Vertex(1, 1, null),
+            new Vertex(2, 1, null),
+            new Vertex(3, 1, null),
+        ];
+        $connections = [
+            new Connection(1, 1, 1, 2),
+            new Connection(2, 1, 2, 3),
+        ];
+        $repo = new SimpleGraphRepository($vertexes, $connections);
+
+        $this->assertEquals(1, $repo->getVertexById(1)->getId());
+        $this->assertEquals(2, $repo->getVertexById(2)->getId());
+        $this->assertEquals(3, $repo->getVertexById(3)->getId());
+
+        $this->assertVertexIds(
+            [],
+            $repo->getPrevVertexes(1, new FilterCondition())
+        );
+        $this->assertVertexIds(
+            [2],
+            $repo->getNextVertexes(1, new FilterCondition())
+        );
+        $this->assertVertexIds(
+            [1],
+            $repo->getPrevVertexes(2, new FilterCondition())
+        );
+        $this->assertVertexIds(
+            [3],
+            $repo->getNextVertexes(2, new FilterCondition())
+        );
+
+        $this->assertVertexIds(
+            [3],
+            $repo->getNextVertexes(2, (new FilterCondition())->setVertexTypesOnly([1]))
+        );
+        $this->assertVertexIds(
+            [],
+            $repo->getNextVertexes(2, (new FilterCondition())->setVertexTypesOnly([2]))
+        );
+        $this->assertVertexIds(
+            [3],
+            $repo->getNextVertexes(2, (new FilterCondition())->setVertexTypesExclude([2]))
+        );
+        $this->assertVertexIds(
+            [],
+            $repo->getNextVertexes(2, (new FilterCondition())->setVertexTypesExclude([1]))
+        );
+
+        $this->assertVertexIds(
+            [3],
+            $repo->getNextVertexes(2, (new FilterCondition())->setConnectionTypesOnly([1]))
+        );
+        $this->assertVertexIds(
+            [],
+            $repo->getNextVertexes(2, (new FilterCondition())->setConnectionTypesOnly([2]))
+        );
+        $this->assertVertexIds(
+            [3],
+            $repo->getNextVertexes(2, (new FilterCondition())->setConnectionTypesExclude([2]))
+        );
+        $this->assertVertexIds(
+            [],
+            $repo->getNextVertexes(2, (new FilterCondition())->setConnectionTypesExclude([1]))
+        );
+    }
+
+    public function testWeb()
+    {
+        $vertexes = [
+            new Vertex(1, 1, null),
+            new Vertex(2, 1, null),
+            new Vertex(3, 1, null),
+            new Vertex(4, 1, null),
+            new Vertex(5, 2, null),
+            new Vertex(6, 2, null),
+        ];
+        $connections = [
+            new Connection(1, 1, 1, 2),
+            new Connection(2, 1, 2, 3),
+            new Connection(3, 1, 3, 4),
+            new Connection(4, 1, 4, 1),
+            new Connection(5, 2, 1, 5),
+            new Connection(6, 1, 5, 6),
+            new Connection(7, 2, 5, 3),
+        ];
+        $repo = new SimpleGraphRepository($vertexes, $connections);
+
+    }
+
+    /**
+     * @param array<string> $expectedVertexIds
+     * @param array<Vertex> $vertexes
+     * @return void
+     */
+    protected function assertVertexIds(array $expectedVertexIds, array $vertexes)
+    {
+        $actualVertexIds = [];
+        foreach($vertexes as $vertex) {
+            $actualVertexIds[] = $vertex->getId();
+        }
+
+        $this->assertEquals($expectedVertexIds, $actualVertexIds);
+    }
+}

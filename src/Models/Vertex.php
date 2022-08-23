@@ -4,7 +4,7 @@ namespace Smoren\GraphTools\Models;
 
 use Smoren\GraphTools\Interfaces\VertexInterface;
 
-class SimpleVertex implements VertexInterface
+class Vertex implements VertexInterface
 {
     /**
      * @var non-empty-string

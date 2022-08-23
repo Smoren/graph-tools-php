@@ -1,9 +1,10 @@
 <?php
 
-namespace Smoren\GraphTools\Models;
+namespace Smoren\GraphTools\Store;
 
-use Smoren\GraphTools\Interfaces\FilterConditionInterface;
+use Smoren\GraphTools\Exceptions\RepositoryException;
 use Smoren\GraphTools\Interfaces\ConnectionInterface;
+use Smoren\GraphTools\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Interfaces\GraphRepositoryInterface;
 use Smoren\GraphTools\Interfaces\VertexInterface;
 use Smoren\Schemator\Components\NestedAccessor;
@@ -40,13 +41,13 @@ class SimpleGraphRepository implements GraphRepositoryInterface
 
         foreach($connections as $connection) {
             $directMapAccessor->set(
-                [$connection->getFrom(), $connection->getId()],
-                [$connection->getType(), $connection->getTo()]
+                [$connection->getFromId(), $connection->getId()],
+                [$connection->getType(), $connection->getToId()]
             );
 
             $reverseMapAccessor->set(
-                [$connection->getTo(), $connection->getId()],
-                [$connection->getType(), $connection->getFrom()]
+                [$connection->getToId(), $connection->getId()],
+                [$connection->getType(), $connection->getFromId()]
             );
         }
     }
@@ -59,55 +60,58 @@ class SimpleGraphRepository implements GraphRepositoryInterface
     public function getVertexById(string $id): VertexInterface
     {
         if(!isset($this->vertexMap[$id])) {
-            throw new \Exception("vertex with id '{$id}' not exist"); // TODO
+            throw new RepositoryException(
+                "vertex with id '{$id}' not exist",
+                RepositoryException::VERTEX_NOT_FOUND
+            );
         }
         return $this->vertexMap[$id];
     }
 
     /**
-     * @param VertexInterface $vertex
+     * @param non-empty-string $vertexId
      * @param FilterConditionInterface $condition
      * @return array<VertexInterface>
      * @throws \Exception
      */
-    public function getNextVertexes(VertexInterface $vertex, FilterConditionInterface $condition): array
+    public function getNextVertexes(string $vertexId, FilterConditionInterface $condition): array
     {
         return $this->getLinkedVertexesFromMap(
             $this->connectionsDirectMap,
-            $vertex,
+            $vertexId,
             $condition
         );
     }
 
     /**
-     * @param VertexInterface $vertex
+     * @param non-empty-string $vertexId
      * @param FilterConditionInterface $condition
      * @return array<VertexInterface>
      * @throws \Exception
      */
-    public function getPrevVertexes(VertexInterface $vertex, FilterConditionInterface $condition): array
+    public function getPrevVertexes(string $vertexId, FilterConditionInterface $condition): array
     {
         return $this->getLinkedVertexesFromMap(
             $this->connectionsReverseMap,
-            $vertex,
+            $vertexId,
             $condition
         );
     }
 
     /**
      * @param array<string, array<string, string[]>> $source
-     * @param VertexInterface $vertex
+     * @param non-empty-string $vertexId
      * @param FilterConditionInterface $condition
      * @return array<VertexInterface>
      * @throws \Exception
      */
     protected function getLinkedVertexesFromMap(
         array $source,
-        VertexInterface $vertex,
+        string $vertexId,
         FilterConditionInterface $condition
     ): array {
         $result = [];
-        foreach($source[$vertex->getId()] ?? [] as [$connType, $targetId]) {
+        foreach($source[$vertexId] ?? [] as [$connType, $targetId]) {
             if($this->hasConnectionType($connType, $condition)) {
                 $target = $this->getVertexById($targetId);
                 if($this->hasVertexType($target->getType(), $condition)) {
