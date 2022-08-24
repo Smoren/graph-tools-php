@@ -134,6 +134,36 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
                 ->setConnectionTypesExclude([2])
                 ->setVertexTypesOnly([1]))
         );
+        $this->assertVertexIds(
+            [3, 6],
+            $repo->getNextVertexes(5, (new FilterCondition())
+                ->setConnectionTypesOnly([1, 2])
+                ->setVertexTypesOnly([1, 2]))
+        );
+        $this->assertVertexIds(
+            [3],
+            $repo->getNextVertexes(5, (new FilterCondition())
+                ->setConnectionTypesOnly([2])
+                ->setVertexTypesOnly([1]))
+        );
+        $this->assertVertexIds(
+            [6],
+            $repo->getNextVertexes(5, (new FilterCondition())
+                ->setConnectionTypesOnly([1])
+                ->setVertexTypesOnly([2]))
+        );
+        $this->assertVertexIds(
+            [],
+            $repo->getNextVertexes(5, (new FilterCondition())
+                ->setConnectionTypesOnly([1])
+                ->setVertexTypesOnly([1]))
+        );
+        $this->assertVertexIds(
+            [],
+            $repo->getNextVertexes(5, (new FilterCondition())
+                ->setConnectionTypesOnly([2])
+                ->setVertexTypesOnly([2]))
+        );
     }
 
     /**
