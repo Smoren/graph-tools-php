@@ -3,6 +3,7 @@
 namespace Smoren\GraphTools\Tests\Unit;
 
 use Smoren\GraphTools\Conditions\FilterCondition;
+use Smoren\GraphTools\Exceptions\RepositoryException;
 use Smoren\GraphTools\Models\Connection;
 use Smoren\GraphTools\Models\Vertex;
 use Smoren\GraphTools\Store\SimpleGraphRepository;
@@ -28,11 +29,11 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
 
         $this->assertVertexIds(
             [],
-            $repo->getPrevVertexes(1, new FilterCondition())
+            $repo->getPrevVertexes(1)
         );
         $this->assertVertexIds(
             [2],
-            $repo->getNextVertexes(1, new FilterCondition())
+            $repo->getNextVertexes(1)
         );
         $this->assertVertexIds(
             [1],
@@ -164,6 +165,32 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
                 ->setConnectionTypesOnly([2])
                 ->setVertexTypesOnly([2]))
         );
+    }
+
+    public function testRepositoryException()
+    {
+        $vertexes = [
+            new Vertex(1, 1, null),
+            new Vertex(2, 1, null),
+            new Vertex(3, 1, null),
+        ];
+        $connections = [
+            new Connection(1, 1, 1, 2),
+            new Connection(2, 1, 2, 3),
+        ];
+        $repo = new SimpleGraphRepository($vertexes, $connections);
+
+        /** @var Vertex $vertex */
+        $vertex = $repo->getVertexById(1);
+        $this->assertEquals(1, $vertex->getId());
+        $this->assertEquals(null, $vertex->getData());
+
+        try {
+            $repo->getVertexById(100);
+            $this->expectError();
+        } catch(RepositoryException $e) {
+            $this->assertEquals(RepositoryException::VERTEX_NOT_FOUND, $e->getCode());
+        }
     }
 
     /**

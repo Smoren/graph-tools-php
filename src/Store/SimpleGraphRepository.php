@@ -53,9 +53,8 @@ class SimpleGraphRepository implements GraphRepositoryInterface
     }
 
     /**
-     * @param string $id
-     * @return VertexInterface
-     * @throws \Exception
+     * @inheritDoc
+     * @throws RepositoryException
      */
     public function getVertexById(string $id): VertexInterface
     {
@@ -69,12 +68,10 @@ class SimpleGraphRepository implements GraphRepositoryInterface
     }
 
     /**
-     * @param non-empty-string $vertexId
-     * @param FilterConditionInterface $condition
-     * @return array<VertexInterface>
-     * @throws \Exception
+     * @inheritDoc
+     * @throws RepositoryException
      */
-    public function getNextVertexes(string $vertexId, FilterConditionInterface $condition): array
+    public function getNextVertexes(string $vertexId, ?FilterConditionInterface $condition = null): array
     {
         return $this->getLinkedVertexesFromMap(
             $this->connectionsDirectMap,
@@ -84,12 +81,10 @@ class SimpleGraphRepository implements GraphRepositoryInterface
     }
 
     /**
-     * @param non-empty-string $vertexId
-     * @param FilterConditionInterface $condition
-     * @return array<VertexInterface>
-     * @throws \Exception
+     * @inheritDoc
+     * @throws RepositoryException
      */
-    public function getPrevVertexes(string $vertexId, FilterConditionInterface $condition): array
+    public function getPrevVertexes(string $vertexId, ?FilterConditionInterface $condition = null): array
     {
         return $this->getLinkedVertexesFromMap(
             $this->connectionsReverseMap,
@@ -101,14 +96,14 @@ class SimpleGraphRepository implements GraphRepositoryInterface
     /**
      * @param array<string, array<string, string[]>> $source
      * @param non-empty-string $vertexId
-     * @param FilterConditionInterface $condition
+     * @param FilterConditionInterface|null $condition
      * @return array<VertexInterface>
-     * @throws \Exception
+     * @throws RepositoryException
      */
     protected function getLinkedVertexesFromMap(
         array $source,
         string $vertexId,
-        FilterConditionInterface $condition
+        ?FilterConditionInterface $condition
     ): array {
         $result = [];
         foreach($source[$vertexId] ?? [] as [$connType, $targetId]) {
@@ -122,8 +117,12 @@ class SimpleGraphRepository implements GraphRepositoryInterface
         return $result;
     }
 
-    protected function hasVertexType(string $type, FilterConditionInterface $condition): bool
+    protected function hasVertexType(string $type, ?FilterConditionInterface $condition): bool
     {
+        if($condition === null) {
+            return true;
+        }
+
         if(($only = $condition->getVertexTypesOnly()) !== null && !in_array($type, $only)) {
             return false;
         }
@@ -131,8 +130,12 @@ class SimpleGraphRepository implements GraphRepositoryInterface
         return !in_array($type, $condition->getVertexTypesExclude());
     }
 
-    protected function hasConnectionType(string $type, FilterConditionInterface $condition): bool
+    protected function hasConnectionType(string $type, ?FilterConditionInterface $condition): bool
     {
+        if($condition === null) {
+            return true;
+        }
+
         if(($only = $condition->getConnectionTypesOnly()) !== null && !in_array($type, $only)) {
             return false;
         }
