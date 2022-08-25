@@ -71,11 +71,11 @@ class SimpleGraphRepository implements GraphRepositoryInterface
      * @inheritDoc
      * @throws RepositoryException
      */
-    public function getNextVertexes(string $vertexId, ?FilterConditionInterface $condition = null): array
+    public function getNextVertexes(VertexInterface $vertex, ?FilterConditionInterface $condition = null): array
     {
         return $this->getLinkedVertexesFromMap(
             $this->connectionsDirectMap,
-            $vertexId,
+            $vertex,
             $condition
         );
     }
@@ -84,29 +84,29 @@ class SimpleGraphRepository implements GraphRepositoryInterface
      * @inheritDoc
      * @throws RepositoryException
      */
-    public function getPrevVertexes(string $vertexId, ?FilterConditionInterface $condition = null): array
+    public function getPrevVertexes(VertexInterface $vertex, ?FilterConditionInterface $condition = null): array
     {
         return $this->getLinkedVertexesFromMap(
             $this->connectionsReverseMap,
-            $vertexId,
+            $vertex,
             $condition
         );
     }
 
     /**
      * @param array<string, array<string, string[]>> $source
-     * @param non-empty-string $vertexId
+     * @param VertexInterface $vertex
      * @param FilterConditionInterface|null $condition
      * @return array<VertexInterface>
      * @throws RepositoryException
      */
     protected function getLinkedVertexesFromMap(
         array $source,
-        string $vertexId,
+        VertexInterface $vertex,
         ?FilterConditionInterface $condition
     ): array {
         $result = [];
-        foreach($source[$vertexId] ?? [] as [$connType, $targetId]) {
+        foreach($source[$vertex->getId()] ?? [] as [$connType, $targetId]) {
             if($this->hasConnectionType($connType, $condition)) {
                 $target = $this->getVertexById($targetId);
                 if($this->hasVertexType($target->getType(), $condition)) {

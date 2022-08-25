@@ -11,6 +11,7 @@
   ],
   "require": {
     "php": ">=7.4.0",
+    "php-ds/php-ds": "^1.4",
     "smoren/schemator": "dev-master"
   },
   "require-dev": {

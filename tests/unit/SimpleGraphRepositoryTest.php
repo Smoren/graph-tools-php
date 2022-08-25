@@ -29,53 +29,53 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
 
         $this->assertVertexIds(
             [],
-            $repo->getPrevVertexes(1)
+            $repo->getPrevVertexes($repo->getVertexById(1))
         );
         $this->assertVertexIds(
             [2],
-            $repo->getNextVertexes(1)
+            $repo->getNextVertexes($repo->getVertexById(1))
         );
         $this->assertVertexIds(
             [1],
-            $repo->getPrevVertexes(2, new FilterCondition())
+            $repo->getPrevVertexes($repo->getVertexById(2), new FilterCondition())
         );
         $this->assertVertexIds(
             [3],
-            $repo->getNextVertexes(2, new FilterCondition())
+            $repo->getNextVertexes($repo->getVertexById(2), new FilterCondition())
         );
 
         $this->assertVertexIds(
             [3],
-            $repo->getNextVertexes(2, (new FilterCondition())->setVertexTypesOnly([1]))
+            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->setVertexTypesOnly([1]))
         );
         $this->assertVertexIds(
             [],
-            $repo->getNextVertexes(2, (new FilterCondition())->setVertexTypesOnly([2]))
+            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->setVertexTypesOnly([2]))
         );
         $this->assertVertexIds(
             [3],
-            $repo->getNextVertexes(2, (new FilterCondition())->setVertexTypesExclude([2]))
+            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->setVertexTypesExclude([2]))
         );
         $this->assertVertexIds(
             [],
-            $repo->getNextVertexes(2, (new FilterCondition())->setVertexTypesExclude([1]))
+            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->setVertexTypesExclude([1]))
         );
 
         $this->assertVertexIds(
             [3],
-            $repo->getNextVertexes(2, (new FilterCondition())->setConnectionTypesOnly([1]))
+            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->setConnectionTypesOnly([1]))
         );
         $this->assertVertexIds(
             [],
-            $repo->getNextVertexes(2, (new FilterCondition())->setConnectionTypesOnly([2]))
+            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->setConnectionTypesOnly([2]))
         );
         $this->assertVertexIds(
             [3],
-            $repo->getNextVertexes(2, (new FilterCondition())->setConnectionTypesExclude([2]))
+            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->setConnectionTypesExclude([2]))
         );
         $this->assertVertexIds(
             [],
-            $repo->getNextVertexes(2, (new FilterCondition())->setConnectionTypesExclude([1]))
+            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->setConnectionTypesExclude([1]))
         );
     }
 
@@ -97,71 +97,72 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
             new Connection(5, 2, 1, 5),
             new Connection(6, 1, 5, 6),
             new Connection(7, 2, 5, 3),
+            new Connection(8, 2, 6, 2),
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
 
         $this->assertVertexIds(
             [2, 5],
-            $repo->getNextVertexes(1, new FilterCondition())
+            $repo->getNextVertexes($repo->getVertexById(1), new FilterCondition())
         );
         $this->assertVertexIds(
             [5],
-            $repo->getNextVertexes(1, (new FilterCondition())->setVertexTypesOnly([2]))
+            $repo->getNextVertexes($repo->getVertexById(1), (new FilterCondition())->setVertexTypesOnly([2]))
         );
         $this->assertVertexIds(
             [2],
-            $repo->getNextVertexes(1, (new FilterCondition())->setVertexTypesOnly([1]))
+            $repo->getNextVertexes($repo->getVertexById(1), (new FilterCondition())->setVertexTypesOnly([1]))
         );
         $this->assertVertexIds(
             [5],
-            $repo->getNextVertexes(1, (new FilterCondition())->setConnectionTypesOnly([2]))
+            $repo->getNextVertexes($repo->getVertexById(1), (new FilterCondition())->setConnectionTypesOnly([2]))
         );
         $this->assertVertexIds(
             [2],
-            $repo->getNextVertexes(1, (new FilterCondition())->setConnectionTypesOnly([1]))
+            $repo->getNextVertexes($repo->getVertexById(1), (new FilterCondition())->setConnectionTypesOnly([1]))
         );
 
         $this->assertVertexIds(
             [6, 3],
-            $repo->getNextVertexes(5, new FilterCondition())
+            $repo->getNextVertexes($repo->getVertexById(5), new FilterCondition())
         );
         $this->assertVertexIds(
             [6],
-            $repo->getNextVertexes(5, (new FilterCondition())->setConnectionTypesExclude([2]))
+            $repo->getNextVertexes($repo->getVertexById(5), (new FilterCondition())->setConnectionTypesExclude([2]))
         );
         $this->assertVertexIds(
             [],
-            $repo->getNextVertexes(5, (new FilterCondition())
+            $repo->getNextVertexes($repo->getVertexById(5), (new FilterCondition())
                 ->setConnectionTypesExclude([2])
                 ->setVertexTypesOnly([1]))
         );
         $this->assertVertexIds(
             [3, 6],
-            $repo->getNextVertexes(5, (new FilterCondition())
+            $repo->getNextVertexes($repo->getVertexById(5), (new FilterCondition())
                 ->setConnectionTypesOnly([1, 2])
                 ->setVertexTypesOnly([1, 2]))
         );
         $this->assertVertexIds(
             [3],
-            $repo->getNextVertexes(5, (new FilterCondition())
+            $repo->getNextVertexes($repo->getVertexById(5), (new FilterCondition())
                 ->setConnectionTypesOnly([2])
                 ->setVertexTypesOnly([1]))
         );
         $this->assertVertexIds(
             [6],
-            $repo->getNextVertexes(5, (new FilterCondition())
+            $repo->getNextVertexes($repo->getVertexById(5), (new FilterCondition())
                 ->setConnectionTypesOnly([1])
                 ->setVertexTypesOnly([2]))
         );
         $this->assertVertexIds(
             [],
-            $repo->getNextVertexes(5, (new FilterCondition())
+            $repo->getNextVertexes($repo->getVertexById(5), (new FilterCondition())
                 ->setConnectionTypesOnly([1])
                 ->setVertexTypesOnly([1]))
         );
         $this->assertVertexIds(
             [],
-            $repo->getNextVertexes(5, (new FilterCondition())
+            $repo->getNextVertexes($repo->getVertexById(5), (new FilterCondition())
                 ->setConnectionTypesOnly([2])
                 ->setVertexTypesOnly([2]))
         );
