@@ -47,11 +47,11 @@ class GraphTraverse
 
     protected function _runForward(VertexInterface $startVertex, Set $branchVertexIdSet, int $branchIndex): void
     {
-        if($branchVertexIdSet->contains($startVertex) && !$this->onLoop($startVertex, $branchIndex)) {
+        if($branchVertexIdSet->contains($startVertex->getId()) && !$this->onLoop($startVertex, $branchIndex)) {
             return;
         }
 
-        $branchVertexIdSet->add($startVertex);
+        $branchVertexIdSet->add($startVertex->getId());
 
         if(!$this->onVertex($startVertex, $branchIndex)) {
             return;
