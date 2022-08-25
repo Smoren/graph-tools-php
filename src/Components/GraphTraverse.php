@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Smoren\GraphTools\Components;
-
 
 use Smoren\GraphTools\Interfaces\GraphRepositoryInterface;
 use Ds\Set;
@@ -21,8 +19,9 @@ class GraphTraverse
 
     public function runForward(VertexInterface $startVertex): void
     {
-        // TODO TraverseContext
+        // TODO вместо нескольких аргументов передавать TraverseContextInterface
         // TODO вместо Logger — TraverseHandler, методы onLoop и onVertex перенести туда
+        // TODO избавиться от рекурсии, принимая array<TraverseContextInterface> и выполняя while(count($contexts))
         $this->_runForward($startVertex, new Set(), 0);
     }
 
@@ -46,6 +45,11 @@ class GraphTraverse
         return true;
     }
 
+    /**
+     * @param VertexInterface $startVertex
+     * @param Set<string> $branchVertexIdSet
+     * @param int $branchIndex
+     */
     protected function _runForward(VertexInterface $startVertex, Set $branchVertexIdSet, int $branchIndex): void
     {
         if($branchVertexIdSet->contains($startVertex->getId()) && !$this->onLoop($startVertex, $branchIndex)) {
