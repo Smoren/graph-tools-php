@@ -22,6 +22,7 @@ class GraphTraverse
     public function runForward(VertexInterface $startVertex): void
     {
         // TODO TraverseContext
+        // TODO вместо Logger — TraverseHandler, методы onLoop и onVertex перенести туда
         $this->_runForward($startVertex, new Set(), 0);
     }
 
