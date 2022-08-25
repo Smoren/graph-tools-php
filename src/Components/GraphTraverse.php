@@ -22,6 +22,7 @@ class GraphTraverse
         // TODO вместо нескольких аргументов передавать TraverseContextInterface
         // TODO вместо Logger — TraverseHandler, методы onLoop и onVertex перенести туда
         // TODO внести флаг isLoop в контекст, избавиться от onLoop
+        // TODO onVertex должен иметь возможность принимать callback, чтобы не пришлось вводить getData() в context
         // TODO избавиться от рекурсии, принимая array<TraverseContextInterface> и выполняя while(count($contexts))
         $this->_runForward($startVertex, new Set(), 0);
     }
