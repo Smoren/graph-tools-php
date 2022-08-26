@@ -2,7 +2,7 @@
 
 namespace Smoren\GraphTools\Store;
 
-use Smoren\GraphTools\Exceptions\RepositoryException;
+use Smoren\GraphTools\Exceptions\RepositoryExceptionBase;
 use Smoren\GraphTools\Interfaces\ConnectionInterface;
 use Smoren\GraphTools\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Interfaces\GraphRepositoryInterface;
@@ -54,14 +54,14 @@ class SimpleGraphRepository implements GraphRepositoryInterface
 
     /**
      * @inheritDoc
-     * @throws RepositoryException
+     * @throws RepositoryExceptionBase
      */
     public function getVertexById(string $id): VertexInterface
     {
         if(!isset($this->vertexMap[$id])) {
-            throw new RepositoryException(
+            throw new RepositoryExceptionBase(
                 "vertex with id '{$id}' not exist",
-                RepositoryException::VERTEX_NOT_FOUND
+                RepositoryExceptionBase::VERTEX_NOT_FOUND
             );
         }
         return $this->vertexMap[$id];
@@ -69,7 +69,7 @@ class SimpleGraphRepository implements GraphRepositoryInterface
 
     /**
      * @inheritDoc
-     * @throws RepositoryException
+     * @throws RepositoryExceptionBase
      */
     public function getNextVertexes(VertexInterface $vertex, ?FilterConditionInterface $condition = null): array
     {
@@ -82,7 +82,7 @@ class SimpleGraphRepository implements GraphRepositoryInterface
 
     /**
      * @inheritDoc
-     * @throws RepositoryException
+     * @throws RepositoryExceptionBase
      */
     public function getPrevVertexes(VertexInterface $vertex, ?FilterConditionInterface $condition = null): array
     {
@@ -98,7 +98,7 @@ class SimpleGraphRepository implements GraphRepositoryInterface
      * @param VertexInterface $vertex
      * @param FilterConditionInterface|null $condition
      * @return array<VertexInterface>
-     * @throws RepositoryException
+     * @throws RepositoryExceptionBase
      */
     protected function getLinkedVertexesFromMap(
         array $source,
