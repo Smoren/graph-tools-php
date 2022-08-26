@@ -10,20 +10,20 @@ use Smoren\GraphTools\Interfaces\VertexInterface;
 class TraverseContext implements TraverseContextInterface
 {
     protected VertexInterface $vertex;
-    protected ?ConnectionInterface $connection;
     protected FilterConditionInterface $filterCondition;
     protected int $branchIndex;
+    protected bool $isLoop;
 
     public function __construct(
         VertexInterface $vertex,
-        ?ConnectionInterface $connection,
         FilterConditionInterface $filterCondition,
-        int $branchIndex
+        int $branchIndex,
+        bool $isLoop
     ) {
         $this->vertex = $vertex;
-        $this->connection = $connection;
         $this->filterCondition = $filterCondition;
         $this->branchIndex = $branchIndex;
+        $this->isLoop = $isLoop;
     }
 
     /**
@@ -32,14 +32,6 @@ class TraverseContext implements TraverseContextInterface
     public function getVertex(): VertexInterface
     {
         return $this->vertex;
-    }
-
-    /**
-     * @return ConnectionInterface|null
-     */
-    public function getConnection(): ?ConnectionInterface
-    {
-        return $this->connection;
     }
 
     /**
@@ -56,5 +48,13 @@ class TraverseContext implements TraverseContextInterface
     public function getBranchIndex(): int
     {
         return $this->branchIndex;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsLoop(): bool
+    {
+        return $this->isLoop;
     }
 }

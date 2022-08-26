@@ -2,49 +2,44 @@
 
 namespace Smoren\GraphTools\Components;
 
+use Smoren\GraphTools\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Interfaces\GraphRepositoryInterface;
 use Ds\Set;
+use Smoren\GraphTools\Interfaces\TraverseContextInterface;
+use Smoren\GraphTools\Interfaces\TraverseHandlerInterface;
 use Smoren\GraphTools\Interfaces\VertexInterface;
+use Smoren\GraphTools\Structs\TraverseContext;
 
-class GraphTraverse
+class Traverse
 {
     protected GraphRepositoryInterface $repository;
-    protected Logger $logger;
 
-    public function __construct(GraphRepositoryInterface $repository, ?Logger $logger = null)
+    public function __construct(GraphRepositoryInterface $repository)
     {
         $this->repository = $repository;
-        $this->logger = $logger ?? new Logger();
     }
 
-    public function runForward(VertexInterface $startVertex): void
+    public function runForward(
+        VertexInterface $startVertex,
+        FilterConditionInterface $filterCondition,
+        TraverseHandlerInterface $handler
+    ): void
     {
         // TODO вместо нескольких аргументов передавать TraverseContextInterface
         // TODO вместо Logger — TraverseHandler, методы onLoop и onVertex перенести туда
         // TODO внести флаг isLoop в контекст, избавиться от onLoop
         // TODO onVertex должен иметь возможность принимать callback, чтобы не пришлось вводить getData() в context
         // TODO избавиться от рекурсии, принимая array<TraverseContextInterface> и выполняя while(count($contexts))
-        $this->_runForward($startVertex, new Set(), 0);
-    }
+        // TODO сделать генератором?
 
-    /**
-     * @return array<string>
-     */
-    public function getLog(): array
-    {
-        return $this->logger->get();
-    }
-
-    protected function onLoop(VertexInterface $vertex, int $branchIndex): bool
-    {
-        $this->logger->log("[BRANCH {$branchIndex}] [LOOP] {$vertex->getId()}");
-        return false;
-    }
-
-    protected function onVertex(VertexInterface $vertex, int $branchIndex): bool
-    {
-        $this->logger->log("[BRANCH {$branchIndex}] [VERTEX] {$vertex->getId()}");
-        return true;
+        $context = new TraverseContext(
+            $startVertex,
+            null,
+            $filterCondition,
+            0,
+            false
+        );
+        $this->_runForward($context, $handler);
     }
 
     /**
@@ -52,7 +47,7 @@ class GraphTraverse
      * @param Set<string> $branchVertexIdSet
      * @param int $branchIndex
      */
-    protected function _runForward(VertexInterface $startVertex, Set $branchVertexIdSet, int $branchIndex): void
+    protected function _runForward(TraverseContextInterface $context, TraverseHandlerInterface $handler): void
     {
         if($branchVertexIdSet->contains($startVertex->getId()) && !$this->onLoop($startVertex, $branchIndex)) {
             return;
