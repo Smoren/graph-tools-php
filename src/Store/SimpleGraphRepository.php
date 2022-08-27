@@ -3,7 +3,7 @@
 namespace Smoren\GraphTools\Store;
 
 use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
-use Smoren\GraphTools\Exceptions\RepositoryExceptionBase;
+use Smoren\GraphTools\Exceptions\RepositoryException;
 use Smoren\GraphTools\Models\Interfaces\ConnectionInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 use Smoren\GraphTools\Store\Interfaces\GraphRepositoryInterface;
@@ -54,14 +54,14 @@ class SimpleGraphRepository implements GraphRepositoryInterface
 
     /**
      * @inheritDoc
-     * @throws RepositoryExceptionBase
+     * @throws RepositoryException
      */
     public function getVertexById(string $id): VertexInterface
     {
         if(!isset($this->vertexMap[$id])) {
-            throw new RepositoryExceptionBase(
+            throw new RepositoryException(
                 "vertex with id '{$id}' not exist",
-                RepositoryExceptionBase::VERTEX_NOT_FOUND
+                RepositoryException::VERTEX_NOT_FOUND
             );
         }
         return $this->vertexMap[$id];
@@ -69,7 +69,7 @@ class SimpleGraphRepository implements GraphRepositoryInterface
 
     /**
      * @inheritDoc
-     * @throws RepositoryExceptionBase
+     * @throws RepositoryException
      */
     public function getNextVertexes(VertexInterface $vertex, ?FilterConditionInterface $condition = null): array
     {
@@ -82,7 +82,7 @@ class SimpleGraphRepository implements GraphRepositoryInterface
 
     /**
      * @inheritDoc
-     * @throws RepositoryExceptionBase
+     * @throws RepositoryException
      */
     public function getPrevVertexes(VertexInterface $vertex, ?FilterConditionInterface $condition = null): array
     {
@@ -98,7 +98,7 @@ class SimpleGraphRepository implements GraphRepositoryInterface
      * @param VertexInterface $vertex
      * @param FilterConditionInterface|null $condition
      * @return array<VertexInterface>
-     * @throws RepositoryExceptionBase
+     * @throws RepositoryException
      */
     protected function getLinkedVertexesFromMap(
         array $source,

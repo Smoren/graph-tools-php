@@ -32,7 +32,7 @@ class Vertex implements VertexInterface
     }
 
     /**
-     * @return non-empty-string
+     * @inheritDoc
      */
     public function getId(): string
     {
@@ -40,7 +40,7 @@ class Vertex implements VertexInterface
     }
 
     /**
-     * @return non-empty-string
+     * @inheritDoc
      */
     public function getType(): string
     {

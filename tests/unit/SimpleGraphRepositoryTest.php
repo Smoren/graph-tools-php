@@ -3,7 +3,7 @@
 namespace Smoren\GraphTools\Tests\Unit;
 
 use Smoren\GraphTools\Conditions\FilterCondition;
-use Smoren\GraphTools\Exceptions\RepositoryExceptionBase;
+use Smoren\GraphTools\Exceptions\RepositoryException;
 use Smoren\GraphTools\Models\Connection;
 use Smoren\GraphTools\Models\Vertex;
 use Smoren\GraphTools\Store\SimpleGraphRepository;
@@ -189,8 +189,8 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
         try {
             $repo->getVertexById(100);
             $this->expectError();
-        } catch(RepositoryExceptionBase $e) {
-            $this->assertEquals(RepositoryExceptionBase::VERTEX_NOT_FOUND, $e->getCode());
+        } catch(RepositoryException $e) {
+            $this->assertEquals(RepositoryException::VERTEX_NOT_FOUND, $e->getCode());
         }
     }
 

@@ -37,21 +37,33 @@ class Connection implements ConnectionInterface
         $this->toId = $toId;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getId(): string
     {
         return $this->id;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getType(): string
     {
         return $this->type;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getFromId(): string
     {
         return $this->fromId;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getToId(): string
     {
         return $this->toId;

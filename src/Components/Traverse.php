@@ -14,17 +14,21 @@ use Smoren\GraphTools\Store\Interfaces\GraphRepositoryInterface;
 
 abstract class Traverse implements TraverseInterface
 {
+    /**
+     * @var GraphRepositoryInterface
+     */
     protected GraphRepositoryInterface $repository;
 
+    /**
+     * @param GraphRepositoryInterface $repository
+     */
     public function __construct(GraphRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
 
     /**
-     * @param VertexInterface $start
-     * @param TraverseFilterInterface $filter
-     * @return Generator<TraverseContextInterface>
+     * @inheritDoc
      */
     public function generate(VertexInterface $start, TraverseFilterInterface $filter): Generator
     {
