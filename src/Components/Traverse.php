@@ -2,15 +2,15 @@
 
 namespace Smoren\GraphTools\Components;
 
+use Generator;
 use Smoren\GraphTools\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Interfaces\GraphRepositoryInterface;
-use Ds\Set;
 use Smoren\GraphTools\Interfaces\TraverseContextInterface;
-use Smoren\GraphTools\Interfaces\TraverseHandlerInterface;
+use Smoren\GraphTools\Interfaces\TraverseFilterInterface;
 use Smoren\GraphTools\Interfaces\VertexInterface;
 use Smoren\GraphTools\Structs\TraverseContext;
 
-class Traverse
+abstract class Traverse
 {
     protected GraphRepositoryInterface $repository;
 
@@ -19,53 +19,56 @@ class Traverse
         $this->repository = $repository;
     }
 
-    public function runForward(
-        VertexInterface $startVertex,
-        FilterConditionInterface $filterCondition,
-        TraverseHandlerInterface $handler
-    ): void
+    /**
+     * @param VertexInterface $start
+     * @param TraverseFilterInterface $filter
+     * @return Generator<TraverseContextInterface>
+     */
+    public function generate(VertexInterface $start, TraverseFilterInterface $filter): Generator
     {
-        // TODO вместо нескольких аргументов передавать TraverseContextInterface
-        // TODO вместо Logger — TraverseHandler, методы onLoop и onVertex перенести туда
-        // TODO внести флаг isLoop в контекст, избавиться от onLoop
-        // TODO onVertex должен иметь возможность принимать callback, чтобы не пришлось вводить getData() в context
-        // TODO избавиться от рекурсии, принимая array<TraverseContextInterface> и выполняя while(count($contexts))
-        // TODO сделать генератором?
-
-        $context = new TraverseContext(
-            $startVertex,
-            null,
-            $filterCondition,
-            0,
-            false
-        );
-        $this->_runForward($context, $handler);
+        $context = new TraverseContext($start, 0, []);
+        yield from $this->traverse([$context], $filter);
     }
 
     /**
-     * @param VertexInterface $startVertex
-     * @param Set<string> $branchVertexIdSet
-     * @param int $branchIndex
+     * @param array<TraverseContextInterface> $contexts
+     * @param TraverseFilterInterface $filter
+     * @return Generator
      */
-    protected function _runForward(TraverseContextInterface $context, TraverseHandlerInterface $handler): void
+    protected function traverse(array $contexts, TraverseFilterInterface $filter): Generator
     {
-        if($branchVertexIdSet->contains($startVertex->getId()) && !$this->onLoop($startVertex, $branchIndex)) {
-            return;
-        }
+        while(count($contexts)) {
+            $currentContext = array_pop($contexts);
 
-        $branchVertexIdSet->add($startVertex->getId());
+            if($filter->getHandleCondition($currentContext)->isSuitableVertex($currentContext->getVertex())) {
+                yield $currentContext;
+            }
 
-        if(!$this->onVertex($startVertex, $branchIndex)) {
-            return;
-        }
-
-        $nextVertexes = $this->repository->getNextVertexes($startVertex);
-        foreach($nextVertexes as $i => $vertex) {
-            $this->_runForward(
-                $vertex,
-                count($nextVertexes) === 1 ? $branchVertexIdSet : clone $branchVertexIdSet,
-                $i === 0 ? $branchIndex : $branchIndex+1
+            $nextVertexes = $this->getNextVertexes(
+                $currentContext->getVertex(),
+                $filter->getPassCondition($currentContext)
             );
+            foreach($nextVertexes as $vertex) {
+                $branchIndex = $currentContext->getBranchIndex();
+                $contexts[] = new TraverseContext(
+                    $vertex,
+                    count($nextVertexes) > 1 ? $branchIndex+1 : $branchIndex,
+                    $currentContext->getPassedVertexesMap()
+                );
+            }
         }
+    }
+
+    /**
+     * @param VertexInterface $vertex
+     * @param FilterConditionInterface $condition
+     * @return array<VertexInterface>
+     */
+    protected function getNextVertexes(VertexInterface $vertex, FilterConditionInterface $condition): array
+    {
+        return [
+            ...$this->repository->getNextVertexes($vertex, $condition),
+            ...$this->repository->getPrevVertexes($vertex, $condition),
+        ];
     }
 }

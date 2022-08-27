@@ -2,7 +2,7 @@
 
 namespace Smoren\GraphTools\Tests\Unit;
 
-use Smoren\GraphTools\Components\Traverse;
+use Smoren\GraphTools\Components\TraverseOld;
 use Smoren\GraphTools\Models\Connection;
 use Smoren\GraphTools\Models\Vertex;
 use Smoren\GraphTools\Store\SimpleGraphRepository;
@@ -21,7 +21,7 @@ class SimpleGraphTraverseTest extends \Codeception\Test\Unit
             new Connection(2, 1, 2, 3),
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
-        $traverse = new Traverse($repo);
+        $traverse = new TraverseOld($repo);
         $traverse->runForward($repo->getVertexById(1));
         $a = 1;
     }
@@ -39,7 +39,7 @@ class SimpleGraphTraverseTest extends \Codeception\Test\Unit
             new Connection(3, 1, 3, 1),
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
-        $traverse = new Traverse($repo);
+        $traverse = new TraverseOld($repo);
         $traverse->runForward($repo->getVertexById(1));
         $a = 1;
     }
@@ -65,7 +65,7 @@ class SimpleGraphTraverseTest extends \Codeception\Test\Unit
             new Connection(8, 2, 6, 2),
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
-        $traverse = new Traverse($repo);
+        $traverse = new TraverseOld($repo);
         $traverse->runForward($repo->getVertexById(1));
         $a = 1;
     }

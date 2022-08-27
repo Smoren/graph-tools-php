@@ -5,7 +5,7 @@ namespace Smoren\GraphTools\Components;
 use Smoren\GraphTools\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Interfaces\VertexInterface;
 
-class TraverseDirect extends Traverse
+class TraverseReverse extends Traverse
 {
     /**
      * @param VertexInterface $vertex
@@ -14,6 +14,6 @@ class TraverseDirect extends Traverse
      */
     protected function getNextVertexes(VertexInterface $vertex, FilterConditionInterface $condition): array
     {
-        return $this->repository->getNextVertexes($vertex, $condition);
+        return $this->repository->getPrevVertexes($vertex, $condition);
     }
 }
