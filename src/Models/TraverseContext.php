@@ -7,13 +7,24 @@ use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 class TraverseContext implements TraverseContextInterface
 {
+    /**
+     * @var VertexInterface
+     */
     protected VertexInterface $vertex;
+    /**
+     * @var int
+     */
     protected int $branchIndex;
     /**
      * @var array<string, VertexInterface>
      */
     protected array $passedVertexesMap;
 
+    /**
+     * @param VertexInterface $vertex
+     * @param int $branchIndex
+     * @param array<string, VertexInterface> $passedVertexesMap
+     */
     public function __construct(
         VertexInterface $vertex,
         int $branchIndex,
@@ -25,7 +36,7 @@ class TraverseContext implements TraverseContextInterface
     }
 
     /**
-     * @return VertexInterface
+     * @inheritDoc
      */
     public function getVertex(): VertexInterface
     {
@@ -33,7 +44,7 @@ class TraverseContext implements TraverseContextInterface
     }
 
     /**
-     * @return int
+     * @inheritDoc
      */
     public function getBranchIndex(): int
     {
@@ -49,7 +60,7 @@ class TraverseContext implements TraverseContextInterface
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function isLoop(): bool
     {

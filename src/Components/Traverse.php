@@ -28,14 +28,28 @@ abstract class Traverse implements TraverseInterface
      */
     public function generate(VertexInterface $start, TraverseFilterInterface $filter): Generator
     {
-        $context = new TraverseContext($start, 0, []);
+        $context = $this->createContext($start, 0, []);
         yield from $this->traverse(new Queue([$context]), $filter);
+    }
+
+    /**
+     * @param VertexInterface $vertex
+     * @param int $branchIndex
+     * @param array<VertexInterface> $passedVertexesMap
+     * @return TraverseContextInterface
+     */
+    protected function createContext(
+        VertexInterface $vertex,
+        int $branchIndex,
+        array $passedVertexesMap
+    ): TraverseContextInterface {
+        return new TraverseContext($vertex, $branchIndex, $passedVertexesMap);
     }
 
     /**
      * @param Queue<TraverseContextInterface> $contexts
      * @param TraverseFilterInterface $filter
-     * @return Generator
+     * @return Generator<TraverseContextInterface>
      */
     protected function traverse(Queue $contexts, TraverseFilterInterface $filter): Generator
     {
@@ -53,7 +67,7 @@ abstract class Traverse implements TraverseInterface
             $nextVertexes = $this->getNextVertexes($currentVertex, $filter->getPassCondition($currentContext));
             foreach($nextVertexes as $i => $vertex) {
                 $branchIndex = $currentContext->getBranchIndex();
-                $contexts->push(new TraverseContext(
+                $contexts->push($this->createContext(
                     $vertex,
                     count($nextVertexes) > 1 && $i > 0 ? $branchIndex+1 : $branchIndex,
                     $passedVertexesMap
