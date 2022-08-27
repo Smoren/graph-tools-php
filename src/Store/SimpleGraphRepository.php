@@ -2,11 +2,11 @@
 
 namespace Smoren\GraphTools\Store;
 
+use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Exceptions\RepositoryExceptionBase;
-use Smoren\GraphTools\Interfaces\ConnectionInterface;
-use Smoren\GraphTools\Interfaces\FilterConditionInterface;
-use Smoren\GraphTools\Interfaces\GraphRepositoryInterface;
-use Smoren\GraphTools\Interfaces\VertexInterface;
+use Smoren\GraphTools\Models\Interfaces\ConnectionInterface;
+use Smoren\GraphTools\Models\Interfaces\VertexInterface;
+use Smoren\GraphTools\Store\Interfaces\GraphRepositoryInterface;
 use Smoren\Schemator\Components\NestedAccessor;
 
 class SimpleGraphRepository implements GraphRepositoryInterface

@@ -2,8 +2,8 @@
 
 namespace Smoren\GraphTools\Components;
 
-use Smoren\GraphTools\Interfaces\FilterConditionInterface;
-use Smoren\GraphTools\Interfaces\VertexInterface;
+use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
+use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 class TraverseDirect extends Traverse
 {

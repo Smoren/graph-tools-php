@@ -2,7 +2,7 @@
 
 namespace Smoren\GraphTools\Models;
 
-use Smoren\GraphTools\Interfaces\ConnectionInterface;
+use Smoren\GraphTools\Models\Interfaces\ConnectionInterface;
 
 class Connection implements ConnectionInterface
 {

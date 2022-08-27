@@ -3,11 +3,11 @@
 namespace Smoren\GraphTools\Filters;
 
 use Smoren\GraphTools\Conditions\FilterCondition;
+use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
+use Smoren\GraphTools\Conditions\Interfaces\VertexConditionInterface;
 use Smoren\GraphTools\Conditions\VertexCondition;
-use Smoren\GraphTools\Interfaces\FilterConditionInterface;
-use Smoren\GraphTools\Interfaces\TraverseContextInterface;
-use Smoren\GraphTools\Interfaces\TraverseFilterInterface;
-use Smoren\GraphTools\Interfaces\VertexConditionInterface;
+use Smoren\GraphTools\Filters\Interfaces\TraverseFilterInterface;
+use Smoren\GraphTools\Models\Interfaces\TraverseContextInterface;
 
 class TransparentTraverseFilter implements TraverseFilterInterface
 {

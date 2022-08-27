@@ -4,14 +4,15 @@ namespace Smoren\GraphTools\Components;
 
 use Ds\Queue;
 use Generator;
-use Smoren\GraphTools\Interfaces\FilterConditionInterface;
-use Smoren\GraphTools\Interfaces\GraphRepositoryInterface;
-use Smoren\GraphTools\Interfaces\TraverseContextInterface;
-use Smoren\GraphTools\Interfaces\TraverseFilterInterface;
-use Smoren\GraphTools\Interfaces\VertexInterface;
-use Smoren\GraphTools\Structs\TraverseContext;
+use Smoren\GraphTools\Components\Interfaces\TraverseInterface;
+use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
+use Smoren\GraphTools\Filters\Interfaces\TraverseFilterInterface;
+use Smoren\GraphTools\Models\Interfaces\TraverseContextInterface;
+use Smoren\GraphTools\Models\Interfaces\VertexInterface;
+use Smoren\GraphTools\Models\TraverseContext;
+use Smoren\GraphTools\Store\Interfaces\GraphRepositoryInterface;
 
-abstract class Traverse
+abstract class Traverse implements TraverseInterface
 {
     protected GraphRepositoryInterface $repository;
 

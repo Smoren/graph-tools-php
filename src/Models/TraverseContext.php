@@ -1,9 +1,9 @@
 <?php
 
-namespace Smoren\GraphTools\Structs;
+namespace Smoren\GraphTools\Models;
 
-use Smoren\GraphTools\Interfaces\TraverseContextInterface;
-use Smoren\GraphTools\Interfaces\VertexInterface;
+use Smoren\GraphTools\Models\Interfaces\TraverseContextInterface;
+use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 class TraverseContext implements TraverseContextInterface
 {

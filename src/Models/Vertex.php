@@ -2,7 +2,7 @@
 
 namespace Smoren\GraphTools\Models;
 
-use Smoren\GraphTools\Interfaces\VertexInterface;
+use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 class Vertex implements VertexInterface
 {

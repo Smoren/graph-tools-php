@@ -1,8 +1,10 @@
 <?php
 
-namespace Smoren\GraphTools\Interfaces;
+namespace Smoren\GraphTools\Filters\Interfaces;
 
-use Smoren\GraphTools\Exceptions\TraverseException;
+use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
+use Smoren\GraphTools\Conditions\Interfaces\VertexConditionInterface;
+use Smoren\GraphTools\Models\Interfaces\TraverseContextInterface;
 
 interface TraverseFilterInterface
 {

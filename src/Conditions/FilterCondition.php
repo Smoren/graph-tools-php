@@ -2,10 +2,23 @@
 
 namespace Smoren\GraphTools\Conditions;
 
-use Smoren\GraphTools\Interfaces\FilterConditionInterface;
+use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
+use Smoren\GraphTools\Conditions\Traits\ConnectionConditionTrait;
+use Smoren\GraphTools\Conditions\Traits\VertexConditionTrait;
 
-class FilterCondition extends VertexCondition implements FilterConditionInterface
+class FilterCondition implements FilterConditionInterface
 {
+    use VertexConditionTrait;
+    use ConnectionConditionTrait;
+
+    /**
+     * @var array<string>|null
+     */
+    protected ?array $vertexTypesOnly = null;
+    /**
+     * @var array<string>
+     */
+    protected array $vertexTypesExclude = [];
     /**
      * @var array<string>|null
      */
@@ -14,26 +27,4 @@ class FilterCondition extends VertexCondition implements FilterConditionInterfac
      * @var array<string>
      */
     protected array $connectionTypesExclude = [];
-
-    public function getConnectionTypesOnly(): ?array
-    {
-        return $this->connectionTypesOnly;
-    }
-
-    public function getConnectionTypesExclude(): array
-    {
-        return $this->connectionTypesExclude;
-    }
-
-    public function setConnectionTypesOnly(?array $types): self
-    {
-        $this->connectionTypesOnly = $types;
-        return $this;
-    }
-
-    public function setConnectionTypesExclude(array $types): self
-    {
-        $this->connectionTypesExclude = $types;
-        return $this;
-    }
 }

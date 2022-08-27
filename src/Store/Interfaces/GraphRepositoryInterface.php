@@ -1,6 +1,9 @@
 <?php
 
-namespace Smoren\GraphTools\Interfaces;
+namespace Smoren\GraphTools\Store\Interfaces;
+
+use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
+use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 interface GraphRepositoryInterface
 {

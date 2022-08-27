@@ -1,6 +1,8 @@
 <?php
 
-namespace Smoren\GraphTools\Interfaces;
+namespace Smoren\GraphTools\Conditions\Interfaces;
+
+use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 interface VertexConditionInterface
 {

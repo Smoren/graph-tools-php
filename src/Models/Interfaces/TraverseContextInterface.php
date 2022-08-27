@@ -1,6 +1,6 @@
 <?php
 
-namespace Smoren\GraphTools\Interfaces;
+namespace Smoren\GraphTools\Models\Interfaces;
 
 interface TraverseContextInterface
 {
