@@ -58,7 +58,6 @@ class SimpleGraphTraverseTest extends \Codeception\Test\Unit
 
     public function testWeb()
     {
-        return;
         $vertexes = [
             new Vertex(1, 1, null),
             new Vertex(2, 1, null),
@@ -78,8 +77,23 @@ class SimpleGraphTraverseTest extends \Codeception\Test\Unit
             new Connection(8, 2, 6, 2),
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
-        $traverse = new TraverseOld($repo);
-        $traverse->runForward($repo->getVertexById(1));
+        $traverse = new TraverseDirect($repo);
+        $contexts = $traverse->generate($repo->getVertexById(1), new SimpleTraverseFilter());
+
+        $branchMap = [];
+        $log = [];
+        foreach($contexts as $context) {
+            $branchIndex = $context->getBranchIndex();
+            $vertexId = $context->getVertex()->getId();
+
+            if(!isset($branchMap[$branchIndex])) {
+                $branchMap[$branchIndex] = [];
+            }
+
+            $log[] = "[BRANCH {$branchIndex}] [VERTEX {$vertexId}]";
+            $branchMap[$branchIndex][] = $vertexId;
+        }
         $a = 1;
+        //$this->assertEquals([1, 2, 3], $vertexIds);
     }
 }

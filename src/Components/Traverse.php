@@ -49,11 +49,11 @@ abstract class Traverse
             $passedVertexesMap[$currentVertex->getId()] = $currentVertex;
 
             $nextVertexes = $this->getNextVertexes($currentVertex, $filter->getPassCondition($currentContext));
-            foreach($nextVertexes as $vertex) {
+            foreach($nextVertexes as $i => $vertex) {
                 $branchIndex = $currentContext->getBranchIndex();
                 $contexts[] = new TraverseContext(
                     $vertex,
-                    count($nextVertexes) > 1 ? $branchIndex+1 : $branchIndex,
+                    count($nextVertexes) > 1 && $i > 0 ? $branchIndex+1 : $branchIndex,
                     $passedVertexesMap
                 );
             }
