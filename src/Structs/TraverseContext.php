@@ -2,28 +2,26 @@
 
 namespace Smoren\GraphTools\Structs;
 
-use Smoren\GraphTools\Interfaces\ConnectionInterface;
-use Smoren\GraphTools\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Interfaces\TraverseContextInterface;
 use Smoren\GraphTools\Interfaces\VertexInterface;
 
 class TraverseContext implements TraverseContextInterface
 {
     protected VertexInterface $vertex;
-    protected FilterConditionInterface $filterCondition;
     protected int $branchIndex;
-    protected bool $isLoop;
+    /**
+     * @var array<string, VertexInterface>
+     */
+    protected array $passedVertexesMap;
 
     public function __construct(
         VertexInterface $vertex,
-        FilterConditionInterface $filterCondition,
         int $branchIndex,
-        bool $isLoop
+        array $passedVertexesMap
     ) {
         $this->vertex = $vertex;
-        $this->filterCondition = $filterCondition;
         $this->branchIndex = $branchIndex;
-        $this->isLoop = $isLoop;
+        $this->passedVertexesMap = $passedVertexesMap;
     }
 
     /**
@@ -35,14 +33,6 @@ class TraverseContext implements TraverseContextInterface
     }
 
     /**
-     * @return FilterConditionInterface
-     */
-    public function getFilterCondition(): FilterConditionInterface
-    {
-        return $this->filterCondition;
-    }
-
-    /**
      * @return int
      */
     public function getBranchIndex(): int
@@ -51,10 +41,18 @@ class TraverseContext implements TraverseContextInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getPassedVertexesMap(): array
+    {
+        return $this->passedVertexesMap;
+    }
+
+    /**
      * @return bool
      */
-    public function getIsLoop(): bool
+    public function isLoop(): bool
     {
-        return $this->isLoop;
+        return isset($this->passedVertexesMap[$this->vertex->getId()]);
     }
 }

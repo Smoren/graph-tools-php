@@ -18,7 +18,7 @@ class TraverseLogger implements TraverseHandlerInterface
     {
         $this->log[] = $context;
 
-        if($context->getIsLoop()) {
+        if($context->isLoop()) {
             throw new TraverseException('loop detected', TraverseException::STOP_TRAVERSE);
         }
 
@@ -43,7 +43,7 @@ class TraverseLogger implements TraverseHandlerInterface
 
         foreach($this->log as $context) {
             $item = "[BRANCH #{$context->getBranchIndex()}] [VERTEX #{$context->getVertex()->getId()}] ";
-            if($context->getIsLoop()) {
+            if($context->isLoop()) {
                 $item .= '[LOOP]';
             }
             $result[] = $item;

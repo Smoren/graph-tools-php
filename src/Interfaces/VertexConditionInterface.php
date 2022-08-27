@@ -25,4 +25,10 @@ interface VertexConditionInterface
      * @return VertexConditionInterface
      */
     public function setVertexTypesExclude(array $types): VertexConditionInterface;
+
+    /**
+     * @param VertexInterface $vertex
+     * @return bool
+     */
+    public function isSuitableVertex(VertexInterface $vertex): bool;
 }

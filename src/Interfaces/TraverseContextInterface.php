@@ -5,7 +5,10 @@ namespace Smoren\GraphTools\Interfaces;
 interface TraverseContextInterface
 {
     public function getVertex(): VertexInterface;
-    public function getFilterCondition(): FilterConditionInterface;
     public function getBranchIndex(): int;
-    public function getIsLoop(): bool;
+    /**
+     * @return array<string, VertexInterface>
+     */
+    public function getPassedVertexesMap(): array;
+    public function isLoop(): bool;
 }
