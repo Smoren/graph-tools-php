@@ -2,6 +2,7 @@
 
 namespace Smoren\GraphTools\Components;
 
+use Ds\Queue;
 use Generator;
 use Smoren\GraphTools\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Interfaces\GraphRepositoryInterface;
@@ -27,18 +28,18 @@ abstract class Traverse
     public function generate(VertexInterface $start, TraverseFilterInterface $filter): Generator
     {
         $context = new TraverseContext($start, 0, []);
-        yield from $this->traverse([$context], $filter);
+        yield from $this->traverse(new Queue([$context]), $filter);
     }
 
     /**
-     * @param array<TraverseContextInterface> $contexts
+     * @param Queue<TraverseContextInterface> $contexts
      * @param TraverseFilterInterface $filter
      * @return Generator
      */
-    protected function traverse(array $contexts, TraverseFilterInterface $filter): Generator
+    protected function traverse(Queue $contexts, TraverseFilterInterface $filter): Generator
     {
         while(count($contexts)) {
-            $currentContext = array_pop($contexts);
+            $currentContext = $contexts->pop();
             $currentVertex = $currentContext->getVertex();
 
             if($filter->getHandleCondition($currentContext)->isSuitableVertex($currentContext->getVertex())) {
@@ -51,11 +52,11 @@ abstract class Traverse
             $nextVertexes = $this->getNextVertexes($currentVertex, $filter->getPassCondition($currentContext));
             foreach($nextVertexes as $i => $vertex) {
                 $branchIndex = $currentContext->getBranchIndex();
-                $contexts[] = new TraverseContext(
+                $contexts->push(new TraverseContext(
                     $vertex,
                     count($nextVertexes) > 1 && $i > 0 ? $branchIndex+1 : $branchIndex,
                     $passedVertexesMap
-                );
+                ));
             }
         }
     }
