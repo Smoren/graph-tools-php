@@ -2,6 +2,8 @@
 
 namespace Smoren\GraphTools\Tests\Unit;
 
+use Smoren\GraphTools\Components\SimpleTraverseFilter;
+use Smoren\GraphTools\Components\TraverseDirect;
 use Smoren\GraphTools\Components\TraverseOld;
 use Smoren\GraphTools\Models\Connection;
 use Smoren\GraphTools\Models\Vertex;
@@ -21,9 +23,14 @@ class SimpleGraphTraverseTest extends \Codeception\Test\Unit
             new Connection(2, 1, 2, 3),
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
-        $traverse = new TraverseOld($repo);
-        $traverse->runForward($repo->getVertexById(1));
-        $a = 1;
+        $traverse = new TraverseDirect($repo);
+        $contexts = $traverse->generate($repo->getVertexById(1), new SimpleTraverseFilter());
+
+        $vertexIds = [];
+        foreach($contexts as $context) {
+            $vertexIds[] = $context->getVertex()->getId();
+        }
+        $this->assertEquals([1, 2, 3], $vertexIds);
     }
 
     public function testSimpleLoopChain()
@@ -39,13 +46,19 @@ class SimpleGraphTraverseTest extends \Codeception\Test\Unit
             new Connection(3, 1, 3, 1),
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
-        $traverse = new TraverseOld($repo);
-        $traverse->runForward($repo->getVertexById(1));
-        $a = 1;
+        $traverse = new TraverseDirect($repo);
+        $contexts = $traverse->generate($repo->getVertexById(1), new SimpleTraverseFilter());
+
+        $vertexIds = [];
+        foreach($contexts as $context) {
+            $vertexIds[] = $context->getVertex()->getId();
+        }
+        $this->assertEquals([1, 2, 3, 1], $vertexIds);
     }
 
     public function testWeb()
     {
+        return;
         $vertexes = [
             new Vertex(1, 1, null),
             new Vertex(2, 1, null),

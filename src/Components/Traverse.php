@@ -39,21 +39,22 @@ abstract class Traverse
     {
         while(count($contexts)) {
             $currentContext = array_pop($contexts);
+            $currentVertex = $currentContext->getVertex();
 
             if($filter->getHandleCondition($currentContext)->isSuitableVertex($currentContext->getVertex())) {
                 yield $currentContext;
             }
 
-            $nextVertexes = $this->getNextVertexes(
-                $currentContext->getVertex(),
-                $filter->getPassCondition($currentContext)
-            );
+            $passedVertexesMap = $currentContext->getPassedVertexesMap();
+            $passedVertexesMap[$currentVertex->getId()] = $currentVertex;
+
+            $nextVertexes = $this->getNextVertexes($currentVertex, $filter->getPassCondition($currentContext));
             foreach($nextVertexes as $vertex) {
                 $branchIndex = $currentContext->getBranchIndex();
                 $contexts[] = new TraverseContext(
                     $vertex,
                     count($nextVertexes) > 1 ? $branchIndex+1 : $branchIndex,
-                    $currentContext->getPassedVertexesMap()
+                    $passedVertexesMap
                 );
             }
         }
