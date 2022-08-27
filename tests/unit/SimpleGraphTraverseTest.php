@@ -2,9 +2,8 @@
 
 namespace Smoren\GraphTools\Tests\Unit;
 
-use Smoren\GraphTools\Components\SimpleTraverseFilter;
 use Smoren\GraphTools\Components\TraverseDirect;
-use Smoren\GraphTools\Components\TraverseOld;
+use Smoren\GraphTools\Filters\TransparentTraverseFilter;
 use Smoren\GraphTools\Models\Connection;
 use Smoren\GraphTools\Models\Vertex;
 use Smoren\GraphTools\Store\SimpleGraphRepository;
@@ -24,7 +23,7 @@ class SimpleGraphTraverseTest extends \Codeception\Test\Unit
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
-        $contexts = $traverse->generate($repo->getVertexById(1), new SimpleTraverseFilter());
+        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter());
 
         $vertexIds = [];
         foreach($contexts as $context) {
@@ -47,7 +46,7 @@ class SimpleGraphTraverseTest extends \Codeception\Test\Unit
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
-        $contexts = $traverse->generate($repo->getVertexById(1), new SimpleTraverseFilter());
+        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter());
 
         $vertexIds = [];
         foreach($contexts as $context) {
@@ -78,7 +77,7 @@ class SimpleGraphTraverseTest extends \Codeception\Test\Unit
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
-        $contexts = $traverse->generate($repo->getVertexById(1), new SimpleTraverseFilter());
+        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter());
 
         $branchMap = [];
         $log = [];

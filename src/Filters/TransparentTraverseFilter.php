@@ -1,6 +1,6 @@
 <?php
 
-namespace Smoren\GraphTools\Components;
+namespace Smoren\GraphTools\Filters;
 
 use Smoren\GraphTools\Conditions\FilterCondition;
 use Smoren\GraphTools\Conditions\VertexCondition;
@@ -9,7 +9,7 @@ use Smoren\GraphTools\Interfaces\TraverseContextInterface;
 use Smoren\GraphTools\Interfaces\TraverseFilterInterface;
 use Smoren\GraphTools\Interfaces\VertexConditionInterface;
 
-class SimpleTraverseFilter implements TraverseFilterInterface
+class TransparentTraverseFilter implements TraverseFilterInterface
 {
     /**
      * @inheritDoc
