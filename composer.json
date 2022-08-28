@@ -12,7 +12,7 @@
   "require": {
     "php": ">=7.4.0",
     "php-ds/php-ds": "^1.4",
-    "smoren/schemator": "dev-master"
+    "smoren/nested-accessor": "^0.1.0"
   },
   "require-dev": {
     "codeception/codeception": "^4.2.1",

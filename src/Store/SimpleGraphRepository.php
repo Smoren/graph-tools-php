@@ -2,12 +2,12 @@
 
 namespace Smoren\GraphTools\Store;
 
+use Smoren\NestedAccessor\Helpers\NestedHelper;
 use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Exceptions\RepositoryException;
 use Smoren\GraphTools\Models\Interfaces\ConnectionInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 use Smoren\GraphTools\Store\Interfaces\GraphRepositoryInterface;
-use Smoren\Schemator\Components\NestedAccessor;
 
 class SimpleGraphRepository implements GraphRepositoryInterface
 {
@@ -36,16 +36,15 @@ class SimpleGraphRepository implements GraphRepositoryInterface
             $this->vertexMap[$vertex->getId()] = $vertex;
         }
 
-        $directMapAccessor = new NestedAccessor($this->connectionsDirectMap);
-        $reverseMapAccessor = new NestedAccessor($this->connectionsReverseMap);
-
         foreach($connections as $connection) {
-            $directMapAccessor->set(
+            NestedHelper::set(
+                $this->connectionsDirectMap,
                 [$connection->getFromId(), $connection->getId()],
                 [$connection->getType(), $connection->getToId()]
             );
 
-            $reverseMapAccessor->set(
+            NestedHelper::set(
+                $this->connectionsReverseMap,
                 [$connection->getToId(), $connection->getId()],
                 [$connection->getType(), $connection->getFromId()]
             );
