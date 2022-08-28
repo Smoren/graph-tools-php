@@ -10,9 +10,9 @@ interface TraverseContextInterface
     public function getVertex(): VertexInterface;
 
     /**
-     * @return int
+     * @return TraverseBranchContextInterface
      */
-    public function getBranchIndex(): int;
+    public function getBranchContext(): TraverseBranchContextInterface;
 
     /**
      * @return array<string, VertexInterface>

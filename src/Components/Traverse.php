@@ -7,13 +7,18 @@ use Generator;
 use Smoren\GraphTools\Components\Interfaces\TraverseInterface;
 use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Filters\Interfaces\TraverseFilterInterface;
+use Smoren\GraphTools\Models\Interfaces\TraverseBranchContextInterface;
 use Smoren\GraphTools\Models\Interfaces\TraverseContextInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
+use Smoren\GraphTools\Models\TraverseBranchContext;
 use Smoren\GraphTools\Models\TraverseContext;
 use Smoren\GraphTools\Store\Interfaces\GraphRepositoryInterface;
 
 abstract class Traverse implements TraverseInterface
 {
+    public const STOP_BRANCH = 1;
+    public const STOP_ALL = 2;
+
     /**
      * @var GraphRepositoryInterface
      */
@@ -33,37 +38,64 @@ abstract class Traverse implements TraverseInterface
      */
     public function generate(VertexInterface $start, TraverseFilterInterface $filter): Generator
     {
-        $context = $this->createContext($start, 0, []);
-        yield from $this->traverse(new Queue([$context]), $filter);
+        $branchContext = $this->createBranchContext(0, null, $start);
+        $context = $this->createContext($start, $branchContext, []);
+        yield from $this->traverse($context, $filter);
     }
 
     /**
      * @param VertexInterface $vertex
-     * @param int $branchIndex
+     * @param TraverseBranchContextInterface $branchContext
      * @param array<VertexInterface> $passedVertexesMap
      * @return TraverseContextInterface
      */
     protected function createContext(
         VertexInterface $vertex,
-        int $branchIndex,
+        TraverseBranchContextInterface $branchContext,
         array $passedVertexesMap
     ): TraverseContextInterface {
-        return new TraverseContext($vertex, $branchIndex, $passedVertexesMap);
+        return new TraverseContext($vertex, $branchContext, $passedVertexesMap);
     }
 
     /**
-     * @param Queue<TraverseContextInterface> $contexts
+     * @param int $index
+     * @param int|null $parentIndex
+     * @param VertexInterface $start
+     * @return TraverseBranchContextInterface
+     */
+    protected function createBranchContext(
+        int $index,
+        ?int $parentIndex,
+        VertexInterface $start
+    ): TraverseBranchContextInterface {
+        return new TraverseBranchContext($index, $parentIndex, $start);
+    }
+
+    /**
+     * @param TraverseContextInterface $startContext
      * @param TraverseFilterInterface $filter
      * @return Generator<TraverseContextInterface>
      */
-    protected function traverse(Queue $contexts, TraverseFilterInterface $filter): Generator
-    {
+    protected function traverse(
+        TraverseContextInterface $startContext,
+        TraverseFilterInterface $filter
+    ): Generator {
+        $lastBranchIndex = $startContext->getBranchContext()->getIndex();
+
+        $contexts = new Queue([$startContext]);
         while(count($contexts)) {
+            /** @var TraverseContextInterface $currentContext */
             $currentContext = $contexts->pop();
             $currentVertex = $currentContext->getVertex();
 
             if($filter->getHandleCondition($currentContext)->isSuitableVertex($currentContext->getVertex())) {
-                yield $currentContext;
+                $cmd = (yield $currentContext);
+                switch($cmd) {
+                    case static::STOP_BRANCH:
+                        continue 2;
+                    case static::STOP_ALL:
+                        return;
+                }
             }
 
             $passedVertexesMap = $currentContext->getPassedVertexesMap();
@@ -71,10 +103,20 @@ abstract class Traverse implements TraverseInterface
 
             $nextVertexes = $this->getNextVertexes($currentVertex, $filter->getPassCondition($currentContext));
             foreach($nextVertexes as $i => $vertex) {
-                $branchIndex = $currentContext->getBranchIndex();
+                $currentBranchContext = $currentContext->getBranchContext();
+                if(count($nextVertexes) > 1 && $i > 0) {
+                    $nextBranchContext = $this->createBranchContext(
+                        ++$lastBranchIndex,
+                        $currentBranchContext->getIndex(),
+                        $currentVertex
+                    );
+                } else {
+                    $nextBranchContext = $currentBranchContext;
+                }
+
                 $contexts->push($this->createContext(
                     $vertex,
-                    count($nextVertexes) > 1 && $i > 0 ? $branchIndex+1 : $branchIndex,
+                    $nextBranchContext,
                     $passedVertexesMap
                 ));
             }

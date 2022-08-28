@@ -2,11 +2,16 @@
 
 namespace Smoren\GraphTools\Tests\Unit;
 
+use Generator;
+use Smoren\GraphTools\Components\Traverse;
 use Smoren\GraphTools\Components\TraverseDirect;
 use Smoren\GraphTools\Filters\TransparentTraverseFilter;
+use Smoren\GraphTools\Helpers\TraverseBranchGetter;
 use Smoren\GraphTools\Models\Connection;
+use Smoren\GraphTools\Models\Interfaces\TraverseContextInterface;
 use Smoren\GraphTools\Models\Vertex;
 use Smoren\GraphTools\Store\SimpleGraphRepository;
+use Smoren\NestedAccessor\Helpers\NestedHelper;
 
 class SimpleGraphTraverseTest extends \Codeception\Test\Unit
 {
@@ -74,25 +79,20 @@ class SimpleGraphTraverseTest extends \Codeception\Test\Unit
             new Connection(6, 1, 5, 6),
             new Connection(7, 2, 5, 3),
             new Connection(8, 2, 6, 2),
+            new Connection(9, 3, 4, 5),
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
         $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter());
 
-        $branchMap = [];
-        $log = [];
-        foreach($contexts as $context) {
-            $branchIndex = $context->getBranchIndex();
-            $vertexId = $context->getVertex()->getId();
+        $branchMap = TraverseBranchGetter::getMap($contexts);
 
-            if(!isset($branchMap[$branchIndex])) {
-                $branchMap[$branchIndex] = [];
-            }
-
-            $log[] = "[BRANCH {$branchIndex}] [VERTEX {$vertexId}]";
-            $branchMap[$branchIndex][] = $vertexId;
-        }
-        $a = 1;
-        //$this->assertEquals([1, 2, 3], $vertexIds);
+        $this->assertEquals([1, 2, 3, 4, 1], NestedHelper::get($branchMap[0], 'id'));
+        $this->assertEquals([1, 5, 6, 2, 3, 4, 1], NestedHelper::get($branchMap[1], 'id'));
+        $this->assertEquals([1, 5, 3, 4, 1], NestedHelper::get($branchMap[2], 'id'));
+        $this->assertEquals([1, 2, 3, 4, 5, 6, 2], NestedHelper::get($branchMap[3], 'id'));
+        $this->assertEquals([1, 5, 3, 4, 5], NestedHelper::get($branchMap[4], 'id'));
+        $this->assertEquals([1, 2, 3, 4, 5, 3], NestedHelper::get($branchMap[5], 'id'));
+        $this->assertEquals([1, 5, 6, 2, 3, 4, 5], NestedHelper::get($branchMap[6], 'id'));
     }
 }

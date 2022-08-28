@@ -2,6 +2,7 @@
 
 namespace Smoren\GraphTools\Models;
 
+use Smoren\GraphTools\Models\Interfaces\TraverseBranchContextInterface;
 use Smoren\GraphTools\Models\Interfaces\TraverseContextInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
@@ -12,9 +13,9 @@ class TraverseContext implements TraverseContextInterface
      */
     protected VertexInterface $vertex;
     /**
-     * @var int
+     * @var TraverseBranchContextInterface
      */
-    protected int $branchIndex;
+    protected TraverseBranchContextInterface $branchContext;
     /**
      * @var array<string, VertexInterface>
      */
@@ -22,16 +23,16 @@ class TraverseContext implements TraverseContextInterface
 
     /**
      * @param VertexInterface $vertex
-     * @param int $branchIndex
+     * @param TraverseBranchContextInterface $branchContext
      * @param array<string, VertexInterface> $passedVertexesMap
      */
     public function __construct(
         VertexInterface $vertex,
-        int $branchIndex,
+        TraverseBranchContextInterface $branchContext,
         array $passedVertexesMap
     ) {
         $this->vertex = $vertex;
-        $this->branchIndex = $branchIndex;
+        $this->branchContext = $branchContext;
         $this->passedVertexesMap = $passedVertexesMap;
     }
 
@@ -46,9 +47,9 @@ class TraverseContext implements TraverseContextInterface
     /**
      * @inheritDoc
      */
-    public function getBranchIndex(): int
+    public function getBranchContext(): TraverseBranchContextInterface
     {
-        return $this->branchIndex;
+        return $this->branchContext;
     }
 
     /**
