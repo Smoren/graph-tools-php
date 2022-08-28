@@ -14,7 +14,7 @@ use Smoren\GraphTools\Models\TraverseBranchContext;
 use Smoren\GraphTools\Models\TraverseContext;
 use Smoren\GraphTools\Store\Interfaces\GraphRepositoryInterface;
 
-abstract class Traverse implements TraverseInterface
+class Traverse implements TraverseInterface
 {
     public const STOP_BRANCH = 1;
     public const STOP_ALL = 2;
@@ -90,6 +90,9 @@ abstract class Traverse implements TraverseInterface
 
             if($filter->getHandleCondition($currentContext)->isSuitableVertex($currentContext->getVertex())) {
                 $cmd = (yield $currentContext);
+                if($cmd !== null) {
+                    yield $currentContext;
+                }
                 switch($cmd) {
                     case static::STOP_BRANCH:
                         continue 2;

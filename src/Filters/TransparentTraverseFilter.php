@@ -2,31 +2,12 @@
 
 namespace Smoren\GraphTools\Filters;
 
-use Smoren\GraphTools\Conditions\FilterCondition;
-use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
-use Smoren\GraphTools\Conditions\Interfaces\VertexConditionInterface;
-use Smoren\GraphTools\Conditions\VertexCondition;
 use Smoren\GraphTools\Filters\Interfaces\TraverseFilterInterface;
-use Smoren\GraphTools\Models\Interfaces\TraverseContextInterface;
 
-class TransparentTraverseFilter implements TraverseFilterInterface
+class TransparentTraverseFilter extends ConstTraverseFilter implements TraverseFilterInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function getPassCondition(TraverseContextInterface $context): FilterConditionInterface
+    public function __construct(bool $preventLoops = true)
     {
-        if($context->isLoop()) {
-            return (new FilterCondition())->setVertexTypesOnly([]);
-        }
-        return new FilterCondition();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getHandleCondition(TraverseContextInterface $context): VertexConditionInterface
-    {
-        return new VertexCondition();
+        parent::__construct(null, null, $preventLoops);
     }
 }
