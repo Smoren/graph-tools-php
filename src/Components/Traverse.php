@@ -29,6 +29,7 @@ abstract class Traverse implements TraverseInterface
 
     /**
      * @inheritDoc
+     * @return Generator<TraverseContextInterface>
      */
     public function generate(VertexInterface $start, TraverseFilterInterface $filter): Generator
     {
