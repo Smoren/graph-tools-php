@@ -10,7 +10,7 @@ class TraverseBranchGetter
 {
     /**
      * @param Generator<TraverseContextInterface> $contexts
-     * @return array<int, array<string, VertexInterface>>
+     * @return array<int, array<VertexInterface>>
      */
     public static function getMap(Generator $contexts): array
     {
