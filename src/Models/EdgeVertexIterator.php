@@ -2,17 +2,15 @@
 
 namespace Smoren\GraphTools\Models;
 
-use Countable;
-use Iterator;
 use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
+use Smoren\GraphTools\Models\Interfaces\EdgeVertexIteratorInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 /**
  * Class EdgeVertexIterator
  * @package Smoren\GraphTools\Models
- * @implements Iterator<EdgeInterface|null, VertexInterface>
  */
-class EdgeVertexIterator implements Iterator, Countable
+class EdgeVertexIterator implements EdgeVertexIteratorInterface
 {
     /**
      * @var array<EdgeVertexPair>
