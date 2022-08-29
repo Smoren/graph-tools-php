@@ -50,7 +50,7 @@ trait EdgeConditionTrait
 
     public function isSuitableEdge(EdgeInterface $edge): bool
     {
-        if($this->getEdgeTypesOnly() !== null && !in_array($edge->getType(), $this->edgeTypesOnly)) {
+        if($this->edgeTypesOnly !== null && !in_array($edge->getType(), $this->edgeTypesOnly)) {
             return false;
         }
 

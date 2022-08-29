@@ -41,6 +41,7 @@ class ConstTraverseFilter implements TraverseFilterInterface
             $passCondition = (clone $this->passCondition)->excludeVertexIds([$prevVertex->getId()]);
         }
 
+        /** @var FilterConditionInterface $passCondition */
         return $passCondition;
     }
 
