@@ -2,6 +2,9 @@
 
 namespace Smoren\GraphTools\Store;
 
+use Smoren\GraphTools\Models\EdgeVertexPair;
+use Smoren\GraphTools\Models\EdgeVertexPairsIterator;
+use Smoren\GraphTools\Models\Interfaces\EdgeVertexPairsIteratorInterface;
 use Smoren\NestedAccessor\Helpers\NestedHelper;
 use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Exceptions\RepositoryException;
@@ -91,8 +94,10 @@ class SimpleGraphRepository implements GraphRepositoryInterface
      * @inheritDoc
      * @throws RepositoryException
      */
-    public function getNextVertexes(VertexInterface $vertex, ?FilterConditionInterface $condition = null): array
-    {
+    public function getNextVertexes(
+        VertexInterface $vertex,
+        ?FilterConditionInterface $condition = null
+    ): EdgeVertexPairsIteratorInterface {
         return $this->getLinkedVertexesFromMap(
             $this->edgesDirectMap,
             $vertex,
@@ -104,8 +109,10 @@ class SimpleGraphRepository implements GraphRepositoryInterface
      * @inheritDoc
      * @throws RepositoryException
      */
-    public function getPrevVertexes(VertexInterface $vertex, ?FilterConditionInterface $condition = null): array
-    {
+    public function getPrevVertexes(
+        VertexInterface $vertex,
+        ?FilterConditionInterface $condition = null
+    ): EdgeVertexPairsIteratorInterface {
         return $this->getLinkedVertexesFromMap(
             $this->edgesReverseMap,
             $vertex,
@@ -117,25 +124,25 @@ class SimpleGraphRepository implements GraphRepositoryInterface
      * @param array<string, array<string, string[]>> $source
      * @param VertexInterface $vertex
      * @param FilterConditionInterface|null $condition
-     * @return array<VertexInterface>
+     * @return EdgeVertexPairsIteratorInterface
      * @throws RepositoryException
      */
     protected function getLinkedVertexesFromMap(
         array $source,
         VertexInterface $vertex,
         ?FilterConditionInterface $condition
-    ): array {
+    ): EdgeVertexPairsIteratorInterface {
         $result = [];
         foreach($source[$vertex->getId()] ?? [] as $edgeId => [$edgeType, $targetId]) {
             $edge = $this->getEdgeById($edgeId);
             if($this->isSuitableEdge($edge, $condition)) {
                 $target = $this->getVertexById($targetId);
                 if($this->isSuitableVertex($target, $condition)) {
-                    $result[] = $target;
+                    $result[] = new EdgeVertexPair($edge, $target);
                 }
             }
         }
-        return $result;
+        return new EdgeVertexPairsIterator($result);
     }
 
     /**

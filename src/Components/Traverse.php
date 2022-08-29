@@ -7,6 +7,9 @@ use Generator;
 use Smoren\GraphTools\Components\Interfaces\TraverseInterface;
 use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Filters\Interfaces\TraverseFilterInterface;
+use Smoren\GraphTools\Models\EdgeVertexPairsIterator;
+use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
+use Smoren\GraphTools\Models\Interfaces\EdgeVertexPairsIteratorInterface;
 use Smoren\GraphTools\Models\Interfaces\TraverseBranchContextInterface;
 use Smoren\GraphTools\Models\Interfaces\TraverseContextInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
@@ -39,36 +42,8 @@ class Traverse implements TraverseInterface
     public function generate(VertexInterface $start, TraverseFilterInterface $filter, bool $unique = false): Generator
     {
         $branchContext = $this->createBranchContext(0, null, $start);
-        $context = $this->createContext($start, $branchContext, []);
+        $context = $this->createContext($start, null, $branchContext, []);
         yield from $this->traverse($context, $filter, $unique);
-    }
-
-    /**
-     * @param VertexInterface $vertex
-     * @param TraverseBranchContextInterface $branchContext
-     * @param array<VertexInterface> $passedVertexesMap
-     * @return TraverseContextInterface
-     */
-    protected function createContext(
-        VertexInterface $vertex,
-        TraverseBranchContextInterface $branchContext,
-        array $passedVertexesMap
-    ): TraverseContextInterface {
-        return new TraverseContext($vertex, $branchContext, $passedVertexesMap);
-    }
-
-    /**
-     * @param int $index
-     * @param int|null $parentIndex
-     * @param VertexInterface $start
-     * @return TraverseBranchContextInterface
-     */
-    protected function createBranchContext(
-        int $index,
-        ?int $parentIndex,
-        VertexInterface $start
-    ): TraverseBranchContextInterface {
-        return new TraverseBranchContext($index, $parentIndex, $start);
     }
 
     /**
@@ -90,16 +65,17 @@ class Traverse implements TraverseInterface
             /** @var TraverseContextInterface $currentContext */
             $currentContext = $contexts->pop();
             $currentVertex = $currentContext->getVertex();
+            $currentEdge = $currentContext->getEdge();
 
             if($unique && isset($globalPassedVertexesMap[$currentVertex->getId()])) {
                 continue;
             }
 
             if($filter->getHandleCondition($currentContext)->isSuitableVertex($currentContext->getVertex())) {
-                $cmd = (yield $currentContext);
+                $cmd = (yield $currentEdge => $currentContext);
                 switch($cmd) {
                     case static::STOP_BRANCH:
-                        yield $currentContext;
+                        yield $currentEdge => $currentContext;
                         continue 2;
                     case static::STOP_ALL:
                         return;
@@ -111,7 +87,8 @@ class Traverse implements TraverseInterface
             $globalPassedVertexesMap[$currentVertex->getId()] = $currentVertex;
 
             $nextVertexes = $this->getNextVertexes($currentVertex, $filter->getPassCondition($currentContext));
-            foreach($nextVertexes as $i => $vertex) {
+            $i = 0;
+            foreach($nextVertexes as $edge => $vertex) {
                 $currentBranchContext = $currentContext->getBranchContext();
                 if(count($nextVertexes) > 1 && $i > 0) {
                     $nextBranchContext = $this->createBranchContext(
@@ -125,9 +102,12 @@ class Traverse implements TraverseInterface
 
                 $contexts->push($this->createContext(
                     $vertex,
+                    $edge,
                     $nextBranchContext,
                     $passedVertexesMap
                 ));
+
+                ++$i;
             }
         }
     }
@@ -135,13 +115,45 @@ class Traverse implements TraverseInterface
     /**
      * @param VertexInterface $vertex
      * @param FilterConditionInterface $condition
-     * @return array<VertexInterface>
+     * @return EdgeVertexPairsIteratorInterface
      */
-    protected function getNextVertexes(VertexInterface $vertex, FilterConditionInterface $condition): array
-    {
-        return [
-            ...$this->repository->getNextVertexes($vertex, $condition),
-            ...$this->repository->getPrevVertexes($vertex, $condition),
-        ];
+    protected function getNextVertexes(
+        VertexInterface $vertex,
+        FilterConditionInterface $condition
+    ): EdgeVertexPairsIteratorInterface {
+        return EdgeVertexPairsIterator::combine(
+            $this->repository->getNextVertexes($vertex, $condition),
+            $this->repository->getPrevVertexes($vertex, $condition)
+        );
+    }
+
+    /**
+     * @param VertexInterface $vertex
+     * @param EdgeInterface|null $edge
+     * @param TraverseBranchContextInterface $branchContext
+     * @param array<VertexInterface> $passedVertexesMap
+     * @return TraverseContextInterface
+     */
+    protected function createContext(
+        VertexInterface $vertex,
+        ?EdgeInterface $edge,
+        TraverseBranchContextInterface $branchContext,
+        array $passedVertexesMap
+    ): TraverseContextInterface {
+        return new TraverseContext($vertex, $edge, $branchContext, $passedVertexesMap);
+    }
+
+    /**
+     * @param int $index
+     * @param int|null $parentIndex
+     * @param VertexInterface $start
+     * @return TraverseBranchContextInterface
+     */
+    protected function createBranchContext(
+        int $index,
+        ?int $parentIndex,
+        VertexInterface $start
+    ): TraverseBranchContextInterface {
+        return new TraverseBranchContext($index, $parentIndex, $start);
     }
 }

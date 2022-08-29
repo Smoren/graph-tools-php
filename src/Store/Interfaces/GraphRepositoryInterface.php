@@ -4,6 +4,7 @@ namespace Smoren\GraphTools\Store\Interfaces;
 
 use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
+use Smoren\GraphTools\Models\Interfaces\EdgeVertexPairsIteratorInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 interface GraphRepositoryInterface
@@ -23,14 +24,20 @@ interface GraphRepositoryInterface
     /**
      * @param VertexInterface $vertex
      * @param FilterConditionInterface|null $condition
-     * @return array<VertexInterface>
+     * @return EdgeVertexPairsIteratorInterface
      */
-    public function getNextVertexes(VertexInterface $vertex, ?FilterConditionInterface $condition = null): array;
+    public function getNextVertexes(
+        VertexInterface $vertex,
+        ?FilterConditionInterface $condition = null
+    ): EdgeVertexPairsIteratorInterface;
 
     /**
      * @param VertexInterface $vertex
      * @param FilterConditionInterface|null $condition
-     * @return array<VertexInterface>
+     * @return EdgeVertexPairsIteratorInterface
      */
-    public function getPrevVertexes(VertexInterface $vertex, ?FilterConditionInterface $condition = null): array;
+    public function getPrevVertexes(
+        VertexInterface $vertex,
+        ?FilterConditionInterface $condition = null
+    ): EdgeVertexPairsIteratorInterface;
 }

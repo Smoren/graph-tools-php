@@ -12,6 +12,7 @@ use Iterator;
  */
 interface EdgeVertexPairsIteratorInterface extends Iterator, Countable
 {
+    public static function combine(EdgeVertexPairsIteratorInterface ...$iterators): EdgeVertexPairsIteratorInterface;
     public function current(): VertexInterface;
     public function next(): void;
     public function key(): ?EdgeInterface;

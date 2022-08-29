@@ -12,6 +12,17 @@ use Smoren\GraphTools\Models\Interfaces\VertexInterface;
  */
 class EdgeVertexPairsIterator implements EdgeVertexPairsIteratorInterface
 {
+    public static function combine(EdgeVertexPairsIteratorInterface ...$iterators): EdgeVertexPairsIteratorInterface
+    {
+        $source = [];
+        foreach($iterators as $iterator) {
+            foreach($iterator as $edge => $vertex) {
+                $source[] = new EdgeVertexPair($edge, $vertex);
+            }
+        }
+        return new EdgeVertexPairsIterator($source);
+    }
+
     /**
      * @var array<EdgeVertexPair>
      */

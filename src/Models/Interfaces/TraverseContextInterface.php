@@ -15,6 +15,11 @@ interface TraverseContextInterface
     public function getPrevVertex(): ?VertexInterface;
 
     /**
+     * @return EdgeInterface|null
+     */
+    public function getEdge(): ?EdgeInterface;
+
+    /**
      * @return TraverseBranchContextInterface
      */
     public function getBranchContext(): TraverseBranchContextInterface;

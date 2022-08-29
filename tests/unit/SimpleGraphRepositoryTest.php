@@ -196,10 +196,10 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
 
     /**
      * @param array<string> $expectedVertexIds
-     * @param array<Vertex> $vertexes
+     * @param iterable<Vertex> $vertexes
      * @return void
      */
-    protected function assertVertexIds(array $expectedVertexIds, array $vertexes)
+    protected function assertVertexIds(array $expectedVertexIds, iterable $vertexes)
     {
         $actualVertexIds = [];
         foreach($vertexes as $vertex) {

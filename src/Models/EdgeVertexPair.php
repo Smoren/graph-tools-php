@@ -8,13 +8,13 @@ use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 class EdgeVertexPair implements EdgeVertexPairInterface
 {
-    protected VertexInterface $vertex;
     protected ?EdgeInterface $edge;
+    protected VertexInterface $vertex;
 
-    public function __construct(VertexInterface $vertex, ?EdgeInterface $edge)
+    public function __construct(?EdgeInterface $edge, VertexInterface $vertex)
     {
-        $this->vertex = $vertex;
         $this->edge = $edge;
+        $this->vertex = $vertex;
     }
 
     public function getEdge(): ?EdgeInterface

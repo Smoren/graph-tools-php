@@ -2,6 +2,7 @@
 
 namespace Smoren\GraphTools\Models;
 
+use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
 use Smoren\GraphTools\Models\Interfaces\TraverseBranchContextInterface;
 use Smoren\GraphTools\Models\Interfaces\TraverseContextInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
@@ -13,6 +14,10 @@ class TraverseContext implements TraverseContextInterface
      */
     protected VertexInterface $vertex;
     /**
+     * @var EdgeInterface|null
+     */
+    protected ?EdgeInterface $edge;
+    /**
      * @var TraverseBranchContextInterface
      */
     protected TraverseBranchContextInterface $branchContext;
@@ -23,15 +28,18 @@ class TraverseContext implements TraverseContextInterface
 
     /**
      * @param VertexInterface $vertex
+     * @param EdgeInterface|null $edge
      * @param TraverseBranchContextInterface $branchContext
      * @param array<string, VertexInterface> $passedVertexesMap
      */
     public function __construct(
         VertexInterface $vertex,
+        ?EdgeInterface $edge,
         TraverseBranchContextInterface $branchContext,
         array $passedVertexesMap
     ) {
         $this->vertex = $vertex;
+        $this->edge = $edge;
         $this->branchContext = $branchContext;
         $this->passedVertexesMap = $passedVertexesMap;
     }
@@ -51,6 +59,14 @@ class TraverseContext implements TraverseContextInterface
     {
         $candidate = end($this->passedVertexesMap);
         return $candidate ?: null;
+    }
+
+    /**
+     * @return EdgeInterface|null
+     */
+    public function getEdge(): ?EdgeInterface
+    {
+        return $this->edge;
     }
 
     /**
