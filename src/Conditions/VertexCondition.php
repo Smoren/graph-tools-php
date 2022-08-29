@@ -17,4 +17,12 @@ class VertexCondition implements VertexConditionInterface
      * @var array<string>
      */
     protected array $vertexTypesExclude = [];
+    /**
+     * @var array<string>|null
+     */
+    protected ?array $vertexIdsOnly = null;
+    /**
+     * @var array<string>
+     */
+    protected array $vertexIdsExclude = [];
 }

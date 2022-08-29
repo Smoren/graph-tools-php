@@ -2,7 +2,7 @@
 
 namespace Smoren\GraphTools\Models\Interfaces;
 
-interface ConnectionInterface
+interface EdgeInterface
 {
     /**
      * @return non-empty-string

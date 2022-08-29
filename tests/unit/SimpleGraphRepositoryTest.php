@@ -4,7 +4,7 @@ namespace Smoren\GraphTools\Tests\Unit;
 
 use Smoren\GraphTools\Conditions\FilterCondition;
 use Smoren\GraphTools\Exceptions\RepositoryException;
-use Smoren\GraphTools\Models\Connection;
+use Smoren\GraphTools\Models\Edge;
 use Smoren\GraphTools\Models\Vertex;
 use Smoren\GraphTools\Store\SimpleGraphRepository;
 
@@ -18,8 +18,8 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
             new Vertex(3, 1, null),
         ];
         $connections = [
-            new Connection(1, 1, 1, 2),
-            new Connection(2, 1, 2, 3),
+            new Edge(1, 1, 1, 2),
+            new Edge(2, 1, 2, 3),
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
 
@@ -46,36 +46,36 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
 
         $this->assertVertexIds(
             [3],
-            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->setVertexTypesOnly([1]))
+            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->onlyVertexTypes([1]))
         );
         $this->assertVertexIds(
             [],
-            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->setVertexTypesOnly([2]))
+            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->onlyVertexTypes([2]))
         );
         $this->assertVertexIds(
             [3],
-            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->setVertexTypesExclude([2]))
+            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->excludeVertexTypes([2]))
         );
         $this->assertVertexIds(
             [],
-            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->setVertexTypesExclude([1]))
+            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->excludeVertexTypes([1]))
         );
 
         $this->assertVertexIds(
             [3],
-            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->setConnectionTypesOnly([1]))
+            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->onlyEdgeTypes([1]))
         );
         $this->assertVertexIds(
             [],
-            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->setConnectionTypesOnly([2]))
+            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->onlyEdgeTypes([2]))
         );
         $this->assertVertexIds(
             [3],
-            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->setConnectionTypesExclude([2]))
+            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->excludeEdgeTypes([2]))
         );
         $this->assertVertexIds(
             [],
-            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->setConnectionTypesExclude([1]))
+            $repo->getNextVertexes($repo->getVertexById(2), (new FilterCondition())->excludeEdgeTypes([1]))
         );
     }
 
@@ -90,14 +90,14 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
             new Vertex(6, 2, null),
         ];
         $connections = [
-            new Connection(1, 1, 1, 2),
-            new Connection(2, 1, 2, 3),
-            new Connection(3, 1, 3, 4),
-            new Connection(4, 1, 4, 1),
-            new Connection(5, 2, 1, 5),
-            new Connection(6, 1, 5, 6),
-            new Connection(7, 2, 5, 3),
-            new Connection(8, 2, 6, 2),
+            new Edge(1, 1, 1, 2),
+            new Edge(2, 1, 2, 3),
+            new Edge(3, 1, 3, 4),
+            new Edge(4, 1, 4, 1),
+            new Edge(5, 2, 1, 5),
+            new Edge(6, 1, 5, 6),
+            new Edge(7, 2, 5, 3),
+            new Edge(8, 2, 6, 2),
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
 
@@ -107,19 +107,19 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
         );
         $this->assertVertexIds(
             [5],
-            $repo->getNextVertexes($repo->getVertexById(1), (new FilterCondition())->setVertexTypesOnly([2]))
+            $repo->getNextVertexes($repo->getVertexById(1), (new FilterCondition())->onlyVertexTypes([2]))
         );
         $this->assertVertexIds(
             [2],
-            $repo->getNextVertexes($repo->getVertexById(1), (new FilterCondition())->setVertexTypesOnly([1]))
+            $repo->getNextVertexes($repo->getVertexById(1), (new FilterCondition())->onlyVertexTypes([1]))
         );
         $this->assertVertexIds(
             [5],
-            $repo->getNextVertexes($repo->getVertexById(1), (new FilterCondition())->setConnectionTypesOnly([2]))
+            $repo->getNextVertexes($repo->getVertexById(1), (new FilterCondition())->onlyEdgeTypes([2]))
         );
         $this->assertVertexIds(
             [2],
-            $repo->getNextVertexes($repo->getVertexById(1), (new FilterCondition())->setConnectionTypesOnly([1]))
+            $repo->getNextVertexes($repo->getVertexById(1), (new FilterCondition())->onlyEdgeTypes([1]))
         );
 
         $this->assertVertexIds(
@@ -128,43 +128,43 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
         );
         $this->assertVertexIds(
             [6],
-            $repo->getNextVertexes($repo->getVertexById(5), (new FilterCondition())->setConnectionTypesExclude([2]))
+            $repo->getNextVertexes($repo->getVertexById(5), (new FilterCondition())->excludeEdgeTypes([2]))
         );
         $this->assertVertexIds(
             [],
             $repo->getNextVertexes($repo->getVertexById(5), (new FilterCondition())
-                ->setConnectionTypesExclude([2])
-                ->setVertexTypesOnly([1]))
+                ->excludeEdgeTypes([2])
+                ->onlyVertexTypes([1]))
         );
         $this->assertVertexIds(
             [3, 6],
             $repo->getNextVertexes($repo->getVertexById(5), (new FilterCondition())
-                ->setConnectionTypesOnly([1, 2])
-                ->setVertexTypesOnly([1, 2]))
+                ->onlyEdgeTypes([1, 2])
+                ->onlyVertexTypes([1, 2]))
         );
         $this->assertVertexIds(
             [3],
             $repo->getNextVertexes($repo->getVertexById(5), (new FilterCondition())
-                ->setConnectionTypesOnly([2])
-                ->setVertexTypesOnly([1]))
+                ->onlyEdgeTypes([2])
+                ->onlyVertexTypes([1]))
         );
         $this->assertVertexIds(
             [6],
             $repo->getNextVertexes($repo->getVertexById(5), (new FilterCondition())
-                ->setConnectionTypesOnly([1])
-                ->setVertexTypesOnly([2]))
+                ->onlyEdgeTypes([1])
+                ->onlyVertexTypes([2]))
         );
         $this->assertVertexIds(
             [],
             $repo->getNextVertexes($repo->getVertexById(5), (new FilterCondition())
-                ->setConnectionTypesOnly([1])
-                ->setVertexTypesOnly([1]))
+                ->onlyEdgeTypes([1])
+                ->onlyVertexTypes([1]))
         );
         $this->assertVertexIds(
             [],
             $repo->getNextVertexes($repo->getVertexById(5), (new FilterCondition())
-                ->setConnectionTypesOnly([2])
-                ->setVertexTypesOnly([2]))
+                ->onlyEdgeTypes([2])
+                ->onlyVertexTypes([2]))
         );
     }
 
@@ -176,8 +176,8 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
             new Vertex(3, 1, null),
         ];
         $connections = [
-            new Connection(1, 1, 1, 2),
-            new Connection(2, 1, 2, 3),
+            new Edge(1, 1, 1, 2),
+            new Edge(2, 1, 2, 3),
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
 

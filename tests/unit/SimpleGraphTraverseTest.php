@@ -11,7 +11,7 @@ use Smoren\GraphTools\Conditions\FilterCondition;
 use Smoren\GraphTools\Filters\ConstTraverseFilter;
 use Smoren\GraphTools\Filters\TransparentTraverseFilter;
 use Smoren\GraphTools\Helpers\TraverseHelper;
-use Smoren\GraphTools\Models\Connection;
+use Smoren\GraphTools\Models\Edge;
 use Smoren\GraphTools\Models\TraverseContext;
 use Smoren\GraphTools\Models\Vertex;
 use Smoren\GraphTools\Store\SimpleGraphRepository;
@@ -27,8 +27,8 @@ class SimpleGraphTraverseTest extends Unit
             new Vertex(3, 1, null),
         ];
         $connections = [
-            new Connection(1, 1, 1, 2),
-            new Connection(2, 1, 2, 3),
+            new Edge(1, 1, 1, 2),
+            new Edge(2, 1, 2, 3),
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
@@ -74,9 +74,9 @@ class SimpleGraphTraverseTest extends Unit
             new Vertex(3, 1, null),
         ];
         $connections = [
-            new Connection(1, 1, 1, 2),
-            new Connection(2, 1, 2, 3),
-            new Connection(3, 1, 3, 1),
+            new Edge(1, 1, 1, 2),
+            new Edge(2, 1, 2, 3),
+            new Edge(3, 1, 3, 1),
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
@@ -100,15 +100,15 @@ class SimpleGraphTraverseTest extends Unit
             new Vertex(6, 2, null),
         ];
         $connections = [
-            new Connection(1, 1, 1, 2),
-            new Connection(2, 1, 2, 3),
-            new Connection(3, 1, 3, 4),
-            new Connection(4, 1, 4, 1),
-            new Connection(5, 2, 1, 5),
-            new Connection(6, 1, 5, 6),
-            new Connection(7, 2, 5, 3),
-            new Connection(8, 2, 6, 2),
-            new Connection(9, 3, 4, 5),
+            new Edge(1, 1, 1, 2),
+            new Edge(2, 1, 2, 3),
+            new Edge(3, 1, 3, 4),
+            new Edge(4, 1, 4, 1),
+            new Edge(5, 2, 1, 5),
+            new Edge(6, 1, 5, 6),
+            new Edge(7, 2, 5, 3),
+            new Edge(8, 2, 6, 2),
+            new Edge(9, 3, 4, 5),
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
@@ -140,13 +140,13 @@ class SimpleGraphTraverseTest extends Unit
             new Vertex(8, 1, null),
         ];
         $connections = [
-            new Connection(1, 1, 1, 2),
-            new Connection(2, 1, 2, 3),
-            new Connection(3, 1, 3, 4),
-            new Connection(4, 1, 2, 5),
-            new Connection(5, 1, 5, 6),
-            new Connection(6, 1, 2, 7),
-            new Connection(7, 1, 7, 8),
+            new Edge(1, 1, 1, 2),
+            new Edge(2, 1, 2, 3),
+            new Edge(3, 1, 3, 4),
+            new Edge(4, 1, 2, 5),
+            new Edge(5, 1, 5, 6),
+            new Edge(6, 1, 2, 7),
+            new Edge(7, 1, 7, 8),
         ];
 
         $repo = new SimpleGraphRepository($vertexes, $connections);
@@ -173,7 +173,7 @@ class SimpleGraphTraverseTest extends Unit
         $this->assertEquals([1, 2, 5, 6], NestedHelper::get($branchMap[1], 'id'));
         $this->assertEquals([1, 2, 7, 8], NestedHelper::get($branchMap[2], 'id'));
 
-        $filter = new ConstTraverseFilter((new FilterCondition())->setVertexTypesExclude([2]));
+        $filter = new ConstTraverseFilter((new FilterCondition())->excludeVertexTypes([2]));
         $contexts = $traverse->generate($repo->getVertexById(1), $filter);
         $branchMap = TraverseHelper::getBranches($contexts);
         $this->assertCount(2, $branchMap);
@@ -194,7 +194,7 @@ class SimpleGraphTraverseTest extends Unit
         $this->assertEquals([1, 2, 5], NestedHelper::get($branchMap[1], 'id'));
         $this->assertEquals([1, 2, 7, 8], NestedHelper::get($branchMap[2], 'id'));
 
-        $filter = new ConstTraverseFilter((new FilterCondition())->setVertexTypesExclude([3]));
+        $filter = new ConstTraverseFilter((new FilterCondition())->excludeVertexTypes([3]));
         $contexts = $traverse->generate($repo->getVertexById(1), $filter);
         $branchMap = TraverseHelper::getBranches($contexts);
         $this->assertCount(2, $branchMap);
@@ -215,7 +215,7 @@ class SimpleGraphTraverseTest extends Unit
         $this->assertEquals([1, 2, 5], NestedHelper::get($branchMap[1], 'id'));
         $this->assertEquals([1, 2, 7, 8], NestedHelper::get($branchMap[2], 'id'));
 
-        $filter = new ConstTraverseFilter((new FilterCondition())->setVertexTypesExclude([2, 3]));
+        $filter = new ConstTraverseFilter((new FilterCondition())->excludeVertexTypes([2, 3]));
         $contexts = $traverse->generate($repo->getVertexById(1), $filter);
         $branchMap = TraverseHelper::getBranches($contexts);
         $this->assertCount(1, $branchMap);
@@ -234,14 +234,14 @@ class SimpleGraphTraverseTest extends Unit
             new Vertex(7, 1, null),
         ];
         $connections = [
-            new Connection(1, 1, 1, 2),
-            new Connection(2, 1, 2, 3),
-            new Connection(3, 1, 3, 5),
-            new Connection(4, 1, 2, 4),
-            new Connection(5, 1, 4, 5),
-            new Connection(6, 1, 4, 6),
-            new Connection(7, 1, 6, 7),
-            new Connection(8, 2, 6, 2),
+            new Edge(1, 1, 1, 2),
+            new Edge(2, 1, 2, 3),
+            new Edge(3, 1, 3, 5),
+            new Edge(4, 1, 2, 4),
+            new Edge(5, 1, 4, 5),
+            new Edge(6, 1, 4, 6),
+            new Edge(7, 1, 6, 7),
+            new Edge(8, 2, 6, 2),
         ];
 
         $repo = new SimpleGraphRepository($vertexes, $connections);
@@ -255,7 +255,7 @@ class SimpleGraphTraverseTest extends Unit
         $this->assertEquals([1, 2, 4, 6, 7], NestedHelper::get($branches[2], 'id'));
         $this->assertEquals([1, 2, 4, 6, 2], NestedHelper::get($branches[3], 'id'));
 
-        $filter = new ConstTraverseFilter((new FilterCondition())->setConnectionTypesOnly([1]));
+        $filter = new ConstTraverseFilter((new FilterCondition())->onlyEdgeTypes([1]));
         $contexts = $traverse->generate($repo->getVertexById(1), $filter);
         $branches = TraverseHelper::getBranches($contexts);
         $this->assertCount(3, $branches);

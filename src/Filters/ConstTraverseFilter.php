@@ -31,7 +31,7 @@ class ConstTraverseFilter implements TraverseFilterInterface
     public function getPassCondition(TraverseContextInterface $context): FilterConditionInterface
     {
         if($context->isLoop()) {
-            return (new FilterCondition())->setVertexTypesOnly([]);
+            return (new FilterCondition())->onlyVertexTypes([]);
         }
         return $this->passCondition;
     }

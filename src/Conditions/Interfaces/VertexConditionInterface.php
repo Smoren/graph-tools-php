@@ -17,16 +17,38 @@ interface VertexConditionInterface
     public function getVertexTypesExclude(): array;
 
     /**
+     * @return array<string>|null
+     */
+    public function getVertexIdsOnly(): ?array;
+
+    /**
+     * @return array<string>
+     */
+    public function getVertexIdsExclude(): array;
+
+    /**
      * @param array<string>|null $types
      * @return VertexConditionInterface
      */
-    public function setVertexTypesOnly(?array $types): VertexConditionInterface;
+    public function onlyVertexTypes(?array $types): VertexConditionInterface;
 
     /**
      * @param array<string> $types
      * @return VertexConditionInterface
      */
-    public function setVertexTypesExclude(array $types): VertexConditionInterface;
+    public function excludeVertexTypes(array $types): VertexConditionInterface;
+
+    /**
+     * @param array<string>|null $ids
+     * @return VertexConditionInterface
+     */
+    public function onlyVertexIds(?array $ids): VertexConditionInterface;
+
+    /**
+     * @param array<string> $ids
+     * @return VertexConditionInterface
+     */
+    public function excludeVertexIds(array $ids): VertexConditionInterface;
 
     /**
      * @param VertexInterface $vertex

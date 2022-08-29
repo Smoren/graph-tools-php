@@ -2,9 +2,9 @@
 
 namespace Smoren\GraphTools\Models;
 
-use Smoren\GraphTools\Models\Interfaces\ConnectionInterface;
+use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
 
-class Connection implements ConnectionInterface
+class Edge implements EdgeInterface
 {
     /**
      * @var non-empty-string

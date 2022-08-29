@@ -5,7 +5,7 @@ namespace Smoren\GraphTools\Store;
 use Smoren\NestedAccessor\Helpers\NestedHelper;
 use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Exceptions\RepositoryException;
-use Smoren\GraphTools\Models\Interfaces\ConnectionInterface;
+use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 use Smoren\GraphTools\Store\Interfaces\GraphRepositoryInterface;
 
@@ -18,15 +18,15 @@ class SimpleGraphRepository implements GraphRepositoryInterface
     /**
      * @var array<string, array<string, string[]>>
      */
-    protected array $connectionsDirectMap = [];
+    protected array $edgesDirectMap = [];
     /**
      * @var array<string, array<string, string[]>>
      */
-    protected array $connectionsReverseMap = [];
+    protected array $edgesReverseMap = [];
 
     /**
      * @param array<VertexInterface> $vertexes
-     * @param array<ConnectionInterface> $connections
+     * @param array<EdgeInterface> $connections
      */
     public function __construct(
         array $vertexes,
@@ -38,13 +38,13 @@ class SimpleGraphRepository implements GraphRepositoryInterface
 
         foreach($connections as $connection) {
             NestedHelper::set(
-                $this->connectionsDirectMap,
+                $this->edgesDirectMap,
                 [$connection->getFromId(), $connection->getId()],
                 [$connection->getType(), $connection->getToId()]
             );
 
             NestedHelper::set(
-                $this->connectionsReverseMap,
+                $this->edgesReverseMap,
                 [$connection->getToId(), $connection->getId()],
                 [$connection->getType(), $connection->getFromId()]
             );
@@ -73,7 +73,7 @@ class SimpleGraphRepository implements GraphRepositoryInterface
     public function getNextVertexes(VertexInterface $vertex, ?FilterConditionInterface $condition = null): array
     {
         return $this->getLinkedVertexesFromMap(
-            $this->connectionsDirectMap,
+            $this->edgesDirectMap,
             $vertex,
             $condition
         );
@@ -86,7 +86,7 @@ class SimpleGraphRepository implements GraphRepositoryInterface
     public function getPrevVertexes(VertexInterface $vertex, ?FilterConditionInterface $condition = null): array
     {
         return $this->getLinkedVertexesFromMap(
-            $this->connectionsReverseMap,
+            $this->edgesReverseMap,
             $vertex,
             $condition
         );
@@ -106,7 +106,7 @@ class SimpleGraphRepository implements GraphRepositoryInterface
     ): array {
         $result = [];
         foreach($source[$vertex->getId()] ?? [] as [$connType, $targetId]) {
-            if($this->hasConnectionType($connType, $condition)) {
+            if($this->hasEdgeType($connType, $condition)) {
                 $target = $this->getVertexById($targetId);
                 if($this->hasVertexType($target->getType(), $condition)) {
                     $result[] = $target;
@@ -129,16 +129,16 @@ class SimpleGraphRepository implements GraphRepositoryInterface
         return !in_array($type, $condition->getVertexTypesExclude());
     }
 
-    protected function hasConnectionType(string $type, ?FilterConditionInterface $condition): bool
+    protected function hasEdgeType(string $type, ?FilterConditionInterface $condition): bool
     {
         if($condition === null) {
             return true;
         }
 
-        if(($only = $condition->getConnectionTypesOnly()) !== null && !in_array($type, $only)) {
+        if(($only = $condition->getEdgeTypesOnly()) !== null && !in_array($type, $only)) {
             return false;
         }
 
-        return !in_array($type, $condition->getConnectionTypesExclude());
+        return !in_array($type, $condition->getEdgeTypesExclude());
     }
 }
