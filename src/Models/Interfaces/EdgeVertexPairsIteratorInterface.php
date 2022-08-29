@@ -10,7 +10,7 @@ use Iterator;
  * @package Smoren\GraphTools\Models\Interfaces
  * @extends \Iterator<EdgeInterface|null, VertexInterface>
  */
-interface EdgeVertexIteratorInterface extends Iterator, Countable
+interface EdgeVertexPairsIteratorInterface extends Iterator, Countable
 {
     public function current(): VertexInterface;
     public function next(): void;

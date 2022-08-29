@@ -3,14 +3,14 @@
 namespace Smoren\GraphTools\Models;
 
 use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
-use Smoren\GraphTools\Models\Interfaces\EdgeVertexIteratorInterface;
+use Smoren\GraphTools\Models\Interfaces\EdgeVertexPairsIteratorInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 /**
  * Class EdgeVertexIterator
  * @package Smoren\GraphTools\Models
  */
-class EdgeVertexIterator implements EdgeVertexIteratorInterface
+class EdgeVertexPairsIterator implements EdgeVertexPairsIteratorInterface
 {
     /**
      * @var array<EdgeVertexPair>
