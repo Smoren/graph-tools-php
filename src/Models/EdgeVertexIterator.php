@@ -44,7 +44,7 @@ class EdgeVertexIterator implements EdgeVertexIteratorInterface
 
     public function valid(): bool
     {
-        return isset($this->source[$this->index]);
+        return $this->index < $this->count();
     }
 
     public function rewind(): void
