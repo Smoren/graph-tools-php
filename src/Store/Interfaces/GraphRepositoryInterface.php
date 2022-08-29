@@ -3,6 +3,7 @@
 namespace Smoren\GraphTools\Store\Interfaces;
 
 use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
+use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 interface GraphRepositoryInterface
@@ -12,6 +13,12 @@ interface GraphRepositoryInterface
      * @return VertexInterface
      */
     public function getVertexById(string $id): VertexInterface;
+
+    /**
+     * @param string $id
+     * @return EdgeInterface
+     */
+    public function getEdgeById(string $id): EdgeInterface;
 
     /**
      * @param VertexInterface $vertex

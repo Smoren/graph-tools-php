@@ -76,6 +76,21 @@ class SimpleGraphRepository implements GraphRepositoryInterface
      * @inheritDoc
      * @throws RepositoryException
      */
+    public function getEdgeById(string $id): EdgeInterface
+    {
+        if(!isset($this->edgesMap[$id])) {
+            throw new RepositoryException(
+                "edge with id '{$id}' not exist",
+                RepositoryException::EDGE_NOT_FOUND
+            );
+        }
+        return $this->edgesMap[$id];
+    }
+
+    /**
+     * @inheritDoc
+     * @throws RepositoryException
+     */
     public function getNextVertexes(VertexInterface $vertex, ?FilterConditionInterface $condition = null): array
     {
         return $this->getLinkedVertexesFromMap(
@@ -112,7 +127,8 @@ class SimpleGraphRepository implements GraphRepositoryInterface
     ): array {
         $result = [];
         foreach($source[$vertex->getId()] ?? [] as $edgeId => [$edgeType, $targetId]) {
-            if($this->isSuitableEdge($this->edgesMap[$edgeId], $condition)) {
+            $edge = $this->getEdgeById($edgeId);
+            if($this->isSuitableEdge($edge, $condition)) {
                 $target = $this->getVertexById($targetId);
                 if($this->isSuitableVertex($target, $condition)) {
                     $result[] = $target;
