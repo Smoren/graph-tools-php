@@ -4,36 +4,58 @@ namespace Smoren\GraphTools\Models;
 
 use Countable;
 use Iterator;
+use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
+use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
+/**
+ * Class EdgeVertexIterator
+ * @package Smoren\GraphTools\Models
+ * @implements Iterator<EdgeInterface|null, VertexInterface>
+ */
 class EdgeVertexIterator implements Iterator, Countable
 {
-    public function current()
+    /**
+     * @var array<EdgeVertexPair>
+     */
+    protected array $source;
+    protected int $index = 0;
+
+    /**
+     * EdgeVertexIterator constructor.
+     * @param array<EdgeVertexPair> $source
+     */
+    public function __construct(array $source)
     {
-        // TODO: Implement current() method.
+        $this->source = $source;
     }
 
-    public function next()
+    public function current(): VertexInterface
     {
-        // TODO: Implement next() method.
+        return $this->source[$this->index]->getVertex();
     }
 
-    public function key()
+    public function next(): void
     {
-        // TODO: Implement key() method.
+        $this->index++;
     }
 
-    public function valid()
+    public function key(): ?EdgeInterface
     {
-        // TODO: Implement valid() method.
+        return $this->source[$this->index]->getEdge();
     }
 
-    public function rewind()
+    public function valid(): bool
     {
-        // TODO: Implement rewind() method.
+        return isset($this->source[$this->index]);
     }
 
-    public function count()
+    public function rewind(): void
     {
-        // TODO: Implement count() method.
+        $this->index = 0;
+    }
+
+    public function count(): int
+    {
+        return count($this->source);
     }
 }
