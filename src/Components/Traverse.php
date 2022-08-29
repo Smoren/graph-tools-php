@@ -36,11 +36,11 @@ class Traverse implements TraverseInterface
      * @inheritDoc
      * @return Generator<TraverseContextInterface>
      */
-    public function generate(VertexInterface $start, TraverseFilterInterface $filter): Generator
+    public function generate(VertexInterface $start, TraverseFilterInterface $filter, bool $unique = false): Generator
     {
         $branchContext = $this->createBranchContext(0, null, $start);
         $context = $this->createContext($start, $branchContext, []);
-        yield from $this->traverse($context, $filter);
+        yield from $this->traverse($context, $filter, $unique);
     }
 
     /**
@@ -74,19 +74,26 @@ class Traverse implements TraverseInterface
     /**
      * @param TraverseContextInterface $startContext
      * @param TraverseFilterInterface $filter
+     * @param bool $unique
      * @return Generator<TraverseContextInterface>
      */
     protected function traverse(
         TraverseContextInterface $startContext,
-        TraverseFilterInterface $filter
+        TraverseFilterInterface $filter,
+        bool $unique = false
     ): Generator {
         $lastBranchIndex = $startContext->getBranchContext()->getIndex();
+        $globalPassedVertexesMap = [];
 
         $contexts = new Queue([$startContext]);
         while(count($contexts)) {
             /** @var TraverseContextInterface $currentContext */
             $currentContext = $contexts->pop();
             $currentVertex = $currentContext->getVertex();
+
+            if($unique && isset($globalPassedVertexesMap[$currentVertex->getId()])) {
+                continue;
+            }
 
             if($filter->getHandleCondition($currentContext)->isSuitableVertex($currentContext->getVertex())) {
                 $cmd = (yield $currentContext);
@@ -103,6 +110,7 @@ class Traverse implements TraverseInterface
 
             $passedVertexesMap = $currentContext->getPassedVertexesMap();
             $passedVertexesMap[$currentVertex->getId()] = $currentVertex;
+            $globalPassedVertexesMap[$currentVertex->getId()] = $currentVertex;
 
             $nextVertexes = $this->getNextVertexes($currentVertex, $filter->getPassCondition($currentContext));
             foreach($nextVertexes as $i => $vertex) {
