@@ -16,6 +16,10 @@ class SimpleGraphRepository implements GraphRepositoryInterface
      */
     protected array $vertexMap = [];
     /**
+     * @var array<string, EdgeInterface>
+     */
+    protected array $edgesMap = [];
+    /**
      * @var array<string, array<string, string[]>>
      */
     protected array $edgesDirectMap = [];
@@ -26,27 +30,29 @@ class SimpleGraphRepository implements GraphRepositoryInterface
 
     /**
      * @param array<VertexInterface> $vertexes
-     * @param array<EdgeInterface> $connections
+     * @param array<EdgeInterface> $edges
      */
     public function __construct(
         array $vertexes,
-        array $connections
+        array $edges
     ) {
         foreach($vertexes as $vertex) {
             $this->vertexMap[$vertex->getId()] = $vertex;
         }
 
-        foreach($connections as $connection) {
+        foreach($edges as $edge) {
+            $this->edgesMap[$edge->getId()] = $edge;
+
             NestedHelper::set(
                 $this->edgesDirectMap,
-                [$connection->getFromId(), $connection->getId()],
-                [$connection->getType(), $connection->getToId()]
+                [$edge->getFromId(), $edge->getId()],
+                [$edge->getType(), $edge->getToId()]
             );
 
             NestedHelper::set(
                 $this->edgesReverseMap,
-                [$connection->getToId(), $connection->getId()],
-                [$connection->getType(), $connection->getFromId()]
+                [$edge->getToId(), $edge->getId()],
+                [$edge->getType(), $edge->getFromId()]
             );
         }
     }
@@ -105,10 +111,10 @@ class SimpleGraphRepository implements GraphRepositoryInterface
         ?FilterConditionInterface $condition
     ): array {
         $result = [];
-        foreach($source[$vertex->getId()] ?? [] as [$connType, $targetId]) {
-            if($this->hasEdgeType($connType, $condition)) {
+        foreach($source[$vertex->getId()] ?? [] as $edgeId => [$edgeType, $targetId]) {
+            if($this->isSuitableEdge($this->edgesMap[$edgeId], $condition)) {
                 $target = $this->getVertexById($targetId);
-                if($this->hasVertexType($target->getType(), $condition)) {
+                if($this->isSuitableVertex($target, $condition)) {
                     $result[] = $target;
                 }
             }
@@ -116,29 +122,23 @@ class SimpleGraphRepository implements GraphRepositoryInterface
         return $result;
     }
 
-    protected function hasVertexType(string $type, ?FilterConditionInterface $condition): bool
+    /**
+     * @param VertexInterface $vertex
+     * @param FilterConditionInterface|null $condition
+     * @return bool
+     */
+    protected function isSuitableVertex(VertexInterface $vertex, ?FilterConditionInterface $condition): bool
     {
-        if($condition === null) {
-            return true;
-        }
-
-        if(($only = $condition->getVertexTypesOnly()) !== null && !in_array($type, $only)) {
-            return false;
-        }
-
-        return !in_array($type, $condition->getVertexTypesExclude());
+        return ($condition === null) || $condition->isSuitableVertex($vertex);
     }
 
-    protected function hasEdgeType(string $type, ?FilterConditionInterface $condition): bool
+    /**
+     * @param EdgeInterface $edge
+     * @param FilterConditionInterface|null $condition
+     * @return bool
+     */
+    protected function isSuitableEdge(EdgeInterface $edge, ?FilterConditionInterface $condition): bool
     {
-        if($condition === null) {
-            return true;
-        }
-
-        if(($only = $condition->getEdgeTypesOnly()) !== null && !in_array($type, $only)) {
-            return false;
-        }
-
-        return !in_array($type, $condition->getEdgeTypesExclude());
+        return ($condition === null) || $condition->isSuitableEdge($edge);
     }
 }
