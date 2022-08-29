@@ -45,6 +45,15 @@ class TraverseContext implements TraverseContextInterface
     }
 
     /**
+     * @return VertexInterface|null
+     */
+    public function getPrevVertex(): ?VertexInterface
+    {
+        $candidate = end($this->passedVertexesMap);
+        return $candidate ?: null;
+    }
+
+    /**
      * @inheritDoc
      */
     public function getBranchContext(): TraverseBranchContextInterface

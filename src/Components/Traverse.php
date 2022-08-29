@@ -97,11 +97,9 @@ class Traverse implements TraverseInterface
 
             if($filter->getHandleCondition($currentContext)->isSuitableVertex($currentContext->getVertex())) {
                 $cmd = (yield $currentContext);
-                if($cmd !== null) {
-                    yield $currentContext;
-                }
                 switch($cmd) {
                     case static::STOP_BRANCH:
+                        yield $currentContext;
                         continue 2;
                     case static::STOP_ALL:
                         return;

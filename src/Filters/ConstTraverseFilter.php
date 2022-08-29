@@ -13,16 +13,19 @@ class ConstTraverseFilter implements TraverseFilterInterface
 {
     protected FilterConditionInterface $passCondition;
     protected VertexConditionInterface $handleCondition;
-    protected bool $preventLoop;
+    protected bool $preventLoopContinue;
+    protected bool $preventReturnBack;
 
     public function __construct(
         ?FilterConditionInterface $passCondition = null,
         ?VertexConditionInterface $handleCondition = null,
-        bool $preventLoop = true
+        bool $preventLoopContinue = true,
+        bool $preventReturnBack = false
     ) {
         $this->passCondition = $passCondition ?? new FilterCondition();
         $this->handleCondition = $handleCondition ?? new VertexCondition();
-        $this->preventLoop = $preventLoop;
+        $this->preventLoopContinue = $preventLoopContinue;
+        $this->preventReturnBack = $preventReturnBack;
     }
 
     /**
@@ -30,10 +33,15 @@ class ConstTraverseFilter implements TraverseFilterInterface
      */
     public function getPassCondition(TraverseContextInterface $context): FilterConditionInterface
     {
-        if($this->preventLoop && $context->isLoop()) {
-            return (new FilterCondition())->onlyVertexTypes([]);
+        $passCondition = $this->passCondition;
+
+        if($this->preventLoopContinue && $context->isLoop()) {
+            $passCondition = (clone $this->passCondition)->onlyVertexTypes([]);
+        } elseif($this->preventReturnBack && ($prevVertex = $context->getPrevVertex()) !== null) {
+            $passCondition = (clone $this->passCondition)->excludeVertexIds([$prevVertex->getId()]);
         }
-        return $this->passCondition;
+
+        return $passCondition;
     }
 
     /**

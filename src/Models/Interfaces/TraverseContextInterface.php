@@ -10,6 +10,11 @@ interface TraverseContextInterface
     public function getVertex(): VertexInterface;
 
     /**
+     * @return VertexInterface|null
+     */
+    public function getPrevVertex(): ?VertexInterface;
+
+    /**
      * @return TraverseBranchContextInterface
      */
     public function getBranchContext(): TraverseBranchContextInterface;

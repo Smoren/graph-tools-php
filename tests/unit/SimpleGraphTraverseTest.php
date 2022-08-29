@@ -12,6 +12,7 @@ use Smoren\GraphTools\Filters\ConstTraverseFilter;
 use Smoren\GraphTools\Filters\TransparentTraverseFilter;
 use Smoren\GraphTools\Helpers\TraverseHelper;
 use Smoren\GraphTools\Models\Edge;
+use Smoren\GraphTools\Models\Interfaces\TraverseContextInterface;
 use Smoren\GraphTools\Models\TraverseContext;
 use Smoren\GraphTools\Models\Vertex;
 use Smoren\GraphTools\Store\SimpleGraphRepository;
@@ -50,8 +51,8 @@ class SimpleGraphTraverseTest extends Unit
         $this->assertEquals([3, 2, 1], $vertexIds);
 
         $traverse = new Traverse($repo);
-        $contexts = $traverse->generate($repo->getVertexById(2), new TransparentTraverseFilter());
 
+        $contexts = $traverse->generate($repo->getVertexById(2), new TransparentTraverseFilter());
         $vertexIds = [];
         $loopsCount = 0;
         foreach($contexts as $context) {
@@ -64,6 +65,20 @@ class SimpleGraphTraverseTest extends Unit
         }
         $this->assertEquals([2, 3, 1], $vertexIds);
         $this->assertEquals(2, $loopsCount);
+
+        $contexts = $traverse->generate($repo->getVertexById(2), new TransparentTraverseFilter(), true);
+        $vertexIds = [];
+        foreach($contexts as $context) {
+            $vertexIds[] = $context->getVertex()->getId();
+        }
+        $this->assertEquals([2, 3, 1], $vertexIds);
+
+        $contexts = $traverse->generate($repo->getVertexById(2), new TransparentTraverseFilter(true, true));
+        $vertexIds = [];
+        foreach($contexts as $context) {
+            $vertexIds[] = $context->getVertex()->getId();
+        }
+        $this->assertEquals([2, 3, 1], $vertexIds);
     }
 
     public function testSimpleLoopChain()
@@ -80,13 +95,47 @@ class SimpleGraphTraverseTest extends Unit
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
-        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter());
 
+        /** @var Generator<TraverseContextInterface> $contexts */
+        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter());
         $vertexIds = [];
         foreach($contexts as $context) {
             $vertexIds[] = $context->getVertex()->getId();
         }
         $this->assertEquals([1, 2, 3, 1], $vertexIds);
+
+        /** @var Generator<TraverseContextInterface> $contexts */
+        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter(), true);
+        $vertexIds = [];
+        foreach($contexts as $context) {
+            $vertexIds[] = $context->getVertex()->getId();
+        }
+        $this->assertEquals([1, 2, 3], $vertexIds);
+
+        /** @var Generator<TraverseContextInterface> $contexts */
+        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter(false));
+        $loopsCount = 0;
+        $vertexIds = [];
+        foreach($contexts as $context) {
+            if($context->getVertex()->getId() === '1' && $loopsCount++ === 3) {
+                $contexts->send(Traverse::STOP_ALL);
+            }
+            $vertexIds[] = $context->getVertex()->getId();
+        }
+        $this->assertEquals([1, 2, 3, 1, 2, 3, 1, 2, 3, 1], $vertexIds);
+
+        /** @var Generator<TraverseContextInterface> $contexts */
+        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter(false));
+        $loopsCount = 0;
+        $vertexIds = [];
+        foreach($contexts as $context) {
+            if($context->getVertex()->getId() === '1' && $loopsCount++ === 3) {
+                $contexts->send(Traverse::STOP_ALL);
+                continue;
+            }
+            $vertexIds[] = $context->getVertex()->getId();
+        }
+        $this->assertEquals([1, 2, 3, 1, 2, 3, 1, 2, 3], $vertexIds);
     }
 
     public function testWeb()
@@ -112,10 +161,10 @@ class SimpleGraphTraverseTest extends Unit
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
+
         $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter());
-
         $branchMap = TraverseHelper::getBranches($contexts);
-
+        $this->assertCount(7, $branchMap);
         $this->assertEquals([1, 2, 3, 4, 1], NestedHelper::get($branchMap[0], 'id'));
         $this->assertEquals([1, 5, 6, 2, 3, 4, 1], NestedHelper::get($branchMap[1], 'id'));
         $this->assertEquals([1, 5, 3, 4, 1], NestedHelper::get($branchMap[2], 'id'));
@@ -123,6 +172,13 @@ class SimpleGraphTraverseTest extends Unit
         $this->assertEquals([1, 5, 3, 4, 5], NestedHelper::get($branchMap[4], 'id'));
         $this->assertEquals([1, 2, 3, 4, 5, 3], NestedHelper::get($branchMap[5], 'id'));
         $this->assertEquals([1, 5, 6, 2, 3, 4, 5], NestedHelper::get($branchMap[6], 'id'));
+
+
+        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter(), true);
+        $branchMap = TraverseHelper::getBranches($contexts);
+        $this->assertCount(2, $branchMap);
+        $this->assertEquals([1, 2, 3, 4], NestedHelper::get($branchMap[0], 'id'));
+        $this->assertEquals([1, 5, 6], NestedHelper::get($branchMap[1], 'id'));
 
         // TODO test for only vertex or connections types
     }
