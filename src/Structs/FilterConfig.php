@@ -7,6 +7,7 @@ class FilterConfig
     public const PREVENT_LOOP_PASS = 1;
     public const PREVENT_LOOP_HANDLE = 2;
     public const PREVENT_RETURN_BACK = 3;
+    public const HANDLE_UNIQUE_VERTEXES = 4;
 
     /**
      * @var array<int>

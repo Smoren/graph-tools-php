@@ -48,13 +48,13 @@ class ConstTraverseFilter implements TraverseFilterInterface
         $passCondition = $this->passCondition;
 
         if(
-            $context->isLoop()
-            && $this->config->isOn(FilterConfig::PREVENT_LOOP_PASS)
+            $this->config->isOn(FilterConfig::PREVENT_LOOP_PASS)
+            && $context->isLoop()
         ) {
             $passCondition = (clone $this->passCondition)->onlyVertexTypes([]);
         } elseif(
-            ($prevVertex = $context->getPrevVertex()) !== null
-            && $this->config->isOn(FilterConfig::PREVENT_RETURN_BACK)
+            $this->config->isOn(FilterConfig::PREVENT_RETURN_BACK)
+            && ($prevVertex = $context->getPrevVertex()) !== null
         ) {
             $passCondition = (clone $this->passCondition)->excludeVertexIds([$prevVertex->getId()]);
         }
@@ -69,10 +69,16 @@ class ConstTraverseFilter implements TraverseFilterInterface
     public function getHandleCondition(TraverseContextInterface $context): VertexConditionInterface
     {
         $handleCondition = $this->handleCondition;
+        $globalPassed = $context->getGlobalPassedVertexesMap();
 
         if(
-            $context->isLoop()
-            && $this->config->isOn(FilterConfig::PREVENT_LOOP_HANDLE)
+            (
+                $this->config->isOn(FilterConfig::PREVENT_LOOP_HANDLE)
+                && $context->isLoop()
+            ) || (
+                $this->config->isOn(FilterConfig::HANDLE_UNIQUE_VERTEXES)
+                && isset($globalPassed[$context->getVertex()->getId()])
+            )
         ) {
             $handleCondition = (clone $this->handleCondition)->onlyVertexTypes([]);
         }

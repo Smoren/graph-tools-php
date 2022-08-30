@@ -39,26 +39,25 @@ class Traverse implements TraverseInterface
      * @inheritDoc
      * @return Generator<TraverseContextInterface>
      */
-    public function generate(VertexInterface $start, TraverseFilterInterface $filter, bool $unique = false): Generator
+    public function generate(VertexInterface $start, TraverseFilterInterface $filter): Generator
     {
         $branchContext = $this->createBranchContext(0, null, $start);
-        $context = $this->createContext($start, null, $branchContext, []);
-        yield from $this->traverse($context, $filter, $unique);
+        $globalPassedVertexesMap = [];
+        $context = $this->createContext($start, null, $branchContext, [], $globalPassedVertexesMap);
+        yield from $this->traverse($context, $filter);
     }
 
     /**
      * @param TraverseContextInterface $startContext
      * @param TraverseFilterInterface $filter
-     * @param bool $unique
      * @return Generator<TraverseContextInterface>
      */
     protected function traverse(
         TraverseContextInterface $startContext,
-        TraverseFilterInterface $filter,
-        bool $unique = false
+        TraverseFilterInterface $filter
     ): Generator {
         $lastBranchIndex = $startContext->getBranchContext()->getIndex();
-        $globalPassedVertexesMap = [];
+        $globalPassedVertexesMap = $startContext->getGlobalPassedVertexesMap();
 
         $contexts = new Queue([$startContext]);
         while(count($contexts)) {
@@ -66,10 +65,6 @@ class Traverse implements TraverseInterface
             $currentContext = $contexts->pop();
             $currentVertex = $currentContext->getVertex();
             $currentEdge = $currentContext->getEdge();
-
-            if($unique && isset($globalPassedVertexesMap[$currentVertex->getId()])) {
-                continue;
-            }
 
             if($filter->getHandleCondition($currentContext)->isSuitableVertex($currentContext->getVertex())) {
                 $cmd = (yield $currentEdge => $currentContext);
@@ -104,7 +99,8 @@ class Traverse implements TraverseInterface
                     $vertex,
                     $edge,
                     $nextBranchContext,
-                    $passedVertexesMap
+                    $passedVertexesMap,
+                    $globalPassedVertexesMap
                 ));
 
                 ++$i;
@@ -132,15 +128,17 @@ class Traverse implements TraverseInterface
      * @param EdgeInterface|null $edge
      * @param TraverseBranchContextInterface $branchContext
      * @param array<VertexInterface> $passedVertexesMap
+     * @param array<VertexInterface> $globalPassedVertexesMap
      * @return TraverseContextInterface
      */
     protected function createContext(
         VertexInterface $vertex,
         ?EdgeInterface $edge,
         TraverseBranchContextInterface $branchContext,
-        array $passedVertexesMap
+        array $passedVertexesMap,
+        array &$globalPassedVertexesMap
     ): TraverseContextInterface {
-        return new TraverseContext($vertex, $edge, $branchContext, $passedVertexesMap);
+        return new TraverseContext($vertex, $edge, $branchContext, $passedVertexesMap, $globalPassedVertexesMap);
     }
 
     /**

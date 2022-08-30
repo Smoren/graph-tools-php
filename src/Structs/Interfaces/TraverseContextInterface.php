@@ -33,6 +33,11 @@ interface TraverseContextInterface
     public function getPassedVertexesMap(): array;
 
     /**
+     * @return array<string, VertexInterface>
+     */
+    public function getGlobalPassedVertexesMap(): array;
+
+    /**
      * @return bool
      */
     public function isLoop(): bool;

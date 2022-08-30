@@ -207,8 +207,7 @@ class SimpleGraphTraverseTest extends Unit
 
         $contexts = $traverse->generate(
             $repo->getVertexById(1),
-            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS, FilterConfig::PREVENT_LOOP_HANDLE]),
-            true // TODO ???
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS, FilterConfig::HANDLE_UNIQUE_VERTEXES])
         );
         $branchMap = TraverseHelper::getBranches($contexts);
         $this->assertCount(2, $branchMap);

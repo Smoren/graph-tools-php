@@ -25,23 +25,30 @@ class TraverseContext implements TraverseContextInterface
      * @var array<string, VertexInterface>
      */
     protected array $passedVertexesMap;
+    /**
+     * @var array<string, VertexInterface>
+     */
+    protected array $globalPassedVertexesMap;
 
     /**
      * @param VertexInterface $vertex
      * @param EdgeInterface|null $edge
      * @param TraverseBranchContextInterface $branchContext
      * @param array<string, VertexInterface> $passedVertexesMap
+     * @param array<string, VertexInterface> $globalPassedVertexesMap
      */
     public function __construct(
         VertexInterface $vertex,
         ?EdgeInterface $edge,
         TraverseBranchContextInterface $branchContext,
-        array $passedVertexesMap
+        array $passedVertexesMap,
+        array &$globalPassedVertexesMap
     ) {
         $this->vertex = $vertex;
         $this->edge = $edge;
         $this->branchContext = $branchContext;
         $this->passedVertexesMap = $passedVertexesMap;
+        $this->globalPassedVertexesMap = &$globalPassedVertexesMap;
     }
 
     /**
@@ -83,6 +90,14 @@ class TraverseContext implements TraverseContextInterface
     public function getPassedVertexesMap(): array
     {
         return $this->passedVertexesMap;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getGlobalPassedVertexesMap(): array
+    {
+        return $this->globalPassedVertexesMap;
     }
 
     /**

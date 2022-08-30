@@ -12,8 +12,7 @@ interface TraverseInterface
     /**
      * @param VertexInterface $start
      * @param TraverseFilterInterface $filter
-     * @param bool $unique
      * @return Generator<TraverseContextInterface>
      */
-    public function generate(VertexInterface $start, TraverseFilterInterface $filter, bool $unique = false): Generator;
+    public function generate(VertexInterface $start, TraverseFilterInterface $filter): Generator;
 }
