@@ -15,25 +15,26 @@ use Smoren\NestedAccessor\Helpers\NestedHelper;
 class SimpleGraphRepository implements GraphRepositoryInterface
 {
     /**
-     * @var array<string, VertexInterface>
+     * @var array<string, VertexInterface> vertexes map by id
      */
     protected array $vertexMap = [];
     /**
-     * @var array<string, EdgeInterface>
+     * @var array<string, EdgeInterface> edges map by id
      */
     protected array $edgesMap = [];
     /**
-     * @var array<string, array<string, string[]>>
+     * @var array<string, array<string, string[]>> links map: array<vertexFromId array<edgeId, [edgeType, vertexToId]>>
      */
     protected array $edgesDirectMap = [];
     /**
-     * @var array<string, array<string, string[]>>
+     * @var array<string, array<string, string[]>> links map: array<vertexToId array<edgeId, [edgeType, vertexFromId]>>
      */
     protected array $edgesReverseMap = [];
 
     /**
-     * @param array<VertexInterface> $vertexes
-     * @param array<EdgeInterface> $edges
+     * SimpleGraphRepository constructor
+     * @param array<VertexInterface> $vertexes vertexes list
+     * @param array<EdgeInterface> $edges edges list
      */
     public function __construct(
         array $vertexes,

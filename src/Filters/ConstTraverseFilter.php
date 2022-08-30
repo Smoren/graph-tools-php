@@ -10,25 +10,30 @@ use Smoren\GraphTools\Filters\Interfaces\TraverseFilterInterface;
 use Smoren\GraphTools\Structs\FilterConfig;
 use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
 
+/**
+ * Constant traverse filter
+ * @author <ofigate@gmail.com> Smoren
+ */
 class ConstTraverseFilter implements TraverseFilterInterface
 {
     /**
-     * @var FilterConditionInterface|FilterCondition
+     * @var FilterConditionInterface|FilterCondition condition of next traverse behavior
      */
     protected FilterConditionInterface $passCondition;
     /**
-     * @var VertexConditionInterface|VertexCondition
+     * @var VertexConditionInterface|VertexCondition condition of current vertex handling
      */
     protected VertexConditionInterface $handleCondition;
     /**
-     * @var FilterConfig
+     * @var FilterConfig filter config
      */
     protected FilterConfig $config;
 
     /**
-     * @param FilterConditionInterface|null $passCondition
-     * @param VertexConditionInterface|null $handleCondition
-     * @param array<int> $config
+     * ConstTraverseFilter constructor
+     * @param FilterConditionInterface|null $passCondition condition of next traverse behavior
+     * @param VertexConditionInterface|null $handleCondition condition of current vertex handling
+     * @param array<int> $config filter config
      */
     public function __construct(
         ?FilterConditionInterface $passCondition = null,

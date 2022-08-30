@@ -4,9 +4,12 @@ namespace Smoren\GraphTools\Filters;
 
 use Smoren\GraphTools\Filters\Interfaces\TraverseFilterInterface;
 
+/**
+ * Transparent traverse filter
+ * @author <ofigate@gmail.com> Smoren
+ */
 class TransparentTraverseFilter extends ConstTraverseFilter implements TraverseFilterInterface
 {
-    // bool $preventLoopContinue = true, bool $preventReturnBack = false
     /**
      * @param array<int> $config
      */

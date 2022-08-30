@@ -6,17 +6,21 @@ use Generator;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
 
+/**
+ * Helper for getting traversing results
+ * @author <ofigate@gmail.com> Smoren
+ */
 class TraverseHelper
 {
     /**
-     * @param Generator $contexts
-     * @param callable|null $callback
-     * @return array<int, array<VertexInterface>>
+     * Returns branches of traversing (every branch as array of Vertex objects)
+     * @param Generator<TraverseContextInterface> $contexts traverse contexts' iterator
+     * @param callable|null $callback action to do for each context
+     * @return array<int, array<VertexInterface>> branch list
      */
     public static function getBranches(Generator $contexts, ?callable $callback = null): array
     {
         $branchMap = [];
-        /** @var TraverseContextInterface $context */
         foreach($contexts as $context) {
             if(is_callable($callback)) {
                 $callback($context, $contexts);
