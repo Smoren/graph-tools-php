@@ -32,6 +32,7 @@ class Edge implements EdgeInterface
      * @param non-empty-string $type
      * @param non-empty-string $fromId
      * @param non-empty-string $toId
+     * @param float $weight
      */
     public function __construct(string $id, string $type, string $fromId, string $toId, float $weight = 1)
     {
