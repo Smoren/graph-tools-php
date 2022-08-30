@@ -25,6 +25,11 @@ class ConstTraverseFilter implements TraverseFilterInterface
      */
     protected FilterConfig $config;
 
+    /**
+     * @param FilterConditionInterface|null $passCondition
+     * @param VertexConditionInterface|null $handleCondition
+     * @param array<int> $config
+     */
     public function __construct(
         ?FilterConditionInterface $passCondition = null,
         ?VertexConditionInterface $handleCondition = null,
