@@ -4,25 +4,30 @@ namespace Smoren\GraphTools\Models;
 
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
+/**
+ * Graph vertex's class
+ * @author <ofigate@gmail.com> Smoren
+ */
 class Vertex implements VertexInterface
 {
     /**
-     * @var non-empty-string
+     * @var non-empty-string vertex's id
      */
     protected string $id;
     /**
-     * @var non-empty-string
+     * @var non-empty-string vertex's type
      */
     protected string $type;
     /**
-     * @var mixed
+     * @var mixed custom extra data
      */
     protected $data;
 
     /**
-     * @param non-empty-string $id
-     * @param non-empty-string $type
-     * @param mixed $data
+     * Vertex constructor
+     * @param non-empty-string $id vertex's id
+     * @param non-empty-string $type vertex's type
+     * @param mixed $data custom extra data
      */
     public function __construct(string $id, string $type, $data)
     {

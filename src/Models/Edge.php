@@ -4,35 +4,40 @@ namespace Smoren\GraphTools\Models;
 
 use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
 
+/**
+ * Graph edge's class
+ * @author <ofigate@gmail.com> Smoren
+ */
 class Edge implements EdgeInterface
 {
     /**
-     * @var non-empty-string
+     * @var non-empty-string edge's id
      */
     protected string $id;
     /**
-     * @var non-empty-string
+     * @var non-empty-string edge's type
      */
     protected string $type;
     /**
-     * @var non-empty-string
+     * @var non-empty-string start vertex's id of edge
      */
     protected string $fromId;
     /**
-     * @var non-empty-string
+     * @var non-empty-string end vertex's id of edge
      */
     protected string $toId;
     /**
-     * @var float
+     * @var float edge's weight
      */
     protected float $weight;
 
     /**
-     * @param non-empty-string $id
-     * @param non-empty-string $type
-     * @param non-empty-string $fromId
-     * @param non-empty-string $toId
-     * @param float $weight
+     * Edge constructor
+     * @param non-empty-string $id edge's id
+     * @param non-empty-string $type edge's type
+     * @param non-empty-string $fromId start vertex's id of edge
+     * @param non-empty-string $toId end vertex's id of edge
+     * @param float $weight edge's weight
      */
     public function __construct(string $id, string $type, string $fromId, string $toId, float $weight = 1)
     {
