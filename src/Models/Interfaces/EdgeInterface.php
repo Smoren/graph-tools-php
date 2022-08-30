@@ -23,4 +23,9 @@ interface EdgeInterface
      * @return non-empty-string
      */
     public function getToId(): string;
+
+    /**
+     * @return float
+     */
+    public function getWeight(): float;
 }

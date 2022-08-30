@@ -22,6 +22,10 @@ class Edge implements EdgeInterface
      * @var non-empty-string
      */
     protected string $toId;
+    /**
+     * @var float
+     */
+    protected float $weight;
 
     /**
      * @param non-empty-string $id
@@ -29,12 +33,13 @@ class Edge implements EdgeInterface
      * @param non-empty-string $fromId
      * @param non-empty-string $toId
      */
-    public function __construct(string $id, string $type, string $fromId, string $toId)
+    public function __construct(string $id, string $type, string $fromId, string $toId, float $weight = 1)
     {
         $this->id = $id;
         $this->type = $type;
         $this->fromId = $fromId;
         $this->toId = $toId;
+        $this->weight = $weight;
     }
 
     /**
@@ -67,5 +72,13 @@ class Edge implements EdgeInterface
     public function getToId(): string
     {
         return $this->toId;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getWeight(): float
+    {
+        return $this->weight;
     }
 }
