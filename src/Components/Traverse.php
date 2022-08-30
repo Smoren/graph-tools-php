@@ -10,12 +10,12 @@ use Smoren\GraphTools\Filters\Interfaces\TraverseFilterInterface;
 use Smoren\GraphTools\Models\EdgeVertexPairsIterator;
 use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
 use Smoren\GraphTools\Models\Interfaces\EdgeVertexPairsIteratorInterface;
-use Smoren\GraphTools\Models\Interfaces\TraverseBranchContextInterface;
-use Smoren\GraphTools\Models\Interfaces\TraverseContextInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
-use Smoren\GraphTools\Models\TraverseBranchContext;
-use Smoren\GraphTools\Models\TraverseContext;
 use Smoren\GraphTools\Store\Interfaces\GraphRepositoryInterface;
+use Smoren\GraphTools\Structs\Interfaces\TraverseBranchContextInterface;
+use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
+use Smoren\GraphTools\Structs\TraverseBranchContext;
+use Smoren\GraphTools\Structs\TraverseContext;
 
 class Traverse implements TraverseInterface
 {

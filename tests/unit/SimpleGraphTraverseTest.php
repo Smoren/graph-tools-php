@@ -12,10 +12,11 @@ use Smoren\GraphTools\Filters\ConstTraverseFilter;
 use Smoren\GraphTools\Filters\TransparentTraverseFilter;
 use Smoren\GraphTools\Helpers\TraverseHelper;
 use Smoren\GraphTools\Models\Edge;
-use Smoren\GraphTools\Models\Interfaces\TraverseContextInterface;
-use Smoren\GraphTools\Models\TraverseContext;
 use Smoren\GraphTools\Models\Vertex;
 use Smoren\GraphTools\Store\SimpleGraphRepository;
+use Smoren\GraphTools\Structs\FilterConfig;
+use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
+use Smoren\GraphTools\Structs\TraverseContext;
 use Smoren\NestedAccessor\Helpers\NestedHelper;
 
 class SimpleGraphTraverseTest extends Unit
@@ -33,7 +34,10 @@ class SimpleGraphTraverseTest extends Unit
         ];
         $repo = new SimpleGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
-        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter());
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS])
+        );
 
         $vertexIds = [];
         foreach($contexts as $context) {
@@ -42,7 +46,10 @@ class SimpleGraphTraverseTest extends Unit
         $this->assertEquals([1, 2, 3], $vertexIds);
 
         $traverse = new TraverseReverse($repo);
-        $contexts = $traverse->generate($repo->getVertexById(3), new TransparentTraverseFilter());
+        $contexts = $traverse->generate(
+            $repo->getVertexById(3),
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS])
+        );
 
         $vertexIds = [];
         foreach($contexts as $context) {
@@ -52,7 +59,10 @@ class SimpleGraphTraverseTest extends Unit
 
         $traverse = new Traverse($repo);
 
-        $contexts = $traverse->generate($repo->getVertexById(2), new TransparentTraverseFilter());
+        $contexts = $traverse->generate(
+            $repo->getVertexById(2),
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS])
+        );
         $vertexIds = [];
         $loopsCount = 0;
         foreach($contexts as $context) {
@@ -66,14 +76,21 @@ class SimpleGraphTraverseTest extends Unit
         $this->assertEquals([2, 3, 1], $vertexIds);
         $this->assertEquals(2, $loopsCount);
 
-        $contexts = $traverse->generate($repo->getVertexById(2), new TransparentTraverseFilter(), true);
+        $contexts = $traverse->generate(
+            $repo->getVertexById(2),
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS]),
+            true
+        );
         $vertexIds = [];
         foreach($contexts as $context) {
             $vertexIds[] = $context->getVertex()->getId();
         }
         $this->assertEquals([2, 3, 1], $vertexIds);
 
-        $contexts = $traverse->generate($repo->getVertexById(2), new TransparentTraverseFilter(true, true));
+        $contexts = $traverse->generate(
+            $repo->getVertexById(2),
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS, FilterConfig::PREVENT_RETURN_BACK])
+        );
         $vertexIds = [];
         foreach($contexts as $context) {
             $vertexIds[] = $context->getVertex()->getId();
@@ -97,7 +114,10 @@ class SimpleGraphTraverseTest extends Unit
         $traverse = new TraverseDirect($repo);
 
         /** @var Generator<TraverseContextInterface> $contexts */
-        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter());
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS])
+        );
         $vertexIds = [];
         foreach($contexts as $context) {
             $vertexIds[] = $context->getVertex()->getId();
@@ -105,7 +125,11 @@ class SimpleGraphTraverseTest extends Unit
         $this->assertEquals([1, 2, 3, 1], $vertexIds);
 
         /** @var Generator<TraverseContextInterface> $contexts */
-        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter(), true);
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS]),
+            true
+        );
         $vertexIds = [];
         foreach($contexts as $context) {
             $vertexIds[] = $context->getVertex()->getId();
@@ -113,7 +137,10 @@ class SimpleGraphTraverseTest extends Unit
         $this->assertEquals([1, 2, 3], $vertexIds);
 
         /** @var Generator<TraverseContextInterface> $contexts */
-        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter(false));
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new TransparentTraverseFilter([])
+        );
         $loopsCount = 0;
         $vertexIds = [];
         foreach($contexts as $context) {
@@ -125,7 +152,10 @@ class SimpleGraphTraverseTest extends Unit
         $this->assertEquals([1, 2, 3, 1, 2, 3, 1, 2, 3, 1], $vertexIds);
 
         /** @var Generator<TraverseContextInterface> $contexts */
-        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter(false));
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new TransparentTraverseFilter([])
+        );
         $loopsCount = 0;
         $vertexIds = [];
         foreach($contexts as $context) {
@@ -162,7 +192,10 @@ class SimpleGraphTraverseTest extends Unit
         $repo = new SimpleGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
 
-        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter());
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS])
+        );
         $branchMap = TraverseHelper::getBranches($contexts);
         $this->assertCount(7, $branchMap);
         $this->assertEquals([1, 2, 3, 4, 1], NestedHelper::get($branchMap[0], 'id'));
@@ -174,7 +207,11 @@ class SimpleGraphTraverseTest extends Unit
         $this->assertEquals([1, 5, 6, 2, 3, 4, 5], NestedHelper::get($branchMap[6], 'id'));
 
 
-        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter(), true);
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS]),
+            true
+        );
         $branchMap = TraverseHelper::getBranches($contexts);
         $this->assertCount(2, $branchMap);
         $this->assertEquals([1, 2, 3, 4], NestedHelper::get($branchMap[0], 'id'));
@@ -208,14 +245,20 @@ class SimpleGraphTraverseTest extends Unit
         $repo = new SimpleGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
 
-        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter());
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS])
+        );
         $branchMap = TraverseHelper::getBranches($contexts);
         $this->assertCount(3, $branchMap);
         $this->assertEquals([1, 2, 3, 4], NestedHelper::get($branchMap[0], 'id'));
         $this->assertEquals([1, 2, 5, 6], NestedHelper::get($branchMap[1], 'id'));
         $this->assertEquals([1, 2, 7, 8], NestedHelper::get($branchMap[2], 'id'));
 
-        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter());
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS])
+        );
         $branchMap = TraverseHelper::getBranches(
             $contexts,
             function(TraverseContext $context, Generator $contexts) {
@@ -229,14 +272,21 @@ class SimpleGraphTraverseTest extends Unit
         $this->assertEquals([1, 2, 5, 6], NestedHelper::get($branchMap[1], 'id'));
         $this->assertEquals([1, 2, 7, 8], NestedHelper::get($branchMap[2], 'id'));
 
-        $filter = new ConstTraverseFilter((new FilterCondition())->excludeVertexTypes([2]));
+        $filter = new ConstTraverseFilter(
+            (new FilterCondition())->excludeVertexTypes([2]),
+            null,
+            [FilterConfig::PREVENT_LOOP_PASS]
+        );
         $contexts = $traverse->generate($repo->getVertexById(1), $filter);
         $branchMap = TraverseHelper::getBranches($contexts);
         $this->assertCount(2, $branchMap);
         $this->assertEquals([1, 2, 5, 6], NestedHelper::get($branchMap[0], 'id'));
         $this->assertEquals([1, 2, 7, 8], NestedHelper::get($branchMap[1], 'id'));
 
-        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter());
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS])
+        );
         $branchMap = TraverseHelper::getBranches(
             $contexts,
             function(TraverseContext $context, Generator $contexts) {
@@ -250,14 +300,21 @@ class SimpleGraphTraverseTest extends Unit
         $this->assertEquals([1, 2, 5], NestedHelper::get($branchMap[1], 'id'));
         $this->assertEquals([1, 2, 7, 8], NestedHelper::get($branchMap[2], 'id'));
 
-        $filter = new ConstTraverseFilter((new FilterCondition())->excludeVertexTypes([3]));
+        $filter = new ConstTraverseFilter(
+            (new FilterCondition())->excludeVertexTypes([3]),
+            null,
+            [FilterConfig::PREVENT_LOOP_PASS]
+        );
         $contexts = $traverse->generate($repo->getVertexById(1), $filter);
         $branchMap = TraverseHelper::getBranches($contexts);
         $this->assertCount(2, $branchMap);
         $this->assertEquals([1, 2, 3, 4], NestedHelper::get($branchMap[0], 'id'));
         $this->assertEquals([1, 2, 7, 8], NestedHelper::get($branchMap[1], 'id'));
 
-        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter());
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS])
+        );
         $branchMap = TraverseHelper::getBranches(
             $contexts,
             function(TraverseContext $context, Generator $contexts) {
@@ -271,7 +328,11 @@ class SimpleGraphTraverseTest extends Unit
         $this->assertEquals([1, 2, 5], NestedHelper::get($branchMap[1], 'id'));
         $this->assertEquals([1, 2, 7, 8], NestedHelper::get($branchMap[2], 'id'));
 
-        $filter = new ConstTraverseFilter((new FilterCondition())->excludeVertexTypes([2, 3]));
+        $filter = new ConstTraverseFilter(
+            (new FilterCondition())->excludeVertexTypes([2, 3]),
+            null,
+            [FilterConfig::PREVENT_LOOP_PASS]
+        );
         $contexts = $traverse->generate($repo->getVertexById(1), $filter);
         $branchMap = TraverseHelper::getBranches($contexts);
         $this->assertCount(1, $branchMap);
@@ -303,7 +364,10 @@ class SimpleGraphTraverseTest extends Unit
         $repo = new SimpleGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
 
-        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter());
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS])
+        );
         $branches = TraverseHelper::getBranches($contexts);
         $this->assertCount(4, $branches);
         $this->assertEquals([1, 2, 3, 5], NestedHelper::get($branches[0], 'id'));

@@ -3,8 +3,8 @@
 namespace Smoren\GraphTools\Helpers;
 
 use Generator;
-use Smoren\GraphTools\Models\Interfaces\TraverseContextInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
+use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
 
 class TraverseHelper
 {

@@ -6,8 +6,12 @@ use Smoren\GraphTools\Filters\Interfaces\TraverseFilterInterface;
 
 class TransparentTraverseFilter extends ConstTraverseFilter implements TraverseFilterInterface
 {
-    public function __construct(bool $preventLoopContinue = true, bool $preventReturnBack = false)
+    // bool $preventLoopContinue = true, bool $preventReturnBack = false
+    /**
+     * @param array<int> $config
+     */
+    public function __construct(array $config = [])
     {
-        parent::__construct(null, null, $preventLoopContinue, $preventReturnBack);
+        parent::__construct(null, null, $config);
     }
 }

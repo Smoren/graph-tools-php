@@ -1,6 +1,8 @@
 <?php
 
-namespace Smoren\GraphTools\Models\Interfaces;
+namespace Smoren\GraphTools\Structs\Interfaces;
+
+use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 interface TraverseBranchContextInterface
 {

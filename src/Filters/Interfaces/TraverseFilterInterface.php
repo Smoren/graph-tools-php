@@ -4,7 +4,7 @@ namespace Smoren\GraphTools\Filters\Interfaces;
 
 use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Conditions\Interfaces\VertexConditionInterface;
-use Smoren\GraphTools\Models\Interfaces\TraverseContextInterface;
+use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
 
 interface TraverseFilterInterface
 {

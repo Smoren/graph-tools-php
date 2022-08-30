@@ -7,25 +7,32 @@ use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Conditions\Interfaces\VertexConditionInterface;
 use Smoren\GraphTools\Conditions\VertexCondition;
 use Smoren\GraphTools\Filters\Interfaces\TraverseFilterInterface;
-use Smoren\GraphTools\Models\Interfaces\TraverseContextInterface;
+use Smoren\GraphTools\Structs\FilterConfig;
+use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
 
 class ConstTraverseFilter implements TraverseFilterInterface
 {
+    /**
+     * @var FilterConditionInterface|FilterCondition
+     */
     protected FilterConditionInterface $passCondition;
+    /**
+     * @var VertexConditionInterface|VertexCondition
+     */
     protected VertexConditionInterface $handleCondition;
-    protected bool $preventLoopContinue;
-    protected bool $preventReturnBack;
+    /**
+     * @var FilterConfig
+     */
+    protected FilterConfig $config;
 
     public function __construct(
         ?FilterConditionInterface $passCondition = null,
         ?VertexConditionInterface $handleCondition = null,
-        bool $preventLoopContinue = true,
-        bool $preventReturnBack = false
+        array $config = []
     ) {
         $this->passCondition = $passCondition ?? new FilterCondition();
         $this->handleCondition = $handleCondition ?? new VertexCondition();
-        $this->preventLoopContinue = $preventLoopContinue;
-        $this->preventReturnBack = $preventReturnBack;
+        $this->config = new FilterConfig($config);
     }
 
     /**
@@ -35,9 +42,15 @@ class ConstTraverseFilter implements TraverseFilterInterface
     {
         $passCondition = $this->passCondition;
 
-        if($this->preventLoopContinue && $context->isLoop()) {
+        if(
+            $context->isLoop()
+            && $this->config->isOn(FilterConfig::PREVENT_LOOP_PASS)
+        ) {
             $passCondition = (clone $this->passCondition)->onlyVertexTypes([]);
-        } elseif($this->preventReturnBack && ($prevVertex = $context->getPrevVertex()) !== null) {
+        } elseif(
+            ($prevVertex = $context->getPrevVertex()) !== null
+            && $this->config->isOn(FilterConfig::PREVENT_RETURN_BACK)
+        ) {
             $passCondition = (clone $this->passCondition)->excludeVertexIds([$prevVertex->getId()]);
         }
 
@@ -50,6 +63,15 @@ class ConstTraverseFilter implements TraverseFilterInterface
      */
     public function getHandleCondition(TraverseContextInterface $context): VertexConditionInterface
     {
-        return $this->handleCondition;
+        $handleCondition = $this->handleCondition;
+
+        if(
+            $context->isLoop()
+            && $this->config->isOn(FilterConfig::PREVENT_LOOP_HANDLE)
+        ) {
+            $handleCondition = (clone $this->handleCondition)->onlyVertexTypes([]);
+        }
+
+        return $handleCondition;
     }
 }
