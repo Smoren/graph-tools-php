@@ -1,19 +1,19 @@
 <?php
 
-namespace Smoren\GraphTools\Models;
+namespace Smoren\GraphTools\Structs;
 
 use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
-use Smoren\GraphTools\Models\Interfaces\EdgeVertexPairsIteratorInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
+use Smoren\GraphTools\Structs\Interfaces\TraverseStepIteratorInterface;
 
 /**
  * Class EdgeVertexIterator
  * @author <ofigate@gmail.com> Smoren
  */
-class EdgeVertexPairsIterator implements EdgeVertexPairsIteratorInterface
+class TraverseStepIterator implements TraverseStepIteratorInterface
 {
     /**
-     * @var array<EdgeVertexPair> source to iterate
+     * @var array<TraverseStepItem> source to iterate
      */
     protected array $source;
     /**
@@ -24,20 +24,20 @@ class EdgeVertexPairsIterator implements EdgeVertexPairsIteratorInterface
     /**
      * @inheritDoc
      */
-    public static function combine(EdgeVertexPairsIteratorInterface ...$iterators): EdgeVertexPairsIteratorInterface
+    public static function combine(TraverseStepIteratorInterface ...$iterators): TraverseStepIteratorInterface
     {
         $source = [];
         foreach($iterators as $iterator) {
             foreach($iterator as $edge => $vertex) {
-                $source[] = new EdgeVertexPair($edge, $vertex);
+                $source[] = new TraverseStepItem($edge, $vertex);
             }
         }
-        return new EdgeVertexPairsIterator($source);
+        return new TraverseStepIterator($source);
     }
 
     /**
      * EdgeVertexIterator constructor.
-     * @param array<EdgeVertexPair> $source
+     * @param array<TraverseStepItem> $source
      */
     public function __construct(array $source)
     {

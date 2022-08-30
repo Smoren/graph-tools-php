@@ -2,15 +2,15 @@
 
 namespace Smoren\GraphTools\Store;
 
-use Smoren\GraphTools\Models\EdgeVertexPair;
-use Smoren\GraphTools\Models\EdgeVertexPairsIterator;
-use Smoren\GraphTools\Models\Interfaces\EdgeVertexPairsIteratorInterface;
-use Smoren\NestedAccessor\Helpers\NestedHelper;
 use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Exceptions\RepositoryException;
 use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 use Smoren\GraphTools\Store\Interfaces\GraphRepositoryInterface;
+use Smoren\GraphTools\Structs\Interfaces\TraverseStepIteratorInterface;
+use Smoren\GraphTools\Structs\TraverseStepItem;
+use Smoren\GraphTools\Structs\TraverseStepIterator;
+use Smoren\NestedAccessor\Helpers\NestedHelper;
 
 class SimpleGraphRepository implements GraphRepositoryInterface
 {
@@ -97,7 +97,7 @@ class SimpleGraphRepository implements GraphRepositoryInterface
     public function getNextVertexes(
         VertexInterface $vertex,
         ?FilterConditionInterface $condition = null
-    ): EdgeVertexPairsIteratorInterface {
+    ): TraverseStepIteratorInterface {
         return $this->getLinkedVertexesFromMap(
             $this->edgesDirectMap,
             $vertex,
@@ -112,7 +112,7 @@ class SimpleGraphRepository implements GraphRepositoryInterface
     public function getPrevVertexes(
         VertexInterface $vertex,
         ?FilterConditionInterface $condition = null
-    ): EdgeVertexPairsIteratorInterface {
+    ): TraverseStepIteratorInterface {
         return $this->getLinkedVertexesFromMap(
             $this->edgesReverseMap,
             $vertex,
@@ -124,25 +124,25 @@ class SimpleGraphRepository implements GraphRepositoryInterface
      * @param array<string, array<string, string[]>> $source
      * @param VertexInterface $vertex
      * @param FilterConditionInterface|null $condition
-     * @return EdgeVertexPairsIteratorInterface
+     * @return TraverseStepIteratorInterface
      * @throws RepositoryException
      */
     protected function getLinkedVertexesFromMap(
         array $source,
         VertexInterface $vertex,
         ?FilterConditionInterface $condition
-    ): EdgeVertexPairsIteratorInterface {
+    ): TraverseStepIteratorInterface {
         $result = [];
         foreach($source[$vertex->getId()] ?? [] as $edgeId => [$edgeType, $targetId]) {
             $edge = $this->getEdgeById($edgeId);
             if($this->isSuitableEdge($edge, $condition)) {
                 $target = $this->getVertexById($targetId);
                 if($this->isSuitableVertex($target, $condition)) {
-                    $result[] = new EdgeVertexPair($edge, $target);
+                    $result[] = new TraverseStepItem($edge, $target);
                 }
             }
         }
-        return new EdgeVertexPairsIterator($result);
+        return new TraverseStepIterator($result);
     }
 
     /**

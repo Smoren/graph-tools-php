@@ -1,16 +1,16 @@
 <?php
 
-namespace Smoren\GraphTools\Models;
+namespace Smoren\GraphTools\Structs;
 
 use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
-use Smoren\GraphTools\Models\Interfaces\EdgeVertexPairInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
+use Smoren\GraphTools\Structs\Interfaces\TraverseStepPairInterface;
 
 /**
  * Pair of Vertex and Edge (if given) class
  * @author <ofigate@gmail.com> Smoren
  */
-class EdgeVertexPair implements EdgeVertexPairInterface
+class TraverseStepItem implements TraverseStepPairInterface
 {
     /**
      * @var EdgeInterface|null edge or null

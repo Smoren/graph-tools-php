@@ -1,12 +1,15 @@
 <?php
 
-namespace Smoren\GraphTools\Models\Interfaces;
+namespace Smoren\GraphTools\Structs\Interfaces;
+
+use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
+use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 /**
  * Pair of Vertex and Edge (if given) interface
  * @author <ofigate@gmail.com> Smoren
  */
-interface EdgeVertexPairInterface
+interface TraverseStepPairInterface
 {
     /**
      * Returns edge object from pair if it exists

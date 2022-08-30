@@ -7,19 +7,29 @@ use Generator;
 use Smoren\GraphTools\Components\Interfaces\TraverseInterface;
 use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Filters\Interfaces\TraverseFilterInterface;
-use Smoren\GraphTools\Models\EdgeVertexPairsIterator;
 use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
-use Smoren\GraphTools\Models\Interfaces\EdgeVertexPairsIteratorInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 use Smoren\GraphTools\Store\Interfaces\GraphRepositoryInterface;
 use Smoren\GraphTools\Structs\Interfaces\TraverseBranchContextInterface;
 use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
+use Smoren\GraphTools\Structs\Interfaces\TraverseStepIteratorInterface;
 use Smoren\GraphTools\Structs\TraverseBranchContext;
 use Smoren\GraphTools\Structs\TraverseContext;
+use Smoren\GraphTools\Structs\TraverseStepIterator;
 
+/**
+ * Class for non-directional graph traversing
+ * @author <ofigate@gmail.com> Smoren
+ */
 class Traverse implements TraverseInterface
 {
+    /**
+     * Stop branch command
+     */
     public const STOP_BRANCH = 1;
+    /**
+     * Stop all branches command
+     */
     public const STOP_ALL = 2;
 
     /**
@@ -48,8 +58,9 @@ class Traverse implements TraverseInterface
     }
 
     /**
-     * @param TraverseContextInterface $startContext
-     * @param TraverseFilterInterface $filter
+     * Graph traverse generator
+     * @param TraverseContextInterface $startContext traverse context of the first vertex
+     * @param TraverseFilterInterface $filter traverse filter
      * @return Generator<TraverseContextInterface>
      */
     protected function traverse(
@@ -109,27 +120,29 @@ class Traverse implements TraverseInterface
     }
 
     /**
-     * @param VertexInterface $vertex
-     * @param FilterConditionInterface $condition
-     * @return EdgeVertexPairsIteratorInterface
+     * Returns traverse iterator for the next step of traversing
+     * @param VertexInterface $vertex vertex to traverse from
+     * @param FilterConditionInterface $condition pass condition
+     * @return TraverseStepIteratorInterface next vertexes iterator
      */
     protected function getNextVertexes(
         VertexInterface $vertex,
         FilterConditionInterface $condition
-    ): EdgeVertexPairsIteratorInterface {
-        return EdgeVertexPairsIterator::combine(
+    ): TraverseStepIteratorInterface {
+        return TraverseStepIterator::combine(
             $this->repository->getNextVertexes($vertex, $condition),
             $this->repository->getPrevVertexes($vertex, $condition)
         );
     }
 
     /**
-     * @param VertexInterface $vertex
-     * @param EdgeInterface|null $edge
-     * @param TraverseBranchContextInterface $branchContext
-     * @param array<VertexInterface> $passedVertexesMap
-     * @param array<VertexInterface> $globalPassedVertexesMap
-     * @return TraverseContextInterface
+     * Creates new traverse context instance
+     * @param VertexInterface $vertex current vertex
+     * @param EdgeInterface|null $edge current edge leading to current vertex
+     * @param TraverseBranchContextInterface $branchContext branch context
+     * @param array<VertexInterface> $passedVertexesMap map of passed vertexes in current branch
+     * @param array<VertexInterface> $globalPassedVertexesMap map of all the passed vertexes
+     * @return TraverseContextInterface traverse context
      */
     protected function createContext(
         VertexInterface $vertex,
@@ -142,10 +155,11 @@ class Traverse implements TraverseInterface
     }
 
     /**
-     * @param int $index
-     * @param int|null $parentIndex
-     * @param VertexInterface $start
-     * @return TraverseBranchContextInterface
+     * Creates new branch context instance
+     * @param int $index branch index
+     * @param int|null $parentIndex parent branch index
+     * @param VertexInterface $start vertex which started this branch
+     * @return TraverseBranchContextInterface new branch context
      */
     protected function createBranchContext(
         int $index,

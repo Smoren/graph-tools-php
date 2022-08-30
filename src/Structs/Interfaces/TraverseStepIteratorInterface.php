@@ -1,23 +1,25 @@
 <?php
 
-namespace Smoren\GraphTools\Models\Interfaces;
+namespace Smoren\GraphTools\Structs\Interfaces;
 
 use Countable;
 use Iterator;
+use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
+use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 /**
  * Interface for iterator of EdgeVertexPairInterface
  * @author <ofigate@gmail.com> Smoren
  * @extends Iterator<EdgeInterface|null, VertexInterface>
  */
-interface EdgeVertexPairsIteratorInterface extends Iterator, Countable
+interface TraverseStepIteratorInterface extends Iterator, Countable
 {
     /**
      * Combines several iterators to new iterator object
-     * @param EdgeVertexPairsIteratorInterface ...$iterators input iterators
-     * @return EdgeVertexPairsIteratorInterface new combined iterator
+     * @param TraverseStepIteratorInterface ...$iterators input iterators
+     * @return TraverseStepIteratorInterface new combined iterator
      */
-    public static function combine(EdgeVertexPairsIteratorInterface ...$iterators): EdgeVertexPairsIteratorInterface;
+    public static function combine(TraverseStepIteratorInterface ...$iterators): TraverseStepIteratorInterface;
 
     /**
      * @inheritDoc
