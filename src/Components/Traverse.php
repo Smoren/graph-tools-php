@@ -3,6 +3,7 @@
 namespace Smoren\GraphTools\Components;
 
 use Ds\Queue;
+use Ds\Stack;
 use Generator;
 use Smoren\GraphTools\Components\Interfaces\TraverseInterface;
 use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
@@ -33,6 +34,15 @@ class Traverse implements TraverseInterface
     public const STOP_ALL = 2;
 
     /**
+     * Wide traverse mode
+     */
+    public const MODE_WIDE = 1;
+    /**
+     * Deep traverse mode
+     */
+    public const MODE_DEEP = 2;
+
+    /**
      * @var GraphRepositoryInterface
      */
     protected GraphRepositoryInterface $repository;
@@ -49,28 +59,37 @@ class Traverse implements TraverseInterface
      * @inheritDoc
      * @return Generator<TraverseContextInterface>
      */
-    public function generate(VertexInterface $start, TraverseFilterInterface $filter): Generator
-    {
+    public function generate(
+        VertexInterface $start,
+        TraverseFilterInterface $filter,
+        int $traverseMode = self::MODE_WIDE
+    ): Generator {
         $branchContext = $this->createBranchContext(0, null, $start);
         $globalPassedVertexesMap = [];
         $context = $this->createContext($start, null, $branchContext, [], $globalPassedVertexesMap);
-        yield from $this->traverse($context, $filter);
+        yield from $this->traverse($context, $filter, $traverseMode);
     }
 
     /**
      * Graph traverse generator
      * @param TraverseContextInterface $startContext traverse context of the first vertex
      * @param TraverseFilterInterface $filter traverse filter
+     * @param int $traverseMode traverse mode (wide or deep)
      * @return Generator<TraverseContextInterface>
      */
     protected function traverse(
         TraverseContextInterface $startContext,
-        TraverseFilterInterface $filter
+        TraverseFilterInterface $filter,
+        int $traverseMode
     ): Generator {
         $lastBranchIndex = $startContext->getBranchContext()->getIndex();
         $globalPassedVertexesMap = $startContext->getGlobalPassedVertexesMap();
 
-        $contexts = new Queue([$startContext]);
+        if($traverseMode === self::MODE_WIDE) {
+            $contexts = new Queue([$startContext]);
+        } else {
+            $contexts = new Stack([$startContext]);
+        }
         while(count($contexts)) {
             /** @var TraverseContextInterface $currentContext */
             $currentContext = $contexts->pop();

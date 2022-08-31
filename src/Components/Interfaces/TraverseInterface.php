@@ -17,7 +17,12 @@ interface TraverseInterface
      * Generator to iterate graph vertexes as edge|null => vertex (null for start vertex)
      * @param VertexInterface $start start vertex
      * @param TraverseFilterInterface $filter traverse filter
+     * @param int $traverseMode traverse mode (wide or deep)
      * @return Generator<TraverseContextInterface>
      */
-    public function generate(VertexInterface $start, TraverseFilterInterface $filter): Generator;
+    public function generate(
+        VertexInterface $start,
+        TraverseFilterInterface $filter,
+        int $traverseMode
+    ): Generator;
 }
