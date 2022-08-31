@@ -26,7 +26,7 @@ class FilterConfig
      * @param int $flag
      * @return bool
      */
-    public function isOn(int $flag): bool
+    public function has(int $flag): bool
     {
         return in_array($flag, $this->config);
     }

@@ -53,12 +53,12 @@ class ConstTraverseFilter implements TraverseFilterInterface
         $passCondition = $this->passCondition;
 
         if(
-            $this->config->isOn(FilterConfig::PREVENT_LOOP_PASS)
+            $this->config->has(FilterConfig::PREVENT_LOOP_PASS)
             && $context->isLoop()
         ) {
             $passCondition = (clone $this->passCondition)->onlyVertexTypes([]);
         } elseif(
-            $this->config->isOn(FilterConfig::PREVENT_RETURN_BACK)
+            $this->config->has(FilterConfig::PREVENT_RETURN_BACK)
             && ($prevVertex = $context->getPrevVertex()) !== null
         ) {
             $passCondition = (clone $this->passCondition)->excludeVertexIds([$prevVertex->getId()]);
@@ -78,10 +78,10 @@ class ConstTraverseFilter implements TraverseFilterInterface
 
         if(
             (
-                $this->config->isOn(FilterConfig::PREVENT_LOOP_HANDLE)
+                $this->config->has(FilterConfig::PREVENT_LOOP_HANDLE)
                 && $context->isLoop()
             ) || (
-                $this->config->isOn(FilterConfig::HANDLE_UNIQUE_VERTEXES)
+                $this->config->has(FilterConfig::HANDLE_UNIQUE_VERTEXES)
                 && isset($globalPassed[$context->getVertex()->getId()])
             )
         ) {
