@@ -11,7 +11,7 @@ use Smoren\GraphTools\Filters\Interfaces\TraverseFilterInterface;
 class TransparentTraverseFilter extends ConstTraverseFilter implements TraverseFilterInterface
 {
     /**
-     * @param array<int> $config
+     * @param array<int> $config fitler config
      */
     public function __construct(array $config = [])
     {
