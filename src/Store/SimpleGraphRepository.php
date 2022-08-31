@@ -122,10 +122,11 @@ class SimpleGraphRepository implements GraphRepositoryInterface
     }
 
     /**
-     * @param array<string, array<string, string[]>> $source
-     * @param VertexInterface $vertex
-     * @param FilterConditionInterface|null $condition
-     * @return TraverseStepIteratorInterface
+     * Get next vertexes from given map by current vertex
+     * @param array<string, array<string, string[]>> $source source map
+     * @param VertexInterface $vertex current vertex
+     * @param FilterConditionInterface|null $condition filter condition
+     * @return TraverseStepIteratorInterface next vertexes iterator
      * @throws RepositoryException
      */
     protected function getLinkedVertexesFromMap(
@@ -147,8 +148,9 @@ class SimpleGraphRepository implements GraphRepositoryInterface
     }
 
     /**
-     * @param VertexInterface $vertex
-     * @param FilterConditionInterface|null $condition
+     * Returns true if given vertex matches filter condition
+     * @param VertexInterface $vertex vertex to check
+     * @param FilterConditionInterface|null $condition filter condition
      * @return bool
      */
     protected function isSuitableVertex(VertexInterface $vertex, ?FilterConditionInterface $condition): bool
@@ -157,8 +159,9 @@ class SimpleGraphRepository implements GraphRepositoryInterface
     }
 
     /**
-     * @param EdgeInterface $edge
-     * @param FilterConditionInterface|null $condition
+     * Returns true if given edge matches filter condition
+     * @param EdgeInterface $edge edge to check
+     * @param FilterConditionInterface|null $condition filter condition
      * @return bool
      */
     protected function isSuitableEdge(EdgeInterface $edge, ?FilterConditionInterface $condition): bool
