@@ -204,7 +204,6 @@ class PreloadedGraphTraverseTest extends Unit
         $this->assertEquals([1, 2, 3, 4, 5, 3], NestedHelper::get($branchMap[5], 'id'));
         $this->assertEquals([1, 5, 6, 2, 3, 4, 5], NestedHelper::get($branchMap[6], 'id'));
 
-
         $contexts = $traverse->generate(
             $repo->getVertexById(1),
             new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS, FilterConfig::HANDLE_UNIQUE_VERTEXES])
@@ -215,6 +214,53 @@ class PreloadedGraphTraverseTest extends Unit
         $this->assertEquals([1, 5, 6], NestedHelper::get($branchMap[1], 'id'));
 
         // TODO test for only vertex or connections types
+    }
+
+    public function testTraverseMode()
+    {
+        $vertexes = [
+            new Vertex(1, 1),
+            new Vertex(11, 1),
+            new Vertex(111, 1),
+            new Vertex(112, 1),
+            new Vertex(12, 1),
+            new Vertex(121, 1),
+            new Vertex(122, 1),
+        ];
+        $edges = [
+            new Edge(1, 1, 1, 11),
+            new Edge(2, 1, 1, 12),
+            new Edge(3, 1, 11, 111),
+            new Edge(4, 1, 11, 112),
+            new Edge(5, 1, 12, 121),
+            new Edge(6, 1, 12, 122),
+        ];
+        $repo = new PreloadedGraphRepository($vertexes, $edges);
+        $traverse = new TraverseDirect($repo);
+
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new TransparentTraverseFilter(),
+            Traverse::MODE_WIDE
+        );
+        $sequence = [];
+        /** @var TraverseContextInterface $context */
+        foreach($contexts as $context) {
+            $sequence[] = $context->getVertex()->getId();
+        }
+        $this->assertEquals([1, 11, 12, 111, 112, 121, 122], $sequence);
+
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new TransparentTraverseFilter(),
+            Traverse::MODE_DEEP
+        );
+        $sequence = [];
+        /** @var TraverseContextInterface $context */
+        foreach($contexts as $context) {
+            $sequence[] = $context->getVertex()->getId();
+        }
+        $this->assertEquals([1, 12, 122, 121, 11, 112, 111], $sequence);
     }
 
     public function testStopBranch()
