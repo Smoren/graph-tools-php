@@ -6,9 +6,9 @@ use Smoren\GraphTools\Conditions\FilterCondition;
 use Smoren\GraphTools\Exceptions\RepositoryException;
 use Smoren\GraphTools\Models\Edge;
 use Smoren\GraphTools\Models\Vertex;
-use Smoren\GraphTools\Store\SimpleGraphRepository;
+use Smoren\GraphTools\Store\PreloadedGraphRepository;
 
-class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
+class PreloadedGraphRepositoryTest extends \Codeception\Test\Unit
 {
     public function testSimpleChain()
     {
@@ -21,7 +21,7 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
             new Edge(1, 1, 1, 2),
             new Edge(2, 1, 2, 3),
         ];
-        $repo = new SimpleGraphRepository($vertexes, $connections);
+        $repo = new PreloadedGraphRepository($vertexes, $connections);
 
         $this->assertEquals(1, $repo->getVertexById(1)->getId());
         $this->assertEquals(2, $repo->getVertexById(2)->getId());
@@ -99,7 +99,7 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
             new Edge(7, 2, 5, 3),
             new Edge(8, 2, 6, 2),
         ];
-        $repo = new SimpleGraphRepository($vertexes, $connections);
+        $repo = new PreloadedGraphRepository($vertexes, $connections);
 
         $this->assertVertexIds(
             [2, 5],
@@ -179,7 +179,7 @@ class SimpleGraphRepositoryTest extends \Codeception\Test\Unit
             new Edge(1, 1, 1, 2),
             new Edge(2, 1, 2, 3),
         ];
-        $repo = new SimpleGraphRepository($vertexes, $connections);
+        $repo = new PreloadedGraphRepository($vertexes, $connections);
 
         /** @var Vertex $vertex */
         $vertex = $repo->getVertexById(1);

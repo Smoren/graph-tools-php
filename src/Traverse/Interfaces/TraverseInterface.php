@@ -1,6 +1,6 @@
 <?php
 
-namespace Smoren\GraphTools\Components\Interfaces;
+namespace Smoren\GraphTools\Traverse\Interfaces;
 
 use Generator;
 use Smoren\GraphTools\Filters\Interfaces\TraverseFilterInterface;

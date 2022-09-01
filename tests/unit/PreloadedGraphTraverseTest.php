@@ -4,22 +4,22 @@ namespace Smoren\GraphTools\Tests\Unit;
 
 use Codeception\Test\Unit;
 use Generator;
-use Smoren\GraphTools\Components\Traverse;
-use Smoren\GraphTools\Components\TraverseDirect;
-use Smoren\GraphTools\Components\TraverseReverse;
+use Smoren\GraphTools\Traverse\Traverse;
+use Smoren\GraphTools\Traverse\TraverseDirect;
+use Smoren\GraphTools\Traverse\TraverseReverse;
 use Smoren\GraphTools\Conditions\FilterCondition;
 use Smoren\GraphTools\Filters\ConstTraverseFilter;
 use Smoren\GraphTools\Filters\TransparentTraverseFilter;
 use Smoren\GraphTools\Helpers\TraverseHelper;
 use Smoren\GraphTools\Models\Edge;
 use Smoren\GraphTools\Models\Vertex;
-use Smoren\GraphTools\Store\SimpleGraphRepository;
+use Smoren\GraphTools\Store\PreloadedGraphRepository;
 use Smoren\GraphTools\Structs\FilterConfig;
 use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
 use Smoren\GraphTools\Structs\TraverseContext;
 use Smoren\NestedAccessor\Helpers\NestedHelper;
 
-class SimpleGraphTraverseTest extends Unit
+class PreloadedGraphTraverseTest extends Unit
 {
     public function testSimpleChain()
     {
@@ -32,7 +32,7 @@ class SimpleGraphTraverseTest extends Unit
             new Edge(1, 1, 1, 2),
             new Edge(2, 1, 2, 3),
         ];
-        $repo = new SimpleGraphRepository($vertexes, $connections);
+        $repo = new PreloadedGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
         $contexts = $traverse->generate(
             $repo->getVertexById(1),
@@ -109,7 +109,7 @@ class SimpleGraphTraverseTest extends Unit
             new Edge(2, 1, 2, 3),
             new Edge(3, 1, 3, 1),
         ];
-        $repo = new SimpleGraphRepository($vertexes, $connections);
+        $repo = new PreloadedGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
 
         /** @var Generator<TraverseContextInterface> $contexts */
@@ -187,7 +187,7 @@ class SimpleGraphTraverseTest extends Unit
             new Edge(8, 2, 6, 2),
             new Edge(9, 3, 4, 5),
         ];
-        $repo = new SimpleGraphRepository($vertexes, $connections);
+        $repo = new PreloadedGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
 
         $contexts = $traverse->generate(
@@ -239,7 +239,7 @@ class SimpleGraphTraverseTest extends Unit
             new Edge(7, 1, 7, 8),
         ];
 
-        $repo = new SimpleGraphRepository($vertexes, $connections);
+        $repo = new PreloadedGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
 
         $contexts = $traverse->generate(
@@ -358,7 +358,7 @@ class SimpleGraphTraverseTest extends Unit
             new Edge(8, 2, 6, 2),
         ];
 
-        $repo = new SimpleGraphRepository($vertexes, $connections);
+        $repo = new PreloadedGraphRepository($vertexes, $connections);
         $traverse = new TraverseDirect($repo);
 
         $contexts = $traverse->generate(

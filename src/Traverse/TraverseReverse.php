@@ -1,6 +1,6 @@
 <?php
 
-namespace Smoren\GraphTools\Components;
+namespace Smoren\GraphTools\Traverse;
 
 use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;

@@ -1,11 +1,11 @@
 <?php
 
-namespace Smoren\GraphTools\Components;
+namespace Smoren\GraphTools\Traverse;
 
 use Ds\Queue;
 use Ds\Stack;
 use Generator;
-use Smoren\GraphTools\Components\Interfaces\TraverseInterface;
+use Smoren\GraphTools\Traverse\Interfaces\TraverseInterface;
 use Smoren\GraphTools\Conditions\Interfaces\FilterConditionInterface;
 use Smoren\GraphTools\Filters\Interfaces\TraverseFilterInterface;
 use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
