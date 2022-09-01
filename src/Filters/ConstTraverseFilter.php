@@ -14,7 +14,7 @@ use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
  * Constant traverse filter
  * @author <ofigate@gmail.com> Smoren
  */
-class ConstTraverseFilter extends BaseTraverseFilter implements TraverseFilterInterface
+class ConstTraverseFilter extends ConfigurableTraverseFilter implements TraverseFilterInterface
 {
     /**
      * @var FilterConditionInterface|FilterCondition condition of next traverse behavior
@@ -24,10 +24,6 @@ class ConstTraverseFilter extends BaseTraverseFilter implements TraverseFilterIn
      * @var VertexConditionInterface|VertexCondition condition of current vertex handling
      */
     protected VertexConditionInterface $handleCondition;
-    /**
-     * @var FilterConfig filter config
-     */
-    protected FilterConfig $config;
 
     /**
      * ConstTraverseFilter constructor
@@ -40,17 +36,17 @@ class ConstTraverseFilter extends BaseTraverseFilter implements TraverseFilterIn
         ?VertexConditionInterface $handleCondition = null,
         array $config = []
     ) {
+        parent::__construct($config);
         $this->passCondition = $passCondition ?? new FilterCondition();
         $this->handleCondition = $handleCondition ?? new VertexCondition();
-        $this->config = new FilterConfig($config);
     }
 
-    protected function _getPassCondition(): FilterCondition
+    protected function getDefaultPassCondition(TraverseContextInterface $context): FilterConditionInterface
     {
         return $this->passCondition;
     }
 
-    protected function _getHandleCondition(): VertexCondition
+    protected function getDefaultHandleCondition(TraverseContextInterface $context): VertexConditionInterface
     {
         return $this->handleCondition;
     }

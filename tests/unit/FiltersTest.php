@@ -25,49 +25,41 @@ class FiltersTest extends \Codeception\Test\Unit
 
         $filter = new TransparentTraverseFilter();
         $cond = $filter->getPassCondition($contextLoop);
-        $this->assertTrue($cond->isSuitableVertex($vertex)); // can pass
-        $this->assertTrue($cond->isSuitableVertex($anotherVertex)); // can pass
-        $cond = $filter->getHandleCondition($contextLoop);
-        $this->assertTrue($cond->isSuitableVertex($vertex)); // can handle
+        $this->assertTrue($cond->isSuitableVertex($vertex));                // can pass
+        $this->assertTrue($cond->isSuitableVertex($anotherVertex));         // can pass
+        $this->assertTrue($filter->matchesHandleCondition($contextLoop));   // can handle
+        $this->assertTrue($filter->matchesHandleCondition($contextNormal)); // can handle
 
-        $filter = new TransparentTraverseFilter([FilterConfig::HANDLE_UNIQUE_VERTEXES]);
+        $filter = new TransparentTraverseFilter([FilterConfig::PREVENT_REPEAT_HANDLE]);
         $cond = $filter->getPassCondition($contextLoop);
-        $this->assertTrue($cond->isSuitableVertex($vertex));        // can pass
-        $this->assertTrue($cond->isSuitableVertex($anotherVertex)); // can pass
-        $cond = $filter->getHandleCondition($contextLoop);
-        $this->assertFalse($cond->isSuitableVertex($vertex));       // cannot handle twice
-        $cond = $filter->getHandleCondition($contextNormal);
-        $this->assertTrue($cond->isSuitableVertex($anotherVertex)); // can handle
+        $this->assertTrue($cond->isSuitableVertex($vertex));                // can pass
+        $this->assertTrue($cond->isSuitableVertex($anotherVertex));         // can pass
+        $this->assertFalse($filter->matchesHandleCondition($contextLoop));  // cannot handle twice
+        $this->assertTrue($filter->matchesHandleCondition($contextNormal)); // can handle
 
         $filter = new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_HANDLE]);
         $cond = $filter->getPassCondition($contextLoop);
-        $this->assertTrue($cond->isSuitableVertex($vertex));        // can pass
-        $this->assertTrue($cond->isSuitableVertex($anotherVertex)); // can pass
-        $cond = $filter->getHandleCondition($contextLoop);
-        $this->assertFalse($cond->isSuitableVertex($vertex));       // cannot handle when loop
-        $cond = $filter->getHandleCondition($contextNormal);
-        $this->assertTrue($cond->isSuitableVertex($anotherVertex)); // can handle without loop
+        $this->assertTrue($cond->isSuitableVertex($vertex));                // can pass
+        $this->assertTrue($cond->isSuitableVertex($anotherVertex));         // can pass
+        $this->assertFalse($filter->matchesHandleCondition($contextLoop));  // cannot handle when loop
+        $this->assertTrue($filter->matchesHandleCondition($contextNormal)); // can handle without loop
 
         $filter = new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS]);
         $cond = $filter->getPassCondition($contextLoop);
-        $this->assertFalse($cond->isSuitableVertex($vertex));        // cannot pass because loop in ctx
-        $this->assertFalse($cond->isSuitableVertex($anotherVertex)); // cannot pass because loop in ctx
-        $cond = $filter->getPassCondition($contextNormal);
-        $this->assertTrue($cond->isSuitableVertex($vertex));         // can handle
-        $cond = $filter->getHandleCondition($contextLoop);
-        $this->assertTrue($cond->isSuitableVertex($anotherVertex));  // can handle
+        $this->assertFalse($cond->isSuitableVertex($vertex));                // cannot pass because loop in ctx
+        $this->assertFalse($cond->isSuitableVertex($anotherVertex));         // cannot pass because loop in ctx
+        $this->assertTrue($filter->matchesHandleCondition($contextLoop));    // can handle
+        $this->assertTrue($filter->matchesHandleCondition($contextNormal));  // can handle
 
         $filter = new TransparentTraverseFilter([FilterConfig::PREVENT_RETURN_BACK_PASS]);
         $cond = $filter->getPassCondition($contextLoop);
-        $this->assertFalse($cond->isSuitableVertex($vertex));       // cannot pass to return back
-        $this->assertTrue($cond->isSuitableVertex($anotherVertex)); // can pass
+        $this->assertFalse($cond->isSuitableVertex($vertex));               // cannot pass to return back
+        $this->assertTrue($cond->isSuitableVertex($anotherVertex));         // can pass
         $cond = $filter->getPassCondition($contextNormal);
-        $this->assertFalse($cond->isSuitableVertex($vertex));       // cannot pass to return back
-        $this->assertTrue($cond->isSuitableVertex($anotherVertex)); // can pass
-        $cond = $filter->getHandleCondition($contextLoop);
-        $this->assertTrue($cond->isSuitableVertex($vertex));        // can handle
-        $cond = $filter->getHandleCondition($contextNormal);
-        $this->assertTrue($cond->isSuitableVertex($anotherVertex)); // can handle
+        $this->assertFalse($cond->isSuitableVertex($vertex));               // cannot pass to return back
+        $this->assertTrue($cond->isSuitableVertex($anotherVertex));         // can pass
+        $this->assertTrue($filter->matchesHandleCondition($contextLoop));   // can handle
+        $this->assertTrue($filter->matchesHandleCondition($contextNormal)); // can handle
     }
 
     public function testConst()

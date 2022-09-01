@@ -20,9 +20,9 @@ interface TraverseFilterInterface
     public function getPassCondition(TraverseContextInterface $context): FilterConditionInterface;
 
     /**
-     * Returns condition: handle or not handle current vertex (yield or ignore current vertex)
+     * Return true if current vertex should be handled
      * @param TraverseContextInterface $context
-     * @return VertexConditionInterface condition of handle behavior
+     * @return bool
      */
-    public function getHandleCondition(TraverseContextInterface $context): VertexConditionInterface;
+    public function matchesHandleCondition(TraverseContextInterface $context): bool;
 }

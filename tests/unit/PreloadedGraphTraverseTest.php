@@ -206,7 +206,7 @@ class PreloadedGraphTraverseTest extends Unit
 
         $contexts = $traverse->generate(
             $repo->getVertexById(1),
-            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS, FilterConfig::HANDLE_UNIQUE_VERTEXES])
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS, FilterConfig::PREVENT_REPEAT_HANDLE])
         );
         $branchMap = TraverseHelper::getBranches($contexts);
         $this->assertCount(2, $branchMap);
