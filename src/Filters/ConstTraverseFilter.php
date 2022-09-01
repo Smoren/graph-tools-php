@@ -41,11 +41,17 @@ class ConstTraverseFilter extends ConfigurableTraverseFilter implements Traverse
         $this->handleCondition = $handleCondition ?? new VertexCondition();
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function getDefaultPassCondition(TraverseContextInterface $context): FilterConditionInterface
     {
         return $this->passCondition;
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function getDefaultHandleCondition(TraverseContextInterface $context): VertexConditionInterface
     {
         return $this->handleCondition;

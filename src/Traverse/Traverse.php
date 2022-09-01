@@ -2,6 +2,7 @@
 
 namespace Smoren\GraphTools\Traverse;
 
+use Ds\Collection;
 use Ds\Queue;
 use Ds\Stack;
 use Generator;
@@ -84,12 +85,8 @@ class Traverse implements TraverseInterface
     ): Generator {
         $lastBranchIndex = $startContext->getBranchContext()->getIndex();
         $globalPassedVertexesMap = $startContext->getGlobalPassedVertexesMap();
+        $contexts = $this->createContextCollection($traverseMode, $startContext);
 
-        if($traverseMode === self::MODE_WIDE) {
-            $contexts = new Queue([$startContext]);
-        } else {
-            $contexts = new Stack([$startContext]);
-        }
         while(count($contexts)) {
             /** @var TraverseContextInterface $currentContext */
             $currentContext = $contexts->pop();
@@ -152,6 +149,25 @@ class Traverse implements TraverseInterface
             $this->repository->getNextVertexes($vertex, $condition),
             $this->repository->getPrevVertexes($vertex, $condition)
         );
+    }
+
+    /**
+     * Creates context collection
+     * @param int $traverseMode traverse mode
+     * @param TraverseContextInterface $startContext start context
+     * @return Queue<TraverseContextInterface>|Stack<TraverseContextInterface>
+     */
+    protected function createContextCollection(
+        int $traverseMode,
+        TraverseContextInterface $startContext
+    ): Collection {
+        if($traverseMode === self::MODE_WIDE) {
+            $contexts = new Queue([$startContext]);
+        } else {
+            $contexts = new Stack([$startContext]);
+        }
+
+        return $contexts;
     }
 
     /**
