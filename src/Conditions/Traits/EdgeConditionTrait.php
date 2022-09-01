@@ -4,16 +4,19 @@ namespace Smoren\GraphTools\Conditions\Traits;
 
 use Smoren\GraphTools\Conditions\EdgeCondition;
 use Smoren\GraphTools\Conditions\FilterCondition;
+use Smoren\GraphTools\Conditions\Interfaces\EdgeConditionInterface;
 use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
 
 /**
- * @property array<string>|null $edgeTypesOnly
- * @property array<string> $edgeTypesExclude
+ * Trait for edge condition implementation
+ * @implements EdgeConditionInterface<mixed>
+ * @property array<string>|null $edgeTypesOnly edge types whitelist
+ * @property array<string> $edgeTypesExclude edge types blacklist
  */
 trait EdgeConditionTrait
 {
     /**
-     * @return array<string>|null
+     * @inheritDoc
      */
     public function getEdgeTypesOnly(): ?array
     {
@@ -21,7 +24,7 @@ trait EdgeConditionTrait
     }
 
     /**
-     * @return array<string>
+     * @inheritDoc
      */
     public function getEdgeTypesExclude(): array
     {
@@ -29,8 +32,7 @@ trait EdgeConditionTrait
     }
 
     /**
-     * @param array<string>|null $types
-     * @return self
+     * @inheritDoc
      */
     public function onlyEdgeTypes(?array $types): self
     {
@@ -39,8 +41,7 @@ trait EdgeConditionTrait
     }
 
     /**
-     * @param array<string> $types
-     * @return self
+     * @inheritDoc
      */
     public function excludeEdgeTypes(array $types): self
     {
@@ -48,6 +49,9 @@ trait EdgeConditionTrait
         return $this;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function isSuitableEdge(EdgeInterface $edge): bool
     {
         if($this->edgeTypesOnly !== null && !in_array($edge->getType(), $this->edgeTypesOnly)) {

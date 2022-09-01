@@ -2,18 +2,21 @@
 
 namespace Smoren\GraphTools\Conditions\Traits;
 
+use Smoren\GraphTools\Conditions\Interfaces\VertexConditionInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 /**
- * @property array<string>|null $vertexTypesOnly
- * @property array<string> $vertexTypesExclude
- * @property array<string>|null $vertexIdsOnly
- * @property array<string> $vertexIdsExclude
+ * Trait for vertex condition implementation
+ * @implements VertexConditionInterface<mixed>
+ * @property array<string>|null $vertexTypesOnly vertex types whitelist
+ * @property array<string> $vertexTypesExclude vertex types blacklist
+ * @property array<string>|null $vertexIdsOnly vertex ids whitelist
+ * @property array<string> $vertexIdsExclude  vertex ids blacklist
  */
 trait VertexConditionTrait
 {
     /**
-     * @return array<string>|null
+     * @inheritDoc
      */
     public function getVertexTypesOnly(): ?array
     {
@@ -21,7 +24,7 @@ trait VertexConditionTrait
     }
 
     /**
-     * @return array<string>
+     * @inheritDoc
      */
     public function getVertexTypesExclude(): array
     {
@@ -29,7 +32,7 @@ trait VertexConditionTrait
     }
 
     /**
-     * @return array<string>|null
+     * @inheritDoc
      */
     public function getVertexIdsOnly(): ?array
     {
@@ -37,7 +40,7 @@ trait VertexConditionTrait
     }
 
     /**
-     * @return array<string>
+     * @inheritDoc
      */
     public function getVertexIdsExclude(): array
     {
@@ -45,8 +48,7 @@ trait VertexConditionTrait
     }
 
     /**
-     * @param array<string>|null $types
-     * @return self
+     * @inheritDoc
      */
     public function onlyVertexTypes(?array $types): self
     {
@@ -55,8 +57,7 @@ trait VertexConditionTrait
     }
 
     /**
-     * @param array<string> $types
-     * @return self
+     * @inheritDoc
      */
     public function excludeVertexTypes(array $types): self
     {
@@ -65,8 +66,7 @@ trait VertexConditionTrait
     }
 
     /**
-     * @param array<string>|null $ids
-     * @return self
+     * @inheritDoc
      */
     public function onlyVertexIds(?array $ids): self
     {
@@ -75,8 +75,7 @@ trait VertexConditionTrait
     }
 
     /**
-     * @param array<string> $ids
-     * @return self
+     * @inheritDoc
      */
     public function excludeVertexIds(array $ids): self
     {
@@ -85,8 +84,7 @@ trait VertexConditionTrait
     }
 
     /**
-     * @param VertexInterface $vertex
-     * @return bool
+     * @inheritDoc
      */
     public function isSuitableVertex(VertexInterface $vertex): bool
     {
