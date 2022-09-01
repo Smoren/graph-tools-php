@@ -168,6 +168,9 @@ class PreloadedGraphRepositoryTest extends \Codeception\Test\Unit
         );
     }
 
+    /**
+     * @throws RepositoryException
+     */
     public function testRepositoryException()
     {
         $vertexes = [
@@ -191,6 +194,16 @@ class PreloadedGraphRepositoryTest extends \Codeception\Test\Unit
             $this->expectError();
         } catch(RepositoryException $e) {
             $this->assertEquals(RepositoryException::VERTEX_NOT_FOUND, $e->getCode());
+        }
+
+        $edge = $repo->getEdgeById(1);
+        $this->assertEquals(1, $edge->getId());
+
+        try {
+            $repo->getEdgeById(100);
+            $this->expectError();
+        } catch(RepositoryException $e) {
+            $this->assertEquals(RepositoryException::EDGE_NOT_FOUND, $e->getCode());
         }
     }
 

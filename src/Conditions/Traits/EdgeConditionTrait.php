@@ -26,7 +26,7 @@ trait EdgeConditionTrait
     /**
      * @inheritDoc
      */
-    public function getEdgeTypesExclude(): array
+    public function getEdgeTypesExcluded(): array
     {
         return $this->edgeTypesExclude;
     }

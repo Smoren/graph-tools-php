@@ -20,7 +20,7 @@ interface VertexConditionInterface
      * Returns blacklist of vertex types
      * @return array<string>
      */
-    public function getVertexTypesExclude(): array;
+    public function getVertexTypesExcluded(): array;
 
     /**
      * Returns whitelist of vertex ids or null if whitelist is not defined
@@ -32,7 +32,7 @@ interface VertexConditionInterface
      * Returns blacklist of vertex ids
      * @return array<string>
      */
-    public function getVertexIdsExclude(): array;
+    public function getVertexIdsExcluded(): array;
 
     /**
      * Sets whitelist of vertex types

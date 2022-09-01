@@ -20,7 +20,7 @@ interface EdgeConditionInterface
      * Returns blacklist of edge types
      * @return array<string>
      */
-    public function getEdgeTypesExclude(): array;
+    public function getEdgeTypesExcluded(): array;
 
     /**
      * Sets whitelist of edge types

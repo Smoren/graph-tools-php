@@ -29,7 +29,7 @@ class Vertex implements VertexInterface
      * @param non-empty-string $type vertex's type
      * @param mixed $data custom extra data
      */
-    public function __construct(string $id, string $type, $data)
+    public function __construct(string $id, string $type, $data = null)
     {
         $this->id = $id;
         $this->type = $type;

@@ -26,7 +26,7 @@ trait VertexConditionTrait
     /**
      * @inheritDoc
      */
-    public function getVertexTypesExclude(): array
+    public function getVertexTypesExcluded(): array
     {
         return $this->vertexTypesExclude;
     }
@@ -42,7 +42,7 @@ trait VertexConditionTrait
     /**
      * @inheritDoc
      */
-    public function getVertexIdsExclude(): array
+    public function getVertexIdsExcluded(): array
     {
         return $this->vertexIdsExclude;
     }
