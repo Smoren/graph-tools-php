@@ -88,7 +88,7 @@ class PreloadedGraphTraverseTest extends Unit
 
         $contexts = $traverse->generate(
             $repo->getVertexById(2),
-            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS, FilterConfig::PREVENT_RETURN_BACK])
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS, FilterConfig::PREVENT_RETURN_BACK_PASS])
         );
         $vertexIds = [];
         foreach($contexts as $context) {

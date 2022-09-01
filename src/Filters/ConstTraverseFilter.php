@@ -14,7 +14,7 @@ use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
  * Constant traverse filter
  * @author <ofigate@gmail.com> Smoren
  */
-class ConstTraverseFilter implements TraverseFilterInterface
+class ConstTraverseFilter extends BaseTraverseFilter implements TraverseFilterInterface
 {
     /**
      * @var FilterConditionInterface|FilterCondition condition of next traverse behavior
@@ -45,49 +45,13 @@ class ConstTraverseFilter implements TraverseFilterInterface
         $this->config = new FilterConfig($config);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getPassCondition(TraverseContextInterface $context): FilterConditionInterface
+    protected function _getPassCondition(): FilterCondition
     {
-        $passCondition = $this->passCondition;
-
-        if(
-            $this->config->has(FilterConfig::PREVENT_LOOP_PASS)
-            && $context->isLoop()
-        ) {
-            $passCondition = (clone $this->passCondition)->onlyVertexTypes([]);
-        } elseif(
-            $this->config->has(FilterConfig::PREVENT_RETURN_BACK)
-            && ($prevVertex = $context->getPrevVertex()) !== null
-        ) {
-            $passCondition = (clone $this->passCondition)->excludeVertexIds([$prevVertex->getId()]);
-        }
-
-        /** @var FilterConditionInterface $passCondition */
-        return $passCondition;
+        return $this->passCondition;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getHandleCondition(TraverseContextInterface $context): VertexConditionInterface
+    protected function _getHandleCondition(): VertexCondition
     {
-        $handleCondition = $this->handleCondition;
-        $globalPassed = $context->getGlobalPassedVertexesMap();
-
-        if(
-            (
-                $this->config->has(FilterConfig::PREVENT_LOOP_HANDLE)
-                && $context->isLoop()
-            ) || (
-                $this->config->has(FilterConfig::HANDLE_UNIQUE_VERTEXES)
-                && isset($globalPassed[$context->getVertex()->getId()])
-            )
-        ) {
-            $handleCondition = (clone $this->handleCondition)->onlyVertexTypes([]);
-        }
-
-        return $handleCondition;
+        return $this->handleCondition;
     }
 }
