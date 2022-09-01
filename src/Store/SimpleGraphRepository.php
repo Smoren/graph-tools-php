@@ -12,6 +12,10 @@ use Smoren\GraphTools\Structs\TraverseStepItem;
 use Smoren\GraphTools\Structs\TraverseStepIterator;
 use Smoren\NestedAccessor\Helpers\NestedHelper;
 
+/**
+ * Graph repository implementation with data storage in RAM
+ * @author <ofigate@gmail.com> Smoren
+ */
 class SimpleGraphRepository implements GraphRepositoryInterface
 {
     /**

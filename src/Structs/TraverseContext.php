@@ -7,35 +7,40 @@ use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 use Smoren\GraphTools\Structs\Interfaces\TraverseBranchContextInterface;
 use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
 
+/**
+ * Traverse context implementation
+ * @author <ofigate@gmail.com> Smoren
+ */
 class TraverseContext implements TraverseContextInterface
 {
     /**
-     * @var VertexInterface
+     * @var VertexInterface current vertex
      */
     protected VertexInterface $vertex;
     /**
-     * @var EdgeInterface|null
+     * @var EdgeInterface|null edge which led to current vertex
      */
     protected ?EdgeInterface $edge;
     /**
-     * @var TraverseBranchContextInterface
+     * @var TraverseBranchContextInterface current branch context
      */
     protected TraverseBranchContextInterface $branchContext;
     /**
-     * @var array<string, VertexInterface>
+     * @var array<string, VertexInterface> passed vertexes map
      */
     protected array $passedVertexesMap;
     /**
-     * @var array<string, VertexInterface>
+     * @var array<string, VertexInterface> passed vertexes map of all the branches
      */
     protected array $globalPassedVertexesMap;
 
     /**
-     * @param VertexInterface $vertex
-     * @param EdgeInterface|null $edge
-     * @param TraverseBranchContextInterface $branchContext
-     * @param array<string, VertexInterface> $passedVertexesMap
-     * @param array<string, VertexInterface> $globalPassedVertexesMap
+     * TraverseContext constructor
+     * @param VertexInterface $vertex current vertex
+     * @param EdgeInterface|null $edge edge which led to current vertex
+     * @param TraverseBranchContextInterface $branchContext current branch context
+     * @param array<string, VertexInterface> $passedVertexesMap passed vertexes map
+     * @param array<string, VertexInterface> $globalPassedVertexesMap passed vertexes map of all the branches
      */
     public function __construct(
         VertexInterface $vertex,

@@ -5,25 +5,30 @@ namespace Smoren\GraphTools\Structs;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 use Smoren\GraphTools\Structs\Interfaces\TraverseBranchContextInterface;
 
+/**
+ * Traverse branch context implementation
+ * @author <ofigate@gmail.com> Smoren
+ */
 class TraverseBranchContext implements TraverseBranchContextInterface
 {
     /**
-     * @var int
+     * @var int current branch index
      */
     protected int $index;
     /**
-     * @var int|null
+     * @var int|null parent branch index
      */
     protected ?int $parentIndex;
     /**
-     * @var VertexInterface
+     * @var VertexInterface vertex instance which started current branch
      */
     protected VertexInterface $start;
 
     /**
-     * @param int $index
-     * @param int|null $parentIndex
-     * @param VertexInterface $start
+     * TraverseBranchContext constructor
+     * @param int $index current branch index
+     * @param int|null $parentIndex parent branch index
+     * @param VertexInterface $start vertex instance which started current branch
      */
     public function __construct(
         int $index,
