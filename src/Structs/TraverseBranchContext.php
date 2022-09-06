@@ -7,7 +7,7 @@ use Smoren\GraphTools\Structs\Interfaces\TraverseBranchContextInterface;
 
 /**
  * Traverse branch context implementation
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 class TraverseBranchContext implements TraverseBranchContextInterface
 {

@@ -4,7 +4,7 @@ namespace Smoren\GraphTools\Structs;
 
 /**
  * Filter config implementation
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 class FilterConfig
 {

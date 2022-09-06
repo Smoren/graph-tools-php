@@ -7,7 +7,7 @@ use Smoren\GraphTools\Conditions\Traits\VertexConditionTrait;
 
 /**
  * implementation of vertex condition
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 class VertexCondition implements VertexConditionInterface
 {

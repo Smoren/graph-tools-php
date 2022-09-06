@@ -7,7 +7,7 @@ use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 /**
  * Traverse context interface
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 interface TraverseContextInterface
 {

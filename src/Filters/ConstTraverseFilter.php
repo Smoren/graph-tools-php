@@ -11,7 +11,7 @@ use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
 
 /**
  * Constant traverse filter
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 class ConstTraverseFilter extends ConfigurableTraverseFilter implements TraverseFilterInterface
 {

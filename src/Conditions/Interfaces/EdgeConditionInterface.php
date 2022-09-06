@@ -6,7 +6,7 @@ use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
 
 /**
  * Interface for edge condition
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 interface EdgeConditionInterface
 {

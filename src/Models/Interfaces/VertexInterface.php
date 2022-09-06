@@ -4,7 +4,7 @@ namespace Smoren\GraphTools\Models\Interfaces;
 
 /**
  * Graph vertex interface
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 interface VertexInterface
 {

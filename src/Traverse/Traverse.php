@@ -21,7 +21,7 @@ use Smoren\GraphTools\Structs\TraverseStepIterator;
 
 /**
  * Class for non-directional graph traversing
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 class Traverse implements TraverseInterface
 {

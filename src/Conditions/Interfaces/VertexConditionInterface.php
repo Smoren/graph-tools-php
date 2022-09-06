@@ -6,7 +6,7 @@ use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 /**
  * Interface for vertex condition
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 interface VertexConditionInterface
 {

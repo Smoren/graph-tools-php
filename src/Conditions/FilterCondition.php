@@ -8,7 +8,7 @@ use Smoren\GraphTools\Conditions\Traits\VertexConditionTrait;
 
 /**
  * implementation of filter condition
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 class FilterCondition implements FilterConditionInterface
 {

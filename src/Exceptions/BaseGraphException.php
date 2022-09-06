@@ -6,7 +6,7 @@ use Smoren\ExtendedExceptions\BaseException;
 
 /**
  * Base package exception class
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 abstract class BaseGraphException extends BaseException
 {

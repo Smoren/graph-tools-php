@@ -8,7 +8,7 @@ use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
 
 /**
  * Helper for getting traversing results
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 class TraverseHelper
 {

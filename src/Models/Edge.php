@@ -6,7 +6,7 @@ use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
 
 /**
  * Graph edge's class
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 class Edge implements EdgeInterface
 {

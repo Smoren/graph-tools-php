@@ -8,7 +8,7 @@ use Smoren\GraphTools\Structs\Interfaces\TraverseStepIteratorInterface;
 
 /**
  * Class for reverse traversing of the directional graph
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 class TraverseReverse extends Traverse
 {

@@ -9,7 +9,7 @@ use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
 
 /**
  * Interface for graph traversing
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 interface TraverseInterface
 {

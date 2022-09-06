@@ -4,7 +4,7 @@ namespace Smoren\GraphTools\Models\Interfaces;
 
 /**
  * Graph edge interface
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 interface EdgeInterface
 {

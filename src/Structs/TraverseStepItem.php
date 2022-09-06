@@ -8,7 +8,7 @@ use Smoren\GraphTools\Structs\Interfaces\TraverseStepPairInterface;
 
 /**
  * Pair of Vertex and Edge (if given) class
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 class TraverseStepItem implements TraverseStepPairInterface
 {

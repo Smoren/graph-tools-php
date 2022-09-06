@@ -9,7 +9,7 @@ use Smoren\GraphTools\Structs\Interfaces\TraverseStepIteratorInterface;
 
 /**
  * Repository class to get graph data
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 interface GraphRepositoryInterface
 {

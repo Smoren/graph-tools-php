@@ -7,7 +7,7 @@ use Smoren\GraphTools\Conditions\Traits\EdgeConditionTrait;
 
 /**
  * implementation of edge condition
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 class EdgeCondition implements EdgeConditionInterface
 {

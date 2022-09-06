@@ -6,7 +6,7 @@ use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 /**
  * Graph vertex's class
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 class Vertex implements VertexInterface
 {

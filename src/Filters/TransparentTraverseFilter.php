@@ -6,7 +6,7 @@ use Smoren\GraphTools\Filters\Interfaces\TraverseFilterInterface;
 
 /**
  * Transparent traverse filter
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 class TransparentTraverseFilter extends ConstTraverseFilter implements TraverseFilterInterface
 {

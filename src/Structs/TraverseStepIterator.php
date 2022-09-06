@@ -8,7 +8,7 @@ use Smoren\GraphTools\Structs\Interfaces\TraverseStepIteratorInterface;
 
 /**
  * Class EdgeVertexIterator
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 class TraverseStepIterator implements TraverseStepIteratorInterface
 {

@@ -4,7 +4,7 @@ namespace Smoren\GraphTools\Exceptions;
 
 /**
  * Graph repository exception class
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 class RepositoryException extends BaseGraphException
 {

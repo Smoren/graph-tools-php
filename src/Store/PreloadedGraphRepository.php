@@ -14,7 +14,7 @@ use Smoren\NestedAccessor\Helpers\NestedHelper;
 
 /**
  * Graph repository implementation with data storage in RAM
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 class PreloadedGraphRepository implements GraphRepositoryInterface
 {

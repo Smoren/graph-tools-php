@@ -7,7 +7,7 @@ use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 /**
  * Pair of Vertex and Edge (if given) interface
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  */
 interface TraverseStepPairInterface
 {

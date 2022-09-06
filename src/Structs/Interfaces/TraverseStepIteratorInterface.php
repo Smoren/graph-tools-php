@@ -9,7 +9,7 @@ use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 
 /**
  * Interface for iterator of EdgeVertexPairInterface
- * @author <ofigate@gmail.com> Smoren
+ * @author Smoren <ofigate@gmail.com>
  * @extends Iterator<EdgeInterface|null, VertexInterface>
  */
 interface TraverseStepIteratorInterface extends Iterator, Countable
