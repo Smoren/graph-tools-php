@@ -4,6 +4,7 @@ namespace Smoren\GraphTools\Structs;
 
 use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
+use Smoren\GraphTools\Store\Interfaces\GraphRepositoryInterface;
 use Smoren\GraphTools\Structs\Interfaces\TraverseBranchContextInterface;
 use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
 
@@ -22,6 +23,10 @@ class TraverseContext implements TraverseContextInterface
      */
     protected ?EdgeInterface $edge;
     /**
+     * @var GraphRepositoryInterface graph repository
+     */
+    protected GraphRepositoryInterface $repository;
+    /**
      * @var TraverseBranchContextInterface current branch context
      */
     protected TraverseBranchContextInterface $branchContext;
@@ -38,6 +43,7 @@ class TraverseContext implements TraverseContextInterface
      * TraverseContext constructor
      * @param VertexInterface $vertex current vertex
      * @param EdgeInterface|null $edge edge which led to current vertex
+     * @param GraphRepositoryInterface $repository graph repository
      * @param TraverseBranchContextInterface $branchContext current branch context
      * @param array<string, VertexInterface> $passedVertexesMap passed vertexes map
      * @param array<string, VertexInterface> $globalPassedVertexesMap passed vertexes map of all the branches
@@ -45,12 +51,14 @@ class TraverseContext implements TraverseContextInterface
     public function __construct(
         VertexInterface $vertex,
         ?EdgeInterface $edge,
+        GraphRepositoryInterface $repository,
         TraverseBranchContextInterface $branchContext,
         array $passedVertexesMap,
         array &$globalPassedVertexesMap
     ) {
         $this->vertex = $vertex;
         $this->edge = $edge;
+        $this->repository = $repository;
         $this->branchContext = $branchContext;
         $this->passedVertexesMap = $passedVertexesMap;
         $this->globalPassedVertexesMap = &$globalPassedVertexesMap;
@@ -65,7 +73,7 @@ class TraverseContext implements TraverseContextInterface
     }
 
     /**
-     * @return VertexInterface|null
+     * @inheritDoc
      */
     public function getPrevVertex(): ?VertexInterface
     {
@@ -74,11 +82,19 @@ class TraverseContext implements TraverseContextInterface
     }
 
     /**
-     * @return EdgeInterface|null
+     * @inheritDoc
      */
     public function getEdge(): ?EdgeInterface
     {
         return $this->edge;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getRepository(): GraphRepositoryInterface
+    {
+        return $this->repository;
     }
 
     /**

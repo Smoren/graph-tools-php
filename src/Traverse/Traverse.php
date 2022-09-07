@@ -185,7 +185,14 @@ class Traverse implements TraverseInterface
         array $passedVertexesMap,
         array &$globalPassedVertexesMap
     ): TraverseContextInterface {
-        return new TraverseContext($vertex, $edge, $branchContext, $passedVertexesMap, $globalPassedVertexesMap);
+        return new TraverseContext(
+            $vertex,
+            $edge,
+            $this->repository,
+            $branchContext,
+            $passedVertexesMap,
+            $globalPassedVertexesMap
+        );
     }
 
     /**

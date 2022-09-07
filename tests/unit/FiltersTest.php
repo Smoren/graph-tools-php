@@ -7,6 +7,7 @@ use Smoren\GraphTools\Conditions\VertexCondition;
 use Smoren\GraphTools\Filters\ConstTraverseFilter;
 use Smoren\GraphTools\Filters\TransparentTraverseFilter;
 use Smoren\GraphTools\Models\Vertex;
+use Smoren\GraphTools\Store\PreloadedGraphRepository;
 use Smoren\GraphTools\Structs\FilterConfig;
 use Smoren\GraphTools\Structs\TraverseBranchContext;
 use Smoren\GraphTools\Structs\TraverseContext;
@@ -17,11 +18,13 @@ class FiltersTest extends \Codeception\Test\Unit
     {
         $vertex = new Vertex(1, 1);
         $anotherVertex = new Vertex(2, 2);
+        $repo = new PreloadedGraphRepository([$vertex, $anotherVertex], []);
+
         $passed = [$vertex->getId() => $vertex];
         $globalPassed = [$vertex->getId() => $vertex];
         $branchContext = new TraverseBranchContext(0, 0, $vertex);
-        $contextLoop = new TraverseContext($vertex, null, $branchContext, $passed, $globalPassed);
-        $contextNormal = new TraverseContext($anotherVertex, null, $branchContext, $passed, $globalPassed);
+        $contextLoop = new TraverseContext($vertex, null, $repo, $branchContext, $passed, $globalPassed);
+        $contextNormal = new TraverseContext($anotherVertex, null, $repo, $branchContext, $passed, $globalPassed);
 
         $filter = new TransparentTraverseFilter();
         $cond = $filter->getPassCondition($contextLoop);
@@ -66,10 +69,12 @@ class FiltersTest extends \Codeception\Test\Unit
     {
         $vertex = new Vertex(1, 1);
         $anotherVertex = new Vertex(2, 2);
+        $repo = new PreloadedGraphRepository([$vertex, $anotherVertex], []);
+
         $passed = [$vertex->getId() => $vertex];
         $globalPassed = [$vertex->getId() => $vertex];
         $branchContext = new TraverseBranchContext(0, 0, $vertex);
-        $context = new TraverseContext($anotherVertex, null, $branchContext, $passed, $globalPassed);
+        $context = new TraverseContext($anotherVertex, null, $repo, $branchContext, $passed, $globalPassed);
 
         $passCond = (new FilterCondition())->onlyVertexTypes([1]);
         $handleCond = (new VertexCondition());

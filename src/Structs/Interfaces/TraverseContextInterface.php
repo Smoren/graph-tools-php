@@ -4,6 +4,7 @@ namespace Smoren\GraphTools\Structs\Interfaces;
 
 use Smoren\GraphTools\Models\Interfaces\EdgeInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
+use Smoren\GraphTools\Store\Interfaces\GraphRepositoryInterface;
 
 /**
  * Traverse context interface
@@ -28,6 +29,12 @@ interface TraverseContextInterface
      * @return EdgeInterface|null
      */
     public function getEdge(): ?EdgeInterface;
+
+    /**
+     * Returns graph repository
+     * @return GraphRepositoryInterface
+     */
+    public function getRepository(): GraphRepositoryInterface;
 
     /**
      * Returns branch context
