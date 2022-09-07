@@ -152,5 +152,7 @@ class WorkflowGraphTraverseTest extends Unit
             $vertexIds[] = $context->getVertex()->getId();
         }
         $this->assertEquals([1, 3, 5, 6], $vertexIds);
+
+        // TODO унаследовать Traverse, в нем принимать дополнительное решение о handleCondition
     }
 }
