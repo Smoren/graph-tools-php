@@ -4,9 +4,11 @@ namespace Smoren\GraphTools\Tests\Unit;
 
 use Codeception\Test\Unit;
 use Generator;
+use Smoren\GraphTools\Tests\Unit\Filters\WorkflowHiddenBranchingTraverseFilter;
 use Smoren\GraphTools\Tests\Unit\Models\EventVertex;
 use Smoren\GraphTools\Tests\Unit\Models\FunctionVertex;
 use Smoren\GraphTools\Tests\Unit\Models\OperatorAndVertex;
+use Smoren\GraphTools\Tests\Unit\Models\OperatorXorVertex;
 use Smoren\GraphTools\Tests\Unit\Models\WorkflowEdge;
 use Smoren\GraphTools\Traverse\Traverse;
 use Smoren\GraphTools\Traverse\TraverseDirect;
@@ -25,7 +27,7 @@ use Smoren\NestedAccessor\Helpers\NestedHelper;
 
 class WorkflowGraphTraverseTest extends Unit
 {
-    public function testSimpleChain()
+    public function testSimpleAndBranching()
     {
         $vertexes = [
             new EventVertex(1),
@@ -51,8 +53,11 @@ class WorkflowGraphTraverseTest extends Unit
         ];
 
         $repo = new PreloadedGraphRepository($vertexes, $connections);
-
         $traverse = new TraverseDirect($repo);
+
+        // ================================================
+        // TransparentTraverseFilter with PREVENT_LOOP_PASS
+        // ================================================
         $contexts = $traverse->generate(
             $repo->getVertexById(1),
             new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS])
@@ -64,5 +69,88 @@ class WorkflowGraphTraverseTest extends Unit
             $vertexIds[] = $context->getVertex()->getId();
         }
         $this->assertEquals([1, 2, 3, 4, 5, 6, 7, 7, 8, 8, 9, 9], $vertexIds);
+
+        // ===================================================
+        // TransparentTraverseFilter without PREVENT_LOOP_PASS
+        // ===================================================
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new TransparentTraverseFilter([])
+        );
+
+        $vertexIds = [];
+        /** @var TraverseContextInterface $context */
+        foreach($contexts as $context) {
+            $vertexIds[] = $context->getVertex()->getId();
+        }
+        $this->assertEquals([1, 2, 3, 4, 5, 6, 7, 7, 8, 8, 9, 9], $vertexIds);
+
+        // =============================================
+        // WorkflowTraverseFilter with PREVENT_LOOP_PASS
+        // =============================================
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new WorkflowHiddenBranchingTraverseFilter([FilterConfig::PREVENT_LOOP_PASS])
+        );
+
+        $vertexIds = [];
+        /** @var TraverseContextInterface $context */
+        foreach($contexts as $context) {
+            $vertexIds[] = $context->getVertex()->getId();
+        }
+        $this->assertEquals([1, 3, 4, 5, 6, 8, 9], $vertexIds);
+
+        // ================================================
+        // WorkflowTraverseFilter without PREVENT_LOOP_PASS
+        // ================================================
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new WorkflowHiddenBranchingTraverseFilter([])
+        );
+
+        $vertexIds = [];
+        /** @var TraverseContextInterface $context */
+        foreach($contexts as $context) {
+            $vertexIds[] = $context->getVertex()->getId();
+        }
+        $this->assertEquals([1, 3, 4, 5, 6, 8, 9], $vertexIds);
+    }
+
+    public function testSimpleXorReturnBack()
+    {
+        $vertexes = [
+            new EventVertex(1),
+            new OperatorXorVertex(2),
+            new FunctionVertex(3),
+            new OperatorXorVertex(4),
+            new EventVertex(5),
+            new EventVertex(6),
+        ];
+        $connections = [
+            new WorkflowEdge(1, 2),
+            new WorkflowEdge(2, 3),
+            new WorkflowEdge(3, 4),
+            new WorkflowEdge(4, 5),
+            new WorkflowEdge(4, 6),
+            new WorkflowEdge(6, 2),
+        ];
+
+        $repo = new PreloadedGraphRepository($vertexes, $connections);
+        $traverse = new TraverseDirect($repo);
+
+        // =============================================
+        // WorkflowTraverseFilter with PREVENT_LOOP_PASS
+        // =============================================
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new WorkflowHiddenBranchingTraverseFilter([FilterConfig::PREVENT_LOOP_PASS])
+        );
+
+        $vertexIds = [];
+        /** @var TraverseContextInterface $context */
+        foreach($contexts as $context) {
+            $vertexIds[] = $context->getVertex()->getId();
+        }
+        $this->assertEquals([1, 3, 5, 6], $vertexIds);
     }
 }
