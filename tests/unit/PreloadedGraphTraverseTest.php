@@ -118,10 +118,16 @@ class PreloadedGraphTraverseTest extends Unit
             new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS])
         );
         $vertexIds = [];
+        $edgeIds = [];
+        /** @var TraverseContextInterface $context */
         foreach($contexts as $context) {
-            $vertexIds[] = $context->getVertex()->getId();
+            $vertex = $context->getVertex();
+            $edge = $context->getEdge();
+            $vertexIds[] = $vertex->getId();
+            $edgeIds[] = $edge !== null ? $edge->getId() : null;
         }
         $this->assertEquals([1, 2, 3, 1], $vertexIds);
+        $this->assertEquals([null, 1, 2, 3], $edgeIds);
 
         /** @var Generator<TraverseContextInterface> $contexts */
         $contexts = $traverse->generate(
