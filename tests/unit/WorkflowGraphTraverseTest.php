@@ -10,20 +10,11 @@ use Smoren\GraphTools\Tests\Unit\Models\FunctionVertex;
 use Smoren\GraphTools\Tests\Unit\Models\OperatorAndVertex;
 use Smoren\GraphTools\Tests\Unit\Models\OperatorXorVertex;
 use Smoren\GraphTools\Tests\Unit\Models\WorkflowEdge;
-use Smoren\GraphTools\Traverse\Traverse;
 use Smoren\GraphTools\Traverse\TraverseDirect;
-use Smoren\GraphTools\Traverse\TraverseReverse;
-use Smoren\GraphTools\Conditions\FilterCondition;
-use Smoren\GraphTools\Filters\ConstTraverseFilter;
 use Smoren\GraphTools\Filters\TransparentTraverseFilter;
-use Smoren\GraphTools\Helpers\TraverseHelper;
-use Smoren\GraphTools\Models\Edge;
-use Smoren\GraphTools\Models\Vertex;
 use Smoren\GraphTools\Store\PreloadedGraphRepository;
 use Smoren\GraphTools\Structs\FilterConfig;
 use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
-use Smoren\GraphTools\Structs\TraverseContext;
-use Smoren\NestedAccessor\Helpers\NestedHelper;
 
 class WorkflowGraphTraverseTest extends Unit
 {
