@@ -126,7 +126,7 @@ class WorkflowTraverse implements TraverseInterface
     {
         /** @var OperatorXorVertex $operator */
         $operator = $context->getVertex();
-        if(($passCond = $this->operatorXorLogic->getPassFilter($operator)) !== null) {
+        if(($passCond = $this->operatorXorLogic->getPassCondition($operator)) !== null) {
             $this->contexts->send($passCond);
         }
         yield from [];
