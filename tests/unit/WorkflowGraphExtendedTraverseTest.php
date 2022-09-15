@@ -94,6 +94,6 @@ class WorkflowGraphExtendedTraverseTest extends Unit
         }
         $this->assertEquals([1, 3, 5], $vertexIds);
 
-        // TODO унаследовать Traverse, в нем принимать дополнительное решение о handleCondition
+        // TODO вместе с логикой операторов ввести DynamicDataStorage
     }
 }
