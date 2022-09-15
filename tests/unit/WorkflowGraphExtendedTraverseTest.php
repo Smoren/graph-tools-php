@@ -48,16 +48,52 @@ class WorkflowGraphExtendedTraverseTest extends Unit
         $repo = new PreloadedGraphRepository($vertexes, $connections);
         $traverse = new WorkflowTraverse($repo);
 
-        $contexts = $traverse->generate(
-            $repo->getVertexById(1),
-            new TransparentTraverseFilter(),
-            Traverse::MODE_WIDE
-        );
+        $contexts = $traverse->generate($repo->getVertexById(1), new TransparentTraverseFilter());
 
         $vertexIds = [];
         foreach($contexts as $context) {
             $vertexIds[] = $context->getVertex()->getId();
         }
         $this->assertEquals([1, 3, 4, 5, 6, 8, 9], $vertexIds);
+    }
+
+    public function testSimpleXorReturnBack()
+    {
+        $vertexes = [
+            new EventVertex(1),
+            new OperatorXorVertex(2),
+            new FunctionVertex(3),
+            new OperatorXorVertex(4),
+            new EventVertex(5),
+            new EventVertex(6),
+        ];
+        $connections = [
+            new WorkflowEdge(1, 2),
+            new WorkflowEdge(2, 3),
+            new WorkflowEdge(3, 4),
+            new WorkflowEdge(4, 5),
+            new WorkflowEdge(4, 6),
+            new WorkflowEdge(6, 2),
+        ];
+
+        $repo = new PreloadedGraphRepository($vertexes, $connections);
+        $traverse = new WorkflowTraverse($repo);
+
+        // =============================================
+        // WorkflowTraverseFilter with PREVENT_LOOP_PASS
+        // =============================================
+        $contexts = $traverse->generate(
+            $repo->getVertexById(1),
+            new TransparentTraverseFilter([FilterConfig::PREVENT_LOOP_PASS])
+        );
+
+        $vertexIds = [];
+        /** @var TraverseContextInterface $context */
+        foreach($contexts as $context) {
+            $vertexIds[] = $context->getVertex()->getId();
+        }
+        $this->assertEquals([1, 3, 5], $vertexIds);
+
+        // TODO унаследовать Traverse, в нем принимать дополнительное решение о handleCondition
     }
 }

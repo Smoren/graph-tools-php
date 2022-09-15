@@ -92,14 +92,21 @@ class Traverse implements TraverseInterface
             $currentContext = $contexts->pop();
             $currentVertex = $currentContext->getVertex();
 
+            $customPassCondition = null;
             if($filter->matchesHandleCondition($currentContext)) {
                 $cmd = (yield $currentContext);
-                switch($cmd) {
-                    case static::STOP_BRANCH:
-                        yield $currentContext;
-                        continue 2;
-                    case static::STOP_ALL:
-                        return;
+
+                if($cmd instanceof FilterConditionInterface) {
+                    $customPassCondition = $cmd;
+                    yield $currentContext;
+                } else {
+                    switch($cmd) {
+                        case static::STOP_BRANCH:
+                            yield $currentContext;
+                            continue 2;
+                        case static::STOP_ALL:
+                            return;
+                    }
                 }
             }
 
@@ -107,7 +114,9 @@ class Traverse implements TraverseInterface
             $passedVertexesMap[$currentVertex->getId()] = $currentVertex;
             $globalPassedVertexesMap[$currentVertex->getId()] = $currentVertex;
 
-            $nextVertexes = $this->getNextVertexes($currentVertex, $filter->getPassCondition($currentContext));
+            $customPassCondition = $customPassCondition ?? $filter->getPassCondition($currentContext);
+            $nextVertexes = $this->getNextVertexes($currentVertex, $customPassCondition);
+
             $i = 0;
             foreach($nextVertexes as $edge => $vertex) {
                 $currentBranchContext = $currentContext->getBranchContext();

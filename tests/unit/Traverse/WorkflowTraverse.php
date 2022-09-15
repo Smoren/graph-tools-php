@@ -7,9 +7,12 @@ use Smoren\GraphTools\Filters\Interfaces\TraverseFilterInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 use Smoren\GraphTools\Store\Interfaces\GraphRepositoryInterface;
 use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
+use Smoren\GraphTools\Tests\Unit\Models\FunctionVertex;
 use Smoren\GraphTools\Tests\Unit\Models\OperatorAndVertex;
+use Smoren\GraphTools\Tests\Unit\Models\OperatorXorVertex;
 use Smoren\GraphTools\Tests\Unit\Structs\VertexType;
 use Smoren\GraphTools\Tests\Unit\Traverse\Logic\OperatorAndLogic;
+use Smoren\GraphTools\Tests\Unit\Traverse\Logic\OperatorXorLogic;
 use Smoren\GraphTools\Traverse\Interfaces\TraverseInterface;
 use Smoren\GraphTools\Traverse\Traverse;
 use Smoren\GraphTools\Traverse\TraverseDirect;
@@ -32,12 +35,17 @@ class WorkflowTraverse implements TraverseInterface
      * @var OperatorAndLogic
      */
     protected OperatorAndLogic $operatorAndLogic;
+    /**
+     * @var OperatorXorLogic
+     */
+    protected OperatorXorLogic $operatorXorLogic;
 
     public function __construct(GraphRepositoryInterface $repository)
     {
         $this->repository = $repository;
         $this->traverse = new TraverseDirect($repository);
         $this->operatorAndLogic = new OperatorAndLogic();
+        $this->operatorXorLogic = new OperatorXorLogic();
     }
 
     /**
@@ -46,8 +54,11 @@ class WorkflowTraverse implements TraverseInterface
      * @param int $traverseMode
      * @return Generator<TraverseContextInterface>
      */
-    public function generate(VertexInterface $start, TraverseFilterInterface $filter, int $traverseMode): Generator
-    {
+    public function generate(
+        VertexInterface $start,
+        TraverseFilterInterface $filter,
+        int $traverseMode = Traverse::MODE_WIDE
+    ): Generator {
         $this->contexts = $this->traverse->generate($start, $filter, $traverseMode);
         /** @var TraverseContextInterface $context */
         foreach($this->contexts as $context) {
@@ -84,6 +95,9 @@ class WorkflowTraverse implements TraverseInterface
      */
     protected function handleFunction(TraverseContextInterface $context): Generator
     {
+        /** @var FunctionVertex $func */
+        $func = $context->getVertex();
+        $this->operatorXorLogic->registerFunction($func, $this->repository);
         yield $context;
     }
 
@@ -110,6 +124,11 @@ class WorkflowTraverse implements TraverseInterface
      */
     protected function handleOperatorXor(TraverseContextInterface $context): Generator
     {
+        /** @var OperatorXorVertex $operator */
+        $operator = $context->getVertex();
+        if(($passCond = $this->operatorXorLogic->getPassFilter($operator)) !== null) {
+            $this->contexts->send($passCond);
+        }
         yield from [];
     }
 }
