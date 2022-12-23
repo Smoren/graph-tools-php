@@ -21,6 +21,9 @@
     "squizlabs/php_codesniffer": "3.*",
     "phpstan/phpstan": "^1.8"
   },
+  "suggest": {
+    "ext-ds": "*"
+  },
   "autoload": {
     "psr-4": {
       "Smoren\\GraphTools\\": "src",
