@@ -10,7 +10,7 @@ use Smoren\GraphTools\Store\Interfaces\GraphRepositoryInterface;
 use Smoren\GraphTools\Structs\Interfaces\TraverseStepIteratorInterface;
 use Smoren\GraphTools\Structs\TraverseStepItem;
 use Smoren\GraphTools\Structs\TraverseStepIterator;
-use Smoren\NestedAccessor\Helpers\NestedHelper;
+use Smoren\NestedAccessor\Helpers\NestedAccess;
 
 /**
  * Graph repository implementation with data storage in RAM
@@ -51,13 +51,13 @@ class PreloadedGraphRepository implements GraphRepositoryInterface
         foreach($edges as $edge) {
             $this->edgesMap[$edge->getId()] = $edge;
 
-            NestedHelper::set(
+            NestedAccess::set(
                 $this->edgesDirectMap,
                 [$edge->getFromId(), $edge->getId()],
                 [$edge->getType(), $edge->getToId()]
             );
 
-            NestedHelper::set(
+            NestedAccess::set(
                 $this->edgesReverseMap,
                 [$edge->getToId(), $edge->getId()],
                 [$edge->getType(), $edge->getFromId()]
