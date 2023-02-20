@@ -18,6 +18,7 @@ use Smoren\GraphTools\Structs\Interfaces\TraverseStepIteratorInterface;
 use Smoren\GraphTools\Structs\TraverseBranchContext;
 use Smoren\GraphTools\Structs\TraverseContext;
 use Smoren\GraphTools\Structs\TraverseStepIterator;
+use Smoren\GraphTools\Structs\TraverseStepItem;
 
 /**
  * Class for non-directional graph traversing
@@ -93,11 +94,15 @@ class Traverse implements TraverseInterface
             $currentVertex = $currentContext->getVertex();
 
             $customPassCondition = null;
+            $nextVertex = null;
             if($filter->matchesHandleCondition($currentContext)) {
                 $cmd = (yield $currentContext);
 
                 if($cmd instanceof FilterConditionInterface) {
                     $customPassCondition = $cmd;
+                    yield $currentContext;
+                } elseif($cmd instanceof VertexInterface) {
+                    $nextVertex = $cmd;
                     yield $currentContext;
                 } else {
                     switch($cmd) {
@@ -114,8 +119,12 @@ class Traverse implements TraverseInterface
             $passedVertexesMap[$currentVertex->getId()] = $currentVertex;
             $globalPassedVertexesMap[$currentVertex->getId()] = $currentVertex;
 
-            $customPassCondition = $customPassCondition ?? $filter->getPassCondition($currentContext);
-            $nextVertexes = $this->getNextVertexes($currentVertex, $customPassCondition);
+            if ($nextVertex !== null) {
+                $nextVertexes = new TraverseStepIterator([new TraverseStepItem(null, $nextVertex)]);
+            } else {
+                $customPassCondition = $customPassCondition ?? $filter->getPassCondition($currentContext);
+                $nextVertexes = $this->getNextVertexes($currentVertex, $customPassCondition);
+            }
 
             $i = 0;
             foreach($nextVertexes as $edge => $vertex) {
