@@ -7,6 +7,7 @@ use Smoren\GraphTools\Filters\Interfaces\TraverseFilterInterface;
 use Smoren\GraphTools\Models\Interfaces\VertexInterface;
 use Smoren\GraphTools\Store\Interfaces\GraphRepositoryInterface;
 use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
+use Smoren\GraphTools\Tests\Unit\Models\EventVertex;
 use Smoren\GraphTools\Tests\Unit\Models\FunctionVertex;
 use Smoren\GraphTools\Tests\Unit\Models\OperatorAndVertex;
 use Smoren\GraphTools\Tests\Unit\Models\OperatorXorVertex;
@@ -97,6 +98,13 @@ class WorkflowTraverse implements TraverseInterface
     {
         /** @var FunctionVertex $func */
         $func = $context->getVertex();
+        $funcData = $func->getData();
+        if (
+            $funcData instanceof EventVertex
+        ){
+            $this->contexts->send($func->getData());
+        }
+
         $this->operatorXorLogic->registerFunction($func, $this->repository);
         yield $context;
     }
