@@ -16,9 +16,9 @@ class ConditionsTest extends \Codeception\Test\Unit
         $v3 = new Vertex(3, 2);
 
         $cond = new VertexCondition();
-        $this->assertEquals(null, $cond->getVertexTypesOnly());
+        $this->assertNull($cond->getVertexTypesOnly());
         $this->assertEquals([], $cond->getVertexTypesExcluded());
-        $this->assertEquals(null, $cond->getVertexIdsOnly());
+        $this->assertNull($cond->getVertexIdsOnly());
         $this->assertEquals([], $cond->getVertexIdsExcluded());
         $this->assertTrue($cond->isSuitableVertex($v1));
         $this->assertTrue($cond->isSuitableVertex($v2));
@@ -27,32 +27,32 @@ class ConditionsTest extends \Codeception\Test\Unit
         $cond->onlyVertexTypes([1]);
         $this->assertEquals([1], $cond->getVertexTypesOnly());
         $this->assertEquals([], $cond->getVertexTypesExcluded());
-        $this->assertEquals(null, $cond->getVertexIdsOnly());
+        $this->assertNull($cond->getVertexIdsOnly());
         $this->assertEquals([], $cond->getVertexIdsExcluded());
         $this->assertTrue($cond->isSuitableVertex($v1));
         $this->assertTrue($cond->isSuitableVertex($v2));
         $this->assertFalse($cond->isSuitableVertex($v3));
 
         $cond->onlyVertexTypes(null)->excludeVertexTypes([2]);
-        $this->assertEquals(null, $cond->getVertexTypesOnly());
+        $this->assertNull($cond->getVertexTypesOnly());
         $this->assertEquals([2], $cond->getVertexTypesExcluded());
-        $this->assertEquals(null, $cond->getVertexIdsOnly());
+        $this->assertNull($cond->getVertexIdsOnly());
         $this->assertEquals([], $cond->getVertexIdsExcluded());
         $this->assertTrue($cond->isSuitableVertex($v1));
         $this->assertTrue($cond->isSuitableVertex($v2));
         $this->assertFalse($cond->isSuitableVertex($v3));
 
         $cond->excludeVertexIds([2, 3]);
-        $this->assertEquals(null, $cond->getVertexTypesOnly());
+        $this->assertNull($cond->getVertexTypesOnly());
         $this->assertEquals([2], $cond->getVertexTypesExcluded());
-        $this->assertEquals(null, $cond->getVertexIdsOnly());
+        $this->assertNull($cond->getVertexIdsOnly());
         $this->assertEquals([2, 3], $cond->getVertexIdsExcluded());
         $this->assertTrue($cond->isSuitableVertex($v1));
         $this->assertFalse($cond->isSuitableVertex($v2));
         $this->assertFalse($cond->isSuitableVertex($v3));
 
         $cond->excludeVertexIds([])->onlyVertexIds([1]);
-        $this->assertEquals(null, $cond->getVertexTypesOnly());
+        $this->assertNull($cond->getVertexTypesOnly());
         $this->assertEquals([2], $cond->getVertexTypesExcluded());
         $this->assertEquals([1], $cond->getVertexIdsOnly());
         $this->assertEquals([], $cond->getVertexIdsExcluded());
@@ -68,7 +68,7 @@ class ConditionsTest extends \Codeception\Test\Unit
         $e3 = new Edge(3, 2, 3, 1);
 
         $cond = new EdgeCondition();
-        $this->assertEquals(null, $cond->getEdgeTypesOnly());
+        $this->assertNull($cond->getEdgeTypesOnly());
         $this->assertEquals([], $cond->getEdgeTypesExcluded());
         $this->assertTrue($cond->isSuitableEdge($e1));
         $this->assertTrue($cond->isSuitableEdge($e2));
@@ -82,7 +82,7 @@ class ConditionsTest extends \Codeception\Test\Unit
         $this->assertFalse($cond->isSuitableEdge($e3));
 
         $cond->onlyEdgeTypes(null)->excludeEdgeTypes([2]);
-        $this->assertEquals(null, $cond->getEdgeTypesOnly());
+        $this->assertNull($cond->getEdgeTypesOnly());
         $this->assertEquals([2], $cond->getEdgeTypesExcluded());
         $this->assertTrue($cond->isSuitableEdge($e1));
         $this->assertTrue($cond->isSuitableEdge($e2));

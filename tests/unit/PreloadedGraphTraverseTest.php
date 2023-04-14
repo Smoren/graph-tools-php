@@ -74,7 +74,7 @@ class PreloadedGraphTraverseTest extends Unit
             }
         }
         $this->assertEquals([2, 3, 1], $vertexIds);
-        $this->assertEquals(2, $loopsCount);
+        $this->assertSame(2, $loopsCount);
 
         $contexts = $traverse->generate(
             $repo->getVertexById(2),
