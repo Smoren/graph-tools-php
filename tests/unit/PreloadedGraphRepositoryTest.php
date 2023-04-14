@@ -23,9 +23,9 @@ class PreloadedGraphRepositoryTest extends \Codeception\Test\Unit
         ];
         $repo = new PreloadedGraphRepository($vertexes, $connections);
 
-        $this->assertEquals(1, $repo->getVertexById(1)->getId());
-        $this->assertEquals(2, $repo->getVertexById(2)->getId());
-        $this->assertEquals(3, $repo->getVertexById(3)->getId());
+        $this->assertSame('1', $repo->getVertexById(1)->getId());
+        $this->assertSame('2', $repo->getVertexById(2)->getId());
+        $this->assertSame('3', $repo->getVertexById(3)->getId());
 
         $this->assertVertexIds(
             [],
@@ -186,24 +186,24 @@ class PreloadedGraphRepositoryTest extends \Codeception\Test\Unit
 
         /** @var Vertex $vertex */
         $vertex = $repo->getVertexById(1);
-        $this->assertEquals(1, $vertex->getId());
-        $this->assertEquals(null, $vertex->getData());
+        $this->assertSame('1', $vertex->getId());
+        $this->assertNull($vertex->getData());
 
         try {
             $repo->getVertexById(100);
             $this->expectError();
         } catch(RepositoryException $e) {
-            $this->assertEquals(RepositoryException::VERTEX_NOT_FOUND, $e->getCode());
+            $this->assertSame(RepositoryException::VERTEX_NOT_FOUND, $e->getCode());
         }
 
         $edge = $repo->getEdgeById(1);
-        $this->assertEquals(1, $edge->getId());
+        $this->assertSame('1', $edge->getId());
 
         try {
             $repo->getEdgeById(100);
             $this->expectError();
         } catch(RepositoryException $e) {
-            $this->assertEquals(RepositoryException::EDGE_NOT_FOUND, $e->getCode());
+            $this->assertSame(RepositoryException::EDGE_NOT_FOUND, $e->getCode());
         }
     }
 
