@@ -11,8 +11,7 @@
   ],
   "require": {
     "php": ">=7.4.0",
-    "php-ds/php-ds": "^1.4",
-    "smoren/nested-accessor": "^0.1.2"
+    "php-ds/php-ds": ">=1.4"
   },
   "require-dev": {
     "codeception/codeception": "^4.2.1",

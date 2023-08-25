@@ -10,7 +10,6 @@ use Smoren\GraphTools\Store\Interfaces\GraphRepositoryInterface;
 use Smoren\GraphTools\Structs\Interfaces\TraverseStepIteratorInterface;
 use Smoren\GraphTools\Structs\TraverseStepItem;
 use Smoren\GraphTools\Structs\TraverseStepIterator;
-use Smoren\NestedAccessor\Helpers\NestedAccess;
 
 /**
  * Graph repository implementation with data storage in RAM
@@ -51,13 +50,13 @@ class PreloadedGraphRepository implements GraphRepositoryInterface
         foreach($edges as $edge) {
             $this->edgesMap[$edge->getId()] = $edge;
 
-            NestedAccess::set(
+            $this->setToMap(
                 $this->edgesDirectMap,
                 [$edge->getFromId(), $edge->getId()],
                 [$edge->getType(), $edge->getToId()]
             );
 
-            NestedAccess::set(
+            $this->setToMap(
                 $this->edgesReverseMap,
                 [$edge->getToId(), $edge->getId()],
                 [$edge->getType(), $edge->getFromId()]
@@ -171,5 +170,20 @@ class PreloadedGraphRepository implements GraphRepositoryInterface
     protected function isSuitableEdge(EdgeInterface $edge, ?FilterConditionInterface $condition): bool
     {
         return ($condition === null) || $condition->isSuitableEdge($edge);
+    }
+
+    /**
+     * @param array<string, mixed> $map
+     * @param array<string> $path
+     * @param array<string> $value
+     * @return void
+     */
+    protected function setToMap(array &$map, array $path, array $value): void
+    {
+        foreach ($path as $key) {
+            /** @var array<string, mixed> $map */
+            $map = &$map[$key];
+        }
+        $map = $value;
     }
 }

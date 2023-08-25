@@ -17,7 +17,6 @@ use Smoren\GraphTools\Store\PreloadedGraphRepository;
 use Smoren\GraphTools\Structs\FilterConfig;
 use Smoren\GraphTools\Structs\Interfaces\TraverseContextInterface;
 use Smoren\GraphTools\Structs\TraverseContext;
-use Smoren\NestedAccessor\Helpers\NestedHelper;
 
 class PreloadedGraphTraverseTest extends Unit
 {
@@ -202,13 +201,13 @@ class PreloadedGraphTraverseTest extends Unit
         );
         $branchMap = TraverseHelper::getBranches($contexts);
         $this->assertCount(7, $branchMap);
-        $this->assertEquals([1, 2, 3, 4, 1], NestedHelper::get($branchMap[0], 'id'));
-        $this->assertEquals([1, 5, 6, 2, 3, 4, 1], NestedHelper::get($branchMap[1], 'id'));
-        $this->assertEquals([1, 5, 3, 4, 1], NestedHelper::get($branchMap[2], 'id'));
-        $this->assertEquals([1, 2, 3, 4, 5, 6, 2], NestedHelper::get($branchMap[3], 'id'));
-        $this->assertEquals([1, 5, 3, 4, 5], NestedHelper::get($branchMap[4], 'id'));
-        $this->assertEquals([1, 2, 3, 4, 5, 3], NestedHelper::get($branchMap[5], 'id'));
-        $this->assertEquals([1, 5, 6, 2, 3, 4, 5], NestedHelper::get($branchMap[6], 'id'));
+        $this->assertEquals([1, 2, 3, 4, 1], $this->getFromArray($branchMap[0], 'id'));
+        $this->assertEquals([1, 5, 6, 2, 3, 4, 1], $this->getFromArray($branchMap[1], 'id'));
+        $this->assertEquals([1, 5, 3, 4, 1], $this->getFromArray($branchMap[2], 'id'));
+        $this->assertEquals([1, 2, 3, 4, 5, 6, 2], $this->getFromArray($branchMap[3], 'id'));
+        $this->assertEquals([1, 5, 3, 4, 5], $this->getFromArray($branchMap[4], 'id'));
+        $this->assertEquals([1, 2, 3, 4, 5, 3], $this->getFromArray($branchMap[5], 'id'));
+        $this->assertEquals([1, 5, 6, 2, 3, 4, 5], $this->getFromArray($branchMap[6], 'id'));
 
         $contexts = $traverse->generate(
             $repo->getVertexById(1),
@@ -216,8 +215,8 @@ class PreloadedGraphTraverseTest extends Unit
         );
         $branchMap = TraverseHelper::getBranches($contexts);
         $this->assertCount(2, $branchMap);
-        $this->assertEquals([1, 2, 3, 4], NestedHelper::get($branchMap[0], 'id'));
-        $this->assertEquals([1, 5, 6], NestedHelper::get($branchMap[1], 'id'));
+        $this->assertEquals([1, 2, 3, 4], $this->getFromArray($branchMap[0], 'id'));
+        $this->assertEquals([1, 5, 6], $this->getFromArray($branchMap[1], 'id'));
 
         // TODO test for only vertex or connections types
     }
@@ -300,9 +299,9 @@ class PreloadedGraphTraverseTest extends Unit
         );
         $branchMap = TraverseHelper::getBranches($contexts);
         $this->assertCount(3, $branchMap);
-        $this->assertEquals([1, 2, 3, 4], NestedHelper::get($branchMap[0], 'id'));
-        $this->assertEquals([1, 2, 5, 6], NestedHelper::get($branchMap[1], 'id'));
-        $this->assertEquals([1, 2, 7, 8], NestedHelper::get($branchMap[2], 'id'));
+        $this->assertEquals([1, 2, 3, 4], $this->getFromArray($branchMap[0], 'id'));
+        $this->assertEquals([1, 2, 5, 6], $this->getFromArray($branchMap[1], 'id'));
+        $this->assertEquals([1, 2, 7, 8], $this->getFromArray($branchMap[2], 'id'));
 
         $contexts = $traverse->generate(
             $repo->getVertexById(1),
@@ -317,9 +316,9 @@ class PreloadedGraphTraverseTest extends Unit
             }
         );
         $this->assertCount(3, $branchMap);
-        $this->assertEquals([1, 2, 3], NestedHelper::get($branchMap[0], 'id'));
-        $this->assertEquals([1, 2, 5, 6], NestedHelper::get($branchMap[1], 'id'));
-        $this->assertEquals([1, 2, 7, 8], NestedHelper::get($branchMap[2], 'id'));
+        $this->assertEquals([1, 2, 3], $this->getFromArray($branchMap[0], 'id'));
+        $this->assertEquals([1, 2, 5, 6], $this->getFromArray($branchMap[1], 'id'));
+        $this->assertEquals([1, 2, 7, 8], $this->getFromArray($branchMap[2], 'id'));
 
         $filter = new ConstTraverseFilter(
             (new FilterCondition())->excludeVertexTypes([2]),
@@ -329,8 +328,8 @@ class PreloadedGraphTraverseTest extends Unit
         $contexts = $traverse->generate($repo->getVertexById(1), $filter);
         $branchMap = TraverseHelper::getBranches($contexts);
         $this->assertCount(2, $branchMap);
-        $this->assertEquals([1, 2, 5, 6], NestedHelper::get($branchMap[0], 'id'));
-        $this->assertEquals([1, 2, 7, 8], NestedHelper::get($branchMap[1], 'id'));
+        $this->assertEquals([1, 2, 5, 6], $this->getFromArray($branchMap[0], 'id'));
+        $this->assertEquals([1, 2, 7, 8], $this->getFromArray($branchMap[1], 'id'));
 
         $contexts = $traverse->generate(
             $repo->getVertexById(1),
@@ -345,9 +344,9 @@ class PreloadedGraphTraverseTest extends Unit
             }
         );
         $this->assertCount(3, $branchMap);
-        $this->assertEquals([1, 2, 3, 4], NestedHelper::get($branchMap[0], 'id'));
-        $this->assertEquals([1, 2, 5], NestedHelper::get($branchMap[1], 'id'));
-        $this->assertEquals([1, 2, 7, 8], NestedHelper::get($branchMap[2], 'id'));
+        $this->assertEquals([1, 2, 3, 4], $this->getFromArray($branchMap[0], 'id'));
+        $this->assertEquals([1, 2, 5], $this->getFromArray($branchMap[1], 'id'));
+        $this->assertEquals([1, 2, 7, 8], $this->getFromArray($branchMap[2], 'id'));
 
         $filter = new ConstTraverseFilter(
             (new FilterCondition())->excludeVertexTypes([3]),
@@ -357,8 +356,8 @@ class PreloadedGraphTraverseTest extends Unit
         $contexts = $traverse->generate($repo->getVertexById(1), $filter);
         $branchMap = TraverseHelper::getBranches($contexts);
         $this->assertCount(2, $branchMap);
-        $this->assertEquals([1, 2, 3, 4], NestedHelper::get($branchMap[0], 'id'));
-        $this->assertEquals([1, 2, 7, 8], NestedHelper::get($branchMap[1], 'id'));
+        $this->assertEquals([1, 2, 3, 4], $this->getFromArray($branchMap[0], 'id'));
+        $this->assertEquals([1, 2, 7, 8], $this->getFromArray($branchMap[1], 'id'));
 
         $contexts = $traverse->generate(
             $repo->getVertexById(1),
@@ -373,9 +372,9 @@ class PreloadedGraphTraverseTest extends Unit
             }
         );
         $this->assertCount(3, $branchMap);
-        $this->assertEquals([1, 2, 3], NestedHelper::get($branchMap[0], 'id'));
-        $this->assertEquals([1, 2, 5], NestedHelper::get($branchMap[1], 'id'));
-        $this->assertEquals([1, 2, 7, 8], NestedHelper::get($branchMap[2], 'id'));
+        $this->assertEquals([1, 2, 3], $this->getFromArray($branchMap[0], 'id'));
+        $this->assertEquals([1, 2, 5], $this->getFromArray($branchMap[1], 'id'));
+        $this->assertEquals([1, 2, 7, 8], $this->getFromArray($branchMap[2], 'id'));
 
         $filter = new ConstTraverseFilter(
             (new FilterCondition())->excludeVertexTypes([2, 3]),
@@ -385,7 +384,7 @@ class PreloadedGraphTraverseTest extends Unit
         $contexts = $traverse->generate($repo->getVertexById(1), $filter);
         $branchMap = TraverseHelper::getBranches($contexts);
         $this->assertCount(1, $branchMap);
-        $this->assertEquals([1, 2, 7, 8], NestedHelper::get($branchMap[0], 'id'));
+        $this->assertEquals([1, 2, 7, 8], $this->getFromArray($branchMap[0], 'id'));
     }
 
     public function testWorkflowWithReverseLink()
@@ -419,17 +418,22 @@ class PreloadedGraphTraverseTest extends Unit
         );
         $branches = TraverseHelper::getBranches($contexts);
         $this->assertCount(4, $branches);
-        $this->assertEquals([1, 2, 3, 5], NestedHelper::get($branches[0], 'id'));
-        $this->assertEquals([1, 2, 4, 5], NestedHelper::get($branches[1], 'id'));
-        $this->assertEquals([1, 2, 4, 6, 7], NestedHelper::get($branches[2], 'id'));
-        $this->assertEquals([1, 2, 4, 6, 2], NestedHelper::get($branches[3], 'id'));
+        $this->assertEquals([1, 2, 3, 5], $this->getFromArray($branches[0], 'id'));
+        $this->assertEquals([1, 2, 4, 5], $this->getFromArray($branches[1], 'id'));
+        $this->assertEquals([1, 2, 4, 6, 7], $this->getFromArray($branches[2], 'id'));
+        $this->assertEquals([1, 2, 4, 6, 2], $this->getFromArray($branches[3], 'id'));
 
         $filter = new ConstTraverseFilter((new FilterCondition())->onlyEdgeTypes([1]));
         $contexts = $traverse->generate($repo->getVertexById(1), $filter);
         $branches = TraverseHelper::getBranches($contexts);
         $this->assertCount(3, $branches);
-        $this->assertEquals([1, 2, 3, 5], NestedHelper::get($branches[0], 'id'));
-        $this->assertEquals([1, 2, 4, 5], NestedHelper::get($branches[1], 'id'));
-        $this->assertEquals([1, 2, 4, 6, 7], NestedHelper::get($branches[2], 'id'));
+        $this->assertEquals([1, 2, 3, 5], $this->getFromArray($branches[0], 'id'));
+        $this->assertEquals([1, 2, 4, 5], $this->getFromArray($branches[1], 'id'));
+        $this->assertEquals([1, 2, 4, 6, 7], $this->getFromArray($branches[2], 'id'));
+    }
+
+    protected function getFromArray(array $source, string $key)
+    {
+        return array_map(fn ($item) => is_array($item) ? $item[$key] : $item->{'get'.ucfirst($key)}(), $source);
     }
 }
