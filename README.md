@@ -113,4 +113,4 @@ foreach($contexts as $context) {
 print_r($vertexIds); // [2, 3, 1]
 ```
 
-Look for more examples in tests.
+Look for more examples in [tests](https://github.com/Smoren/graph-tools-php/tree/master/tests/unit).
